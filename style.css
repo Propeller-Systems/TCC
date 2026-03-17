@@ -1,1 +1,149 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css");
+
+:root { 
+    --primary-color: #1a1a1a;
+    --secondary-color: #333333;
+    --text-color-primary: #ffffff;
+    --text-color-sec: #4d4d4d;
+    --background-color: #f2f2f2;
+}
+
+body {
+    background-color: var(--background-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color-sec);
+    margin: 0;
+    padding: 0;
+}
+
+.container-login {
+  width: 100%;
+  margin-top: 10rem;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.95);
+  /* Branco semi-transparente */
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  /* Sombra externa */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ======================== */
+/* CABEÇALHO DO LOGIN */
+/* ======================== */
+
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  text-align: center;
+  margin-bottom: 30px;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+/* ======================== */
+/* CAMPOS DE ENTRADA */
+/* ======================== */
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  outline: none;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+/* Efeito quando o campo está focado */
+.input-group input:focus {
+  border-color: #530101;
+  box-shadow: 0 0 8px rgb(0, 0, 0);
+}
+
+/* ======================== */
+/* BOTÃO DE LOGIN */
+/* ======================== */
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-btn:hover {
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+}
+
+/* ======================== */
+/* LINKS: esqueceu senha, registro */
+/* ======================== */
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.links a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+
+.links a:hover {
+  color: var(--secondary-color);
+  text-decoration: underline;
+}
+
+/* ======================== */
+/* RODAPÉ DO FORMULÁRIO */
+/* ======================== */
+
+/*fazer o footer ficar trocando de cor*/
+.footer {
+  margin-top: 25px;
+  text-align: center;
+  font-style: italic;
+  color: red;
+  animation: colorChange 5s infinite;
+  font-size: 0.9rem;
+}
+
+@keyframes colorChange {
+  0% {
+    color: black;
+  }
+
+  50% {
+    color: blue;
+  }
+
+  100% {
+    color: black;
+  }
+}
