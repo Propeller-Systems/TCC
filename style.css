@@ -257,7 +257,7 @@ main p{
     }
 }
 
-@media(max-width: 800px){
+/* @media(max-width: 800px){
     .gestao{
         grid-template-columns: 1fr;
     }
@@ -334,4 +334,4 @@ main p{
             justify-content: center;
         }
     }
-}
+} */
