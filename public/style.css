@@ -311,17 +311,43 @@ main p{
             display: none;
         }
 
-        ul li .sub-menu.show{
+        ul li .sub-menu {
+            display: none;
             position: fixed;
             bottom: 60px;
             left: 0;
-            box-sizing: border-box;
-            height: 60px;
             width: 100%;
+            max-height: calc(100vh - 60px);
             background-color: var(--primary-color);
             border-top: 1px solid var(--secondary-color);
+            overflow-y: auto;
+            z-index: 999;
+        }
+
+        ul li .sub-menu.show {
             display: flex;
             justify-content: center;
+        }
+
+        ul li .sub-menu > div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            gap: .25rem;
+            padding: .5rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        ul li .sub-menu > div li {
+            display: inline-flex;
+        }
+
+        ul li .sub-menu > div li a {
+            padding: .75em 1em;
+            text-align: center;
+            white-space: nowrap;
         }
 
         > div{
@@ -329,6 +355,7 @@ main p{
         }
         li{
             display: inline-flex;
+
         }
 
         a{

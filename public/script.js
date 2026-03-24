@@ -13,8 +13,18 @@ function toggleSidebar(){
 
 function toggleSubmenu(button){
     const subMenu = button.nextElementSibling;
-    subMenu.classList.toggle("show");
 
+    // Fechar outros submenus antes de abrir o atual (evita gaps no mobile)
+    Array.from(sidebar.querySelectorAll('.sub-menu.show')).forEach(menu => {
+        if (menu !== subMenu) {
+            menu.classList.remove('show');
+            if (menu.previousElementSibling && menu.previousElementSibling.classList.contains('rotate')) {
+                menu.previousElementSibling.classList.remove('rotate');
+            }
+        }
+    });
+
+    subMenu.classList.toggle("show");
     button.classList.toggle("rotate");
 
     if(sidebar.classList.contains("close")){
