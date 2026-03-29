@@ -149,14 +149,13 @@ html,body {
     
 }
 
-#sidebar ul li.active a{
+#sidebar ul li.active a {
     color: rgb(0, 0, 255);
-
-    svg{
-        fill: blue;
-    }
 }
 
+#sidebar ul li.active a svg {
+    fill: blue;
+}
 
 #sidebar a, #sidebar .dropdown-btn, #sidebar .logo{
     border-radius: .5em;
