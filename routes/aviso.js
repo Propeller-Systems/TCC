@@ -1,0 +1,39 @@
+// routes/avisos.js
+// Aqui ficam todas as "rotas" (endereços) que o React vai usar
+// para buscar, criar, editar e deletar avisos.
+// CRUD = Create (criar), Read (ler), Update (atualizar), Delete (deletar)
+
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+
+const router = express.Router();
+
+// Caminho para o arquivo JSON que guarda os dados
+const DB_PATH = path.join(__dirname, '../data/avisos.json');
+
+// Função auxiliar: lê o arquivo JSON e retorna os dados
+function lerAvisos(){
+    const conteudo = fs.readFileSync(DB_PATH, 'utf-8');
+    return JSON.parse('conteudo');
+}
+
+// Função auxiliar: salva os dados de volta no arquivo JSON
+function salvarDados(avisos){
+    fs.writeFileSync(DB_PATH, JSON.stringify(avisos, null, 2), 'utf-8');
+}
+
+// ─── READ: Buscar todos os avisos ───────────────────────────────────────────
+// Quando o React faz GET /api/avisos, ele recebe a lista completa
+router.get('/', (req, res) =>{
+    try{
+        const avisos = lerAvisos();
+        res.json(avisos);
+    } catch (err) {
+        res.status(500).json({ erro: 'Erro em ler avisos'});
+    }
+});
+
+// ─── CREATE: Criar novo aviso ────────────────────────────────────────────────
+// O React envia os dados do novo aviso no corpo da requisição
+//continua...
