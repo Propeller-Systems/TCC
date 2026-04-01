@@ -42,7 +42,26 @@ router.get('/:id', (req, res) => {
         const aviso = avisos.find(a => a.id === parseInt(req.params.id))
         if (!aviso) return res.status(404).json({ erro: 'Aviso não encontrado' });
         res.json(aviso);
+    } catch (err) {
+        res.status(500).json({ erro: 'Erro em ler avisos'});
     }
+});
 
 // ─── CREATE: Criar novo aviso ────────────────────────────────────────────────
 // O React envia os dados do novo aviso no corpo da requisição
+router.post('/', (req,res) => {
+    try {
+        const aviso = lerAvisos();
+
+        // Gera um ID novo (pega o maior ID existente e soma 1)
+        const novoId =aviso.length >0 ? Math.max(... avisos.map(a => a.id)) + 1 : 1;
+
+        const novoAviso = {
+            id: novoId,
+            titulo: req.body.titulo || 'Sem título',
+            conteudo: req.body.conteudo || '',
+            autor: req.body.autor,
+            data,
+        }
+    }
+}g
