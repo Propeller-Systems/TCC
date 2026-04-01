@@ -61,7 +61,55 @@ router.post('/', (req,res) => {
             titulo: req.body.titulo || 'Sem título',
             conteudo: req.body.conteudo || '',
             autor: req.body.autor,
-            data,
-        }
+            data: new Date().toISOString().split('T')[0], // Data atual no formato YYYY-MM-DD
+            destaque: req.body.destaque || false
+        };
+        aviso.push(novoAviso); // o push adiciona o novo aviso no array
+        salvarDados(avisos); // salva o array atualizado no arquivo JSON
+
+        res.status(201).json(novoAviso); // Retorna o aviso criado / 201 = "aviso criado com sucesso"
+    } catch (err) {
+        res.status(500).json({ erro: 'Erro em criar aviso'});
     }
-}g
+     
+});
+// ─── UPDATE: Editar um aviso existente ──────────────────────────────────────
+// O React envia os dados atualizados no corpo da requisição
+router.put('/:id', (req, res) => {
+    try {
+        const avisos = lerAvisos();
+        const index = avisos.findIndex(a => a.id === parseInt(req.params.id));
+        
+        if (index === -1) return res.status(404).json({ erro: 'Aviso não encontrado' });
+                // Atualiza só os campos que vieram na requisição
+        avisos[indice] = {
+            ...avisos[indice],           // mantém os campos antigos
+            ...req.body,                 // sobrescreve com os novos
+            id: avisos[indice].id        // garante que o ID não muda
+        };
+        
+        salvarAvisos(avisos);
+        res.json(avisos[indice]);
+    } catch (err) {
+        res.status(500).json({ erro: 'Erro ao atualizar aviso' });
+    }
+});
+ 
+// ─── DELETE: Deletar um aviso ────────────────────────────────────────────────
+router.delete('/:id', (req, res) => {
+    try {
+        const avisos = lerAvisos();
+        const novaLista = avisos.filter(a => a.id !== parseInt(req.params.id));
+        
+        if (novaLista.length === avisos.length) {
+            return res.status(404).json({ erro: 'Aviso não encontrado' });
+        }
+        
+        salvarAvisos(novaLista);
+        res.json({ mensagem: 'Aviso deletado com sucesso' });
+    } catch (err) {
+        res.status(500).json({ erro: 'Erro ao deletar aviso' });
+    }
+});
+ 
+module.exports = router;
