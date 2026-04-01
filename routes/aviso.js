@@ -34,6 +34,15 @@ router.get('/', (req, res) =>{
     }
 });
 
+// ─── READ: Buscar um aviso específico pelo ID ────────────────────────────────
+// Quando o React faz GET /api/avisos/:id, ele recebe o aviso com aquele ID
+router.get('/:id', (req, res) => {
+    try {
+        const avisos = lerAvisos();
+        const aviso = avisos.find(a => a.id === parseInt(req.params.id))
+        if (!aviso) return res.status(404).json({ erro: 'Aviso não encontrado' });
+        res.json(aviso);
+    }
+
 // ─── CREATE: Criar novo aviso ────────────────────────────────────────────────
 // O React envia os dados do novo aviso no corpo da requisição
-//continua...
