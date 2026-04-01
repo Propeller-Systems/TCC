@@ -22,6 +22,12 @@ body{
     display: grid;
     grid-template-columns: auto 1fr;
 }
+.login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
 
 *{
     box-sizing: border-box;
@@ -134,9 +140,17 @@ body{
 }
 
 #sidebar ul{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     list-style: none;
     padding: 0;
 }
+
+#sidebar footer{
+    margin-top: auto;
+}
+
 
 #sidebar > ul > li:first-child{
     display: flex;
@@ -206,6 +220,13 @@ body{
 .dropdown-btn svg{
     transition: 300ms ease-in-out;
 }
+
+#sidebar ul li:last-child{
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
 
 .rotate svg:last-child{
     transform: rotate(180deg);
@@ -291,10 +312,36 @@ main p{
             grid-auto-flow: column;
             align-items: center;
             overflow-x: scroll;
+            height: auto;
+            justify-content: initial;
         }
 
         ul li{
             height: 100%;
+        }
+
+        ul li:last-child{
+            margin-top: 0;
+        }
+
+        #sidebar footer{
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-top: none;
+        }
+
+        #sidebar footer a{
+            width: 60px;
+            height: 60px;
+            padding: 0;
+        }
+
+        #sidebar footer span{
+            display: none;
         }
 
         ul a, ul .dropdown-btn{
@@ -316,7 +363,7 @@ main p{
             bottom: 60px;
             left: 0;
             width: 100%;
-            max-height: calc(100vh - 60px);
+            max-height: 85px;
             background-color: var(--primary-color);
             border-top: 1px solid var(--secondary-color);
             overflow-y: auto;
@@ -367,6 +414,8 @@ main p{
 } 
 
 /* Profile Styles */
+
+
 .picture-profile {
     width: 100px;
     height: 100px;
