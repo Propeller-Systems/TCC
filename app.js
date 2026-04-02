@@ -13,7 +13,7 @@ const PORT = 3000;
 
 // Murilo --------------------------------------------------------
 // Importa o módulo de rotas para avisos
-const avisosRouter = require('./routes/avisos');
+const avisosRouter = require('./routes/aviso');
 // Permite que o servidor entenda JSON no corpo das requisições
 app.use(express.json());
 
@@ -26,14 +26,14 @@ app.use((req, res, next) => {
 });
 
 // Rotas da API - avisos
-const avisosRouter = require('./routes/avisos');
 app.use('/api/avisos', avisosRouter);
 
 // Servir o painel de administração (React compilado)
 app.use('/admin', express.static(path.join(__dirname, 'admin/dist')));
-app.get('/admin/*', (req, res) => {
+app.get('/admin/*splat', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin/dist/index.html'));
 });
+    
 // Pieto --------------------------------------------------------   
 // Configura o Express para servir arquivos estáticos da pasta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
