@@ -37,12 +37,8 @@ app.get('/admin/*splat', (req, res) => {
 // Pieto --------------------------------------------------------   
 // Configura o Express para servir arquivos estáticos da pasta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
-// Configura o Express para servir arquivos estáticos da pasta 'image'
-app.use('/image', express.static(path.join(__dirname, 'image')));
-// Arquivo estático no Express é qualquer arquivo
-//  que não precisa de processamento ou lógica do 
-// servidor para ser entregue ao cliente, como imagens, 
-// arquivos CSS, JavaScript, HTML, PDFs e outros.
+
+// Arquivo estático no Express é qualquer arquivo que não precisa de processamento ou lógica do servidor para ser entregue ao cliente, como imagens, arquivos CSS, JavaScript, HTML, PDFs e outros.
 
 // Rota para a página inicial
 app.get('/', (req, res) => {
