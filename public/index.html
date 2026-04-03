@@ -8,21 +8,21 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body class="login">_
-    <div class="container-login">
-        <div class="login-box">
+    <form class="form" action="/" method="POST">
+        <div class="container-login">
+         <div class="login-box">
             <h1 class="title">bem-vindo</h1>
-            <form class="form">
                 <div class="input-group">
                     <label for="usuario">Usuário</label>
-                    <input type="text" id="usuario" name="usuario" placeholder="Digite seu usuário" required>
+                    <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
                 </div>
 
                 <div class="input-group">
                     <label for="senha">Senha</label>
-                    <input type="password" id="senha" name="senha" placeholder="********" required>
+                    <input type="password" id="password" name="password" placeholder="********" required>
                 </div>
 
-                <button type="submit" class="login-btn" id="btn-entrar">Entrar</button>
+                <input type="submit" class="login-btn" id="btn-entrar" value="Entrar">
 
                 <div class="links">
                     <a  href="#">Esqueceu a senha?</a>
