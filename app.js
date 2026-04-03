@@ -109,13 +109,13 @@ app.get('/', (req, res) => {
         }
         
         // Mostra os nomes das colunas
-        // const nomesColunas = fields.map(field => field.name);
+        const nomesColunas = fields.map(field => field.name);
         
-        // res.json({
-        //     colunas: nomesColunas,
-        //     dados: result,
-        //     totalRegistros: result.length
-        // });
+        res.json({
+            colunas: nomesColunas,
+            dados: result,
+            totalRegistros: result.length
+        });
     });
 });
 
