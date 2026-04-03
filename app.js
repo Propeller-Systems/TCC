@@ -8,8 +8,29 @@
 const express = require('express');
 const path = require('path');
 
+// Importa o módulo de conexão com o banco de dados (MySQL)
+const mysql = require('mysql2');
+
 const app = express();
 const PORT = 3000;
+
+//configura a conexão com o banco de dados MySQL
+const conexao = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '123321',
+    database: 'gerenciamento_escolar'
+});
+
+//teste de conexao
+// conexao.connect((err) => {
+//     if (err) {
+//         console.error('Erro ao conectar ao banco de dados:', err);
+//         return;
+//     }
+//     console.log('Conexão com o banco de dados estabelecida.');
+// });
+
 
 // Murilo --------------------------------------------------------
 // Importa o módulo de rotas para avisos
@@ -40,6 +61,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Arquivo estático no Express é qualquer arquivo que não precisa de processamento ou lógica do servidor para ser entregue ao cliente, como imagens, arquivos CSS, JavaScript, HTML, PDFs e outros.
 
+app.get('/', function(req, res) {
+    conexao.query('SELECT * FROM login', function(err, result, fields){
+        if (result.length > 0)  {
+            res.redirect('/Gestao.html');
+        }else {
+            res.redirect('/');
+        }
+});
+});
+
 // Rota para a página inicial
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -53,4 +84,4 @@ app.listen(PORT, () => {
     console.log('🔌 API de avisos:  http://localhost:' + PORT + '/api/avisos');
 });
 
-// para iniciar apenas use no terminal o comando "node app.js" e acesse http://localhost:3000 no navegador.
+// para iniciar apenas use no terminal o comando "npm run dev" e acesse http://localhost:3000 no navegador.
