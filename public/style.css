@@ -411,7 +411,16 @@ main p{
             justify-content: center;
         }
     }
-} 
+}
+
+h1{
+    padding: 1rem 0rem 1rem 1rem;
+    color:rgb(0, 0, 0);
+}
+p{
+    margin: auto;
+    padding: 1rem 0rem 0rem 1rem;
+}
 
 /* Profile Styles */
 
