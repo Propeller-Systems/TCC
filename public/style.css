@@ -297,8 +297,13 @@ main p{
     }
 }
 
-
-
+.btnAviso{
+    display: block;
+    margin-left: auto;
+    position: fixed;
+    right: 2%;
+    top: 3%;
+}
  @media(max-width: 800px){
     .gestao{
         grid-template-columns: 1fr;
@@ -431,11 +436,6 @@ main p{
     }
 
 /* Botoes */
-    .btnAviso{
-        position: fixed;
-        right: 20px;
-        z-index: 1000;  
-    }
 
 }
 

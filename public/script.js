@@ -67,4 +67,11 @@ function highlightCurrentPage(){
 
 console.log(window.location.pathname.split('/'));
 
+// Função para abrir o modal de criação de aviso (exemplo simples)
+const btnAviso = document.getElementById('btnAviso')
 
+function openAvisoModal(){
+    alert('Aqui você pode implementar um modal para criar um novo aviso.');
+}
+
+btnAviso.addEventListener('click', openAvisoModal);
