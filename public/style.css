@@ -296,15 +296,21 @@ main p{
        margin-top: -1em;
     }
 }
+.container-cms{
+    border: 2px solid var(--secondary-color);
+    border-radius: 1em;
+    margin: 0 auto 2% auto;
+    padding: min(3em, 2%);
+    width: 99%;
 
-.btnAviso{
-    display: block;
-    margin-left: auto;
-    position: fixed;
-    right: 2%;
-    top: 3%;
+    p{
+       margin-left: -1em;
+       margin-top: -1em;
+    }
 }
- @media(max-width: 800px){
+
+/* Responsividade */
+@media(max-width: 800px){
     .gestao{
         grid-template-columns: 1fr;
     }
@@ -312,12 +318,12 @@ main p{
     main{
         padding: 2em 1em 60px 1em;
     }
-
+    
     .container{
         border: none;
         padding: 0;
     }
-
+    
     #sidebar{
         height: 60px;
         width: 100%;
@@ -338,15 +344,15 @@ main p{
             height: auto;
             justify-content: initial;
         }
-
+        
         ul li{
             height: 100%;
         }
-
+        
         ul li:last-child{
             margin-top: 0;
         }
-
+        
         #sidebar footer{
             width: 60px;
             height: 60px;
@@ -356,17 +362,17 @@ main p{
             padding: 0;
             border-top: none;
         }
-
+        
         #sidebar footer a{
             width: 60px;
             height: 60px;
             padding: 0;
         }
-
+        
         #sidebar footer span{
             display: none;
         }
-
+        
         ul a, ul .dropdown-btn{
             width: 60px;
             height: 60px;
@@ -375,11 +381,11 @@ main p{
             border-radius: 0%;
             justify-content: center;
         }
-
+        
         ul li span, ul li:first-child, .dropdown-btn svg:last-child{
             display: none;
         }
-
+        
         ul li .sub-menu {
             display: none;
             position: fixed;
@@ -392,12 +398,12 @@ main p{
             overflow-y: auto;
             z-index: 999;
         }
-
+        
         ul li .sub-menu.show {
             display: flex;
             justify-content: center;
         }
-
+        
         ul li .sub-menu > div {
             display: flex;
             flex-direction: row;
@@ -408,25 +414,25 @@ main p{
             overflow-x: auto;
             white-space: nowrap;
         }
-
+        
         ul li .sub-menu > div li {
             display: inline-flex;
         }
-
+        
         ul li .sub-menu > div li a {
             padding: .75em 1em;
             text-align: center;
             white-space: nowrap;
         }
-
+        
         > div{
             overflow-x: auto;
         }
         li{
             display: inline-flex;
-
+            
         }
-
+        
         a{
             box-sizing: border-box;
             padding: 1em;
@@ -434,10 +440,20 @@ main p{
             justify-content: center;
         }
     }
+    
+}
 
 /* Botoes */
 
+.btnAviso{
+    display: block;
+    margin-left: auto;
+    position: fixed;
+    right: 2%;
+    top: 3%;
 }
+
+/* Tags */
 
 h1{
     padding: 1rem 0rem 1rem 1rem;
@@ -448,6 +464,9 @@ p{
     padding: 1rem 0rem 0rem 1rem;
 }
 
+ul{
+    list-style: none;
+}
 /* Profile Styles */
 
 

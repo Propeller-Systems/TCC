@@ -67,11 +67,23 @@ function highlightCurrentPage(){
 
 console.log(window.location.pathname.split('/'));
 
+
 // Função para abrir o modal de criação de aviso (exemplo simples)
 const btnAviso = document.getElementById('btnAviso')
 
-function openAvisoModal(){
-    alert('Aqui você pode implementar um modal para criar um novo aviso.');
+// function abrirModal(){
+//     let modal = document.innerHTML = "<div id='avisoModal' class='modal'>"
+//     console.log(modal);
+//     // modal.style.display = 'block';
+// }
+function copiarAviso(){
+    try {
+    const avisoList = document.getElementById('avisosList');
+    const avisoOg = document.getElementById('avisoOg');
+    let aviso = avisoOg.innerHTML;
+    console.log(aviso);
+    avisoList.innerHTML += `<li id="avisoCopia">${aviso}</li>`;
+    } catch (err){
+        console.error("Erro ao copiar aviso:", err);
+    }
 }
-
-btnAviso.addEventListener('click', openAvisoModal);

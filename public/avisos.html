@@ -12,14 +12,19 @@
     <main>
         <div><h1> Avisos e Notícias </h1>
             <p>Envie informações para alunos, professores e turmas</p>
-            <button type="button" id="btnAviso" class="btn btn-dark btnAviso">+ Criar Notícia</button>
+            <button type="button" id="btnAviso" class="btn btn-dark btnAviso" onclick="copiarAviso()">+ Criar Notícia</button>
         </div>
-        <div class="container-aviso">
+        <div class="container-cms bg-card border border-border rounded-lg p-6 mb-6"></div>
+        <ul id="avisosList">
+            <li id="avisoOg"><div class="container-aviso">
             <!-- Conteúdo principal -->
             <h3>Aviso A</h3>
             <h6> 2026-04-08  •  Escopo de pessoas (ex: alunos, professores)</h6>
             <p>Esta é uma mensagem de aviso para todos os alunos e professores.</p>
         </div>
+            </li>
+        </ul>
+        
     </main>
    <script src="script.js"></script>
 </body>
