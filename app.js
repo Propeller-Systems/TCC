@@ -25,13 +25,13 @@ const conexao = mysql.createConnection({
 });
 
 //teste de conexao
-conexao.connect((err) => {
-    if (err) {
-        console.error('Erro ao conectar ao banco de dados:', err);
-        return;
-    }
-    console.log('Conexão com o banco de dados estabelecida.');
-});
+// conexao.connect((err) => {
+//     if (err) {
+//         console.error('Erro ao conectar ao banco de dados:', err);
+//         return;
+//     }
+//     console.log('Conexão com o banco de dados estabelecida.');
+// });
 
 
 // Murilo --------------------------------------------------------
@@ -86,7 +86,7 @@ app.post('/', function(req, res) {
                
         if (result.length > 0) {
             console.log('Login bem-sucedido!');
-            res.redirect('/avisos.html');
+            res.redirect('/Gestao.html');
         } else {
             console.log('Usuário ou senha incorretos - nenhum registro encontrado');
             res.redirect('/');

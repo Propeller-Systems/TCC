@@ -38,7 +38,7 @@ body{
 /* Login */
 .container-login {
   width: 100%;
-  margin-top: 10rem;
+
   max-width: 420px;
   background: rgba(255, 255, 255, 0.95);
   padding: 40px;
@@ -147,20 +147,14 @@ body{
     padding: 0;
 }
 
-#sidebar footer{
-    margin-top: auto;
-}
-
-
 #sidebar > ul > li:first-child{
     display: flex;
     justify-content: flex-end;
     margin-bottom: 16px;
+}
 
-    .logo{
-        font-weight: 600;
-    }
-    
+#sidebar > ul > li:first-child .logo{
+    font-weight: 600;
 }
 
 #sidebar ul li.active a {
@@ -207,10 +201,10 @@ body{
     display: grid;
     grid-template-rows: 0fr;
     transition: 300ms ease-in-out;
+}
 
-    > div{
-        overflow: hidden;
-    }
+#sidebar .sub-menu > div{
+    overflow: hidden;
 }
 
 #sidebar .sub-menu.show{
@@ -221,11 +215,11 @@ body{
     transition: 300ms ease-in-out;
 }
 
-#sidebar ul li:last-child{
+ /* #sidebar ul li:last-child{
     display: flex;
     gap: 1em;
     align-items: center;
-}
+}  */
 
 
 .rotate svg:last-child{
@@ -275,39 +269,31 @@ main p{
 .container {
     border: 1px solid var(--secondary-color);
     border-radius: 1em;
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
     padding: min(3em, 15%);
     width: 95%;
-
-
-    h2, p{
-       margin-top: -1em;
-    }
 }
-.container-aviso{
-    border: 2px solid var(--secondary-color);
-    border-radius: 1em;
-    margin: 0 auto 2% auto;
-    padding: min(3em, 2%);
-    width: 99%;
 
-    p{
-       margin-left: -1em;
-       margin-top: -1em;
-    }
+.container h2,
+.container p {
+    margin-top: 0;
 }
+
+.container-aviso,
 .container-cms{
     border: 2px solid var(--secondary-color);
     border-radius: 1em;
     margin: 0 auto 2% auto;
     padding: min(3em, 2%);
     width: 99%;
-
-    p{
-       margin-left: -1em;
-       margin-top: -1em;
-    }
 }
+
+.container-aviso p,
+.container-cms p {
+    margin-left: 0;
+    margin-top: 0;
+}
+
 
 /* Responsividade */
 @media(max-width: 800px){
@@ -320,8 +306,9 @@ main p{
     }
     
     .container{
-        border: none;
-        padding: 0;
+        border: 1px solid var(--secondary-color);
+        padding: 1rem;
+        margin: 0 auto 20px auto;
     }
     
     #sidebar{
@@ -353,26 +340,6 @@ main p{
             margin-top: 0;
         }
         
-        #sidebar footer{
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            border-top: none;
-        }
-        
-        #sidebar footer a{
-            width: 60px;
-            height: 60px;
-            padding: 0;
-        }
-        
-        #sidebar footer span{
-            display: none;
-        }
-        
         ul a, ul .dropdown-btn{
             width: 60px;
             height: 60px;
@@ -396,7 +363,6 @@ main p{
             background-color: var(--primary-color);
             border-top: 1px solid var(--secondary-color);
             overflow-y: auto;
-            z-index: 999;
         }
         
         ul li .sub-menu.show {
@@ -406,12 +372,13 @@ main p{
         
         ul li .sub-menu > div {
             display: flex;
+            flex-wrap: wrap;
             flex-direction: row;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             gap: .25rem;
             padding: .5rem;
-            overflow-x: auto;
+            overflow-x: hidden;
             white-space: nowrap;
         }
         
@@ -422,7 +389,7 @@ main p{
         ul li .sub-menu > div li a {
             padding: .75em 1em;
             text-align: center;
-            white-space: nowrap;
+            white-space: normal;
         }
         
         > div{
