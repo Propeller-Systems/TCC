@@ -25,13 +25,13 @@ const conexao = mysql.createConnection({
 });
 
 //teste de conexao
-// conexao.connect((err) => {
-//     if (err) {
-//         console.error('Erro ao conectar ao banco de dados:', err);
-//         return;
-//     }
-//     console.log('Conexão com o banco de dados estabelecida.');
-// });
+conexao.connect((err) => {
+    if (err) {
+        console.error('Erro ao conectar ao banco de dados:', err);
+        return;
+    }
+    console.log('Conexão com o banco de dados estabelecida.');
+});
 
 
 // Murilo --------------------------------------------------------
