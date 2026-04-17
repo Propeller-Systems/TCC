@@ -9,12 +9,37 @@
 <body class="with-sidebar">
 
    <div id="sidebar-placeholder"></div>
-    <main>
+    <main id="main-content">
         <div><h1> Avisos e Notícias </h1>
             <p>Envie informações para alunos, professores e turmas</p>
-            <button type="button" id="btnAviso" class="btn btn-dark btnAviso" onclick="copiarAviso()">+ Criar Notícia</button>
+            <button type="button" id="btnAviso" class="btn btn-dark btnAviso" onclick="abrirModal()">+ Criar Notícia</button>
         </div>
-        <div class="container-cms bg-card border border-border rounded-lg p-6 mb-6"></div>
+        <!-- <div id="modalAviso" class="modal">
+            <h3>Criar Novo Aviso</h3>
+            <form id="formAviso" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                    <label for="titulo">Título do Aviso</label>
+                    <input type="text" id="titulo" name="titulo" class="border border-border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="data">Data de Publicação</label>
+                    <input type="date" id="data" name="data" class="border border-border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="escopo">Escopo de Pessoas</label>
+                    <select id="escopo" name="escopo" class="border border-border rounded-lg p-2">
+                        <option value="">Selecione o escopo</option>
+                        <option value="alunos">Alunos</option>
+                        <option value="professores">Professores</option>
+                        <option value="todos">Todos</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="conteudo">Conteúdo do Aviso</label>
+                    <textarea id="conteudo" name="conteudo" rows="4" class="border border-border rounded-lg p-2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Publicar Aviso</button>
+        </div> -->
         <ul id="avisosList">
             <li id="avisoOg"><div class="container-aviso">
             <!-- Conteúdo principal -->
@@ -26,6 +51,7 @@
         </ul>
         
     </main>
+
    <script src="script.js"></script>
 </body>
 </html>

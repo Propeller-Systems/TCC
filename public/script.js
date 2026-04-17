@@ -71,19 +71,48 @@ console.log(window.location.pathname.split('/'));
 // Função para abrir o modal de criação de aviso (exemplo simples)
 const btnAviso = document.getElementById('btnAviso')
 
-// function abrirModal(){
-//     let modal = document.innerHTML = "<div id='avisoModal' class='modal'>"
-//     console.log(modal);
-//     // modal.style.display = 'block';
-// }
-function copiarAviso(){
-    try {
-    const avisoList = document.getElementById('avisosList');
-    const avisoOg = document.getElementById('avisoOg');
-    let aviso = avisoOg.innerHTML;
-    console.log(aviso);
-    avisoList.innerHTML += `<li id="avisoCopia">${aviso}</li>`;
-    } catch (err){
-        console.error("Erro ao copiar aviso:", err);
-    }
+function abrirModal(){
+    let modal = document.createElement('dialog');
+    modal.id = 'avisoModal';
+    modal.className = 'container-cms';
+    console.log(modal);
+    modal.style.display = 'block';
+    modal.style.position = 'fixed';
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)';
+    modal.style.zIndex = '1000'; // Garante que o modal fique acima de outros elementos
+    
+    modal.innerHTML = `<h3>Criar Novo Aviso</h3>
+            <form id="formAviso" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                    <label for="titulo">Título do Aviso</label>
+                    <input type="text" id="titulo" name="titulo" class="border border-border input-group rounded-lg p-2">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="data">Data de Publicação</label>
+                    <input type="date" id="data" name="data" class="border border-border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="escopo">Escopo de Pessoas</label>
+                    <select id="escopo" name="escopo" class="border border-border rounded-lg p-2">
+                        <option value="">Selecione o escopo</option>
+                        <option value="alunos">Alunos</option>
+                        <option value="professores">Professores</option>
+                        <option value="todos">Todos</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="conteudo">Conteúdo do Aviso</label>
+                    <textarea id="conteudo" name="conteudo" rows="4" class="border border-border rounded-lg p-2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Publicar Aviso</button>`;
+    
+    console.log(modal);
+    document.body.style.filter = 'blur(1px)'; // Aplica blur ao fundo
+    document.body.style.overflow = 'hidden'; // Impede rolagem do fundo
+    
+    document.body.appendChild(modal);
+    modal.showModal(); // Abre o modal
+
 }
