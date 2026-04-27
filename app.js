@@ -42,22 +42,9 @@ app.use(express.json());
 // Middleware para parse de form-data (login)
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Permite que o React se comunique com este servidor (CORS)
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
-
 // Rotas da API - avisos
 app.use('/api/avisos', avisosRouter);
 
-// Servir o painel de administração (React compilado)
-app.use('/admin', express.static(path.join(__dirname, 'admin/dist')));
-app.get('/admin/*splat', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin/dist/index.html'));
-});
     
 // Pieto --------------------------------------------------------   
 // Configura o Express para servir arquivos estáticos da pasta 'public'

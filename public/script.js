@@ -69,50 +69,99 @@ console.log(window.location.pathname.split('/'));
 
 
 // Função para abrir o modal de criação de aviso (exemplo simples)
-const btnAviso = document.getElementById('btnAviso')
+const avisosList = document.getElementById('avisosList');
 
-function abrirModal(){
+// --- 1. FUNÇÃO PARA BUSCAR AVISOS (READ) ---
+async function carregarAvisos() {
+    try {
+        const response = await fetch('/api/avisos'); // Chama a rota GET do Express
+        const avisos = await response.json();
+        renderizarAvisos(avisos);
+    } catch (err) {
+        console.error("Erro ao carregar avisos:", err);
+    }
+}
+
+// --- 2. FUNÇÃO PARA EXIBIR NA TELA ---
+function renderizarAvisos(avisos) {
+    avisosList.innerHTML = ''; // Limpa a lista antes de mostrar
+    avisos.forEach(aviso => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div class="container-aviso">
+                <h3>${aviso.titulo}</h3>
+                <h6>${aviso.data} • Autor: ${aviso.autor || 'Anônimo'}</h6>
+                <p>${aviso.conteudo}</p>
+                <button onclick="deletarAviso(${aviso.id})" class="btn-delete">Excluir</button>
+            </div>
+        `;
+        avisosList.appendChild(li);
+    });
+}
+
+// --- 3. LOGICA DO MODAL E CRIAÇÃO (CREATE) ---
+function abrirModal() {
+    // Verificamos se já existe um modal para não duplicar
+    if (document.getElementById('avisoModal')) return;
+
     let modal = document.createElement('dialog');
     modal.id = 'avisoModal';
     modal.className = 'container-cms';
-    console.log(modal);
-    modal.style.display = 'block';
-    modal.style.position = 'fixed';
-    modal.style.top = '50%';
-    modal.style.left = '50%';
-    modal.style.transform = 'translate(-50%, -50%)';
-    modal.style.zIndex = '1000'; // Garante que o modal fique acima de outros elementos
     
-    modal.innerHTML = `<h3>Criar Novo Aviso</h3>
-            <form id="formAviso" class="flex flex-col gap-4">
-                <div class="flex flex-col gap-2">
-                    <label for="titulo">Título do Aviso</label>
-                    <input type="text" id="titulo" name="titulo" class="border border-border input-group rounded-lg p-2">
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label for="data">Data de Publicação</label>
-                    <input type="date" id="data" name="data" class="border border-border rounded-lg p-2">
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label for="escopo">Escopo de Pessoas</label>
-                    <select id="escopo" name="escopo" class="border border-border rounded-lg p-2">
-                        <option value="">Selecione o escopo</option>
-                        <option value="alunos">Alunos</option>
-                        <option value="professores">Professores</option>
-                        <option value="todos">Todos</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label for="conteudo">Conteúdo do Aviso</label>
-                    <textarea id="conteudo" name="conteudo" rows="4" class="border border-border rounded-lg p-2"></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Publicar Aviso</button>`;
-    
-    console.log(modal);
-    document.body.style.filter = 'blur(1px)'; // Aplica blur ao fundo
-    document.body.style.overflow = 'hidden'; // Impede rolagem do fundo
-    
-    document.body.appendChild(modal);
-    modal.showModal(); // Abre o modal
+    // Estilos básicos para o modal aparecer centralizado
+    Object.assign(modal.style, {
+        display: 'block', position: 'fixed', top: '50%', left: '50%',
+        transform: 'translate(-50%, -50%)', zIndex: '1000'
+    });
 
+    modal.innerHTML = `
+        <h3>Criar Novo Aviso</h3>
+        <form id="formAviso" class="flex flex-col gap-4">
+            <input type="text" id="titulo" placeholder="Título" required class="border p-2">
+            <textarea id="conteudo" placeholder="Conteúdo" required class="border p-2"></textarea>
+            <input type="text" id="autor" placeholder="Seu nome" class="border p-2">
+            <div class="flex gap-2">
+                <button type="submit" class="btn btn-success">Publicar</button>
+                <button type="button" onclick="fecharModal()" class="btn">Cancelar</button>
+            </div>
+        </form>`;
+
+    document.body.appendChild(modal);
+
+    // Evento de envio do formulário
+    document.getElementById('formAviso').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const novoAviso = {
+            titulo: document.getElementById('titulo').value,
+            conteudo: document.getElementById('conteudo').value,
+            autor: document.getElementById('autor').value
+        };
+
+        const response = await fetch('/api/avisos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(novoAviso)
+        });
+
+        if (response.ok) {
+            fecharModal();
+            carregarAvisos(); // Recarrega a lista automaticamente
+        }
+    });
 }
+
+function fecharModal() {
+    const modal = document.getElementById('avisoModal');
+    if (modal) modal.remove();
+}
+
+async function deletarAviso(id) {
+    if (confirm("Deseja mesmo excluir?")) {
+        await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
+        carregarAvisos();
+    }
+}
+
+// Inicializa a página buscando os dados
+carregarAvisos();

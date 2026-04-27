@@ -306,11 +306,14 @@ main p{
     padding: min(3em, 2%);
     width: 50%;
     height: 50%;
+    transition: 0.5ms;
 
-    p{
-       margin-left: -1em;
-       margin-top: -1em;
-    }
+
+}
+
+.container-cms p{
+    margin-top: -1em;
+    margin-left: -1em;
 }
 
 /* Responsividade */
