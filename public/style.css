@@ -37,15 +37,16 @@ body{
 
 .logo{
     position:absolute;
-    margin-bottom: 45rem;
-    width: 40rem;
+    right: 2em;
+    bottom: 1em;
+    width: 8rem;
     height:auto;
 }
 
 /* Login */
 .container-login {
   width: 100%;
-
+  position: relative;
   max-width: 420px;
   background: rgba(255, 255, 255, 0.95);
   padding: 40px;
