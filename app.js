@@ -9,29 +9,11 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const encoder = bodyParser.urlencoded();
+const bd = require('./bd'); // importa o módulo de conexão com o banco de dados MySQL (bd.js)
 
-// Importa o módulo de conexão com o banco de dados (MySQL)
-const mysql = require('mysql2');
 
 const app = express();
 const PORT = 3000;
-
-//configura a conexão com o banco de dados MySQL
-const conexao = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '123321',
-    database: 'gerenciamento_escolar'
-});
-
-//teste de conexao
-conexao.connect((err) => {
-    if (err) {
-        console.error('Erro ao conectar ao banco de dados:', err);
-        return;
-    }
-    console.log('Conexão com o banco de dados estabelecida.');
-});
 
 
 // Murilo --------------------------------------------------------
@@ -103,6 +85,21 @@ app.get('/', (req, res) => {
             dados: result,
             totalRegistros: result.length
         });
+    });
+});
+
+// crud do aviso
+app.post('/api/avisos', (req, res) => {
+    const { titulo, descricao } = req.body;
+
+    // Insere o novo aviso no banco de dados
+    conexao.query('INSERT INTO avisos (titulo, conteudo) VALUES (?, ?)', [titulo, conteudo], (err, result) => {
+        if (err) {
+            console.error('Erro ao inserir aviso:', err);
+            res.status(500).json({ erro: 'Erro ao inserir aviso' });
+            return;
+        }
+        res.status(201).json({ message: 'Aviso criado com sucesso', id: result.insertId });
     });
 });
 

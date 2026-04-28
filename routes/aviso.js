@@ -1,59 +1,31 @@
-// routes/avisos.js
-// Arquivo que define as rotas (endpoints) relacionadas aos "avisos".
-// Serve para o frontend (por exemplo, um app React) consumir as operações
-// básicas de CRUD: Create, Read, Update e Delete.
-
 const express = require('express'); // framework web (Express) usado para criar o servidor e rotas
-const fs = require('fs'); // módulo nativo do Node para leitura/escrita de arquivos
-const path = require('path'); // utilitários para manipular caminhos de arquivo de forma portável
-
 const router = express.Router(); // instancia um roteador modular do Express para agrupar endpoints
 
-// Caminho para o arquivo JSON que guarda os dados dos avisos.
-// Usamos um arquivo simples como banco de dados leve.
-const DB_PATH = path.join(__dirname, '../data/avisos.json');
-
-// Função auxiliar: lê o arquivo JSON e retorna os dados (array de avisos).
-// - Lê o conteúdo do arquivo usando leitura síncrona (mais simples aqui).
-// - Converte o JSON para um objeto JavaScript com JSON.parse.
-function lerAvisos(){
-    const conteudo = fs.readFileSync(DB_PATH, 'utf-8');
-    // 'conteudo' é a string lida do arquivo; JSON.parse transforma em objeto
-    return JSON.parse(conteudo);
-}
-
-// Função auxiliar: salva os dados de volta no arquivo JSON.
-// Recebe um array de avisos e sobrescreve o arquivo com o JSON formatado.
-function salvarDados(avisos){
-    fs.writeFileSync(DB_PATH, JSON.stringify(avisos, null, 2), 'utf-8');
-}
+const db = require('../bd'); // importa o módulo de conexão com o banco de dados MySQL (bd.js)
 
 // ─── READ: Buscar todos os avisos ───────────────────────────────────────────
-// GET /api/avisos
-// Retorna a lista completa de avisos presente no arquivo JSON.
-router.get('/', (req, res) =>{
-    try{
-        const avisos = lerAvisos(); // carrega todos os avisos do arquivo
-        res.json(avisos); // envia como JSON na resposta
-    } catch (err) {
-        // Em caso de erro de I/O ou parse, responde com 500
-        res.status(500).json({ erro: 'Erro ao ler avisos' });
-    }
-});
+router.get('/', (req, res) => {
+    const sql = `
+        SELECT 
+            a.idaviso,
+            a.titulo,
+            a.conteudo,
+            a.escopo,
+            a.\`date\`,
+            u.nome AS autor
+        FROM aviso a
+        JOIN usuario u ON a.idusuario = u.idusuario
+        ORDER BY a.idaviso DESC
+    `;
 
-// ─── READ: Buscar um aviso específico pelo ID ────────────────────────────────
-// GET /api/avisos/:id
-// Procura um aviso cujo campo 'id' corresponda ao parâmetro da URL.
-router.get('/:id', (req, res) => {
-    try {
-        const avisos = lerAvisos();
-        // parseInt converte o id da URL (string) para número
-        const aviso = avisos.find(a => a.id === parseInt(req.params.id));
-        if (!aviso) return res.status(404).json({ erro: 'Aviso não encontrado' });
-        res.json(aviso);
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro ao ler avisos' });
-    }
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ erro: 'Erro ao buscar avisos' });
+        }
+
+        res.json(result);
+    });
 });
 
 // ─── CREATE: Criar novo aviso ────────────────────────────────────────────────

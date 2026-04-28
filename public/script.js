@@ -1,7 +1,7 @@
 let toggleBtn;
 let sidebar;
 
-function toggleSidebar(){
+function toggleSidebar() {
     sidebar.classList.toggle("close");
     toggleBtn.classList.toggle("rotate");
 
@@ -11,7 +11,7 @@ function toggleSidebar(){
     });
 }
 
-function toggleSubmenu(button){
+function toggleSubmenu(button) {
     const subMenu = button.nextElementSibling;
 
     // Fechar outros submenus antes de abrir o atual (evita gaps no mobile)
@@ -27,7 +27,7 @@ function toggleSubmenu(button){
     subMenu.classList.toggle("show");
     button.classList.toggle("rotate");
 
-    if(sidebar.classList.contains("close")){
+    if (sidebar.classList.contains("close")) {
         sidebar.classList.toggle("close");
         toggleBtn.classList.toggle("rotate");
     }
@@ -36,26 +36,26 @@ function toggleSubmenu(button){
 fetch('sidebar.html')
     .then(response => response.text())
     .then(data => {
-    document.getElementById('sidebar-placeholder').innerHTML = data;
+        document.getElementById('sidebar-placeholder').innerHTML = data;
 
-    toggleBtn = document.getElementById("toggle-btn");
-    sidebar = document.getElementById("sidebar");
+        toggleBtn = document.getElementById("toggle-btn");
+        sidebar = document.getElementById("sidebar");
 
-    // Highlight a página atual
-    highlightCurrentPage();
-});
+        // Highlight a página atual
+        highlightCurrentPage();
+    });
 
-function highlightCurrentPage(){
+function highlightCurrentPage() {
     // Pega o nome do arquivo atual da URL
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    
+
     // Itera por todos os links do sidebar
     const links = sidebar.querySelectorAll('a');
     links.forEach(link => {
         const href = link.getAttribute('href');
-        
+
         // Compara o URL do link com a página atual
-        if(href === currentPage || (currentPage === '' && href === 'index.html')){
+        if (href === currentPage || (currentPage === '' && href === 'index.html')) {
             // Adiciona a classe active no elemento pai (li)
             link.parentElement.classList.add('active');
         } else {
@@ -101,67 +101,100 @@ function renderizarAvisos(avisos) {
 
 // --- 3. LOGICA DO MODAL E CRIAÇÃO (CREATE) ---
 function abrirModal() {
-    // Verificamos se já existe um modal para não duplicar
+
     if (document.getElementById('avisoModal')) return;
 
     let modal = document.createElement('dialog');
+
     modal.id = 'avisoModal';
     modal.className = 'container-cms';
-    
-    // Estilos básicos para o modal aparecer centralizado
+
     Object.assign(modal.style, {
-        display: 'block', position: 'fixed', top: '50%', left: '50%',
-        transform: 'translate(-50%, -50%)', zIndex: '1000'
+        display: 'block',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: '1000'
     });
 
     modal.innerHTML = `
         <h3>Criar Novo Aviso</h3>
+
         <form id="formAviso" class="flex flex-col gap-4">
-            <input type="text" id="titulo" placeholder="Título" required class="border p-2">
-            <textarea id="conteudo" placeholder="Conteúdo" required class="border p-2"></textarea>
-            <input type="text" id="autor" placeholder="Seu nome" class="border p-2">
+
+            <input
+                type="text"
+                id="titulo"
+                placeholder="Título"
+                required
+                class="border p-2">
+
+            <textarea
+                id="conteudo"
+                placeholder="Conteúdo"
+                required
+                class="border p-2">
+            </textarea>
+
+            <select id="escopo" class="border p-2">
+                <option value="1">Geral</option>
+                <option value="2">Professores</option>
+                <option value="3">Alunos</option>
+            </select>
+
             <div class="flex gap-2">
-                <button type="submit" class="btn btn-success">Publicar</button>
-                <button type="button" onclick="fecharModal()" class="btn">Cancelar</button>
+                <button type="submit" class="btn btn-success">
+                    Publicar
+                </button>
+
+                <button
+                    type="button"
+                    onclick="fecharModal()"
+                    class="btn">
+                    Cancelar
+                </button>
             </div>
-        </form>`;
-
+        </form>
+    `;
     document.body.appendChild(modal);
+    document
+        .getElementById('formAviso')
+        .addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const novoAviso = {
+                titulo: document.getElementById('titulo').value,
+                conteudo: document.getElementById('conteudo').value,
+                escopo: document.getElementById('escopo').value,
+                // temporário até existir login
+                idusuario: 1
+            };
+            const response = await fetch('/api/avisos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(novoAviso)
+            });
 
-    // Evento de envio do formulário
-    document.getElementById('formAviso').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const novoAviso = {
-            titulo: document.getElementById('titulo').value,
-            conteudo: document.getElementById('conteudo').value,
-            autor: document.getElementById('autor').value
-        };
-
-        const response = await fetch('/api/avisos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(novoAviso)
+            if (response.ok) {
+                fecharModal();
+                carregarAvisos();
+            }
         });
-
-        if (response.ok) {
-            fecharModal();
-            carregarAvisos(); // Recarrega a lista automaticamente
-        }
-    });
 }
 
 function fecharModal() {
     const modal = document.getElementById('avisoModal');
     if (modal) modal.remove();
 }
-
 async function deletarAviso(id) {
-    if (confirm("Deseja mesmo excluir?")) {
-        await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
+
+    if (confirm('Deseja mesmo excluir?')) {
+        await fetch(`/api/avisos/${id}`, {
+            method: 'DELETE'
+        });
         carregarAvisos();
     }
 }
-
-// Inicializa a página buscando os dados
 carregarAvisos();
