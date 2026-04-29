@@ -110,34 +110,38 @@ function abrirModal() {
     modal.className = 'container-cms';
 
     Object.assign(modal.style, {
-        display: 'block',
+        display: 'flex',
+        flexDirection: 'column',
         position: 'fixed',
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        zIndex: '1000'
+        zIndex: '1000',
+        height: 'auto'
     });
+    
 
     modal.innerHTML = `
         <h3>Criar Novo Aviso</h3>
 
         <form id="formAviso" class="flex flex-col gap-4">
-
+            <label class="form-label" for="titulo">Título:</label>
             <input
                 type="text"
                 id="titulo"
-                placeholder="Título"
+                placeholder="Adicione um título para seu evento/aviso/notícia"
                 required
-                class="border p-2">
+                class="border p-2 form-control">
 
+            <label class="form-label" for="conteudo">Conteúdo:</label>
             <textarea
                 id="conteudo"
-                placeholder="Conteúdo"
+                placeholder="Adicione o conteúdo do seu evento/aviso/notícia"
                 required
-                class="border p-2">
-            </textarea>
+                class="border p-2 form-control"></textarea>
 
-            <select id="escopo" class="border p-2">
+            <label class="form-label" for="escopo">Escopo:</label>
+            <select id="escopo" class="border p-2 form-control">
                 <option value="1">Geral</option>
                 <option value="2">Professores</option>
                 <option value="3">Alunos</option>
