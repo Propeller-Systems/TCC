@@ -88,21 +88,6 @@ app.get('/', (req, res) => {
     });
 });
 
-// crud do aviso
-app.post('/api/avisos', (req, res) => {
-    const { titulo, descricao } = req.body;
-
-    // Insere o novo aviso no banco de dados
-    conexao.query('INSERT INTO avisos (titulo, conteudo) VALUES (?, ?)', [titulo, conteudo], (err, result) => {
-        if (err) {
-            console.error('Erro ao inserir aviso:', err);
-            res.status(500).json({ erro: 'Erro ao inserir aviso' });
-            return;
-        }
-        res.status(201).json({ message: 'Aviso criado com sucesso', id: result.insertId });
-    });
-});
-
 // Inicia o servidor na porta especificada
 app.listen(PORT, () => {
     console.log('Servidor rodando em http://localhost:' + PORT);
