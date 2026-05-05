@@ -1,113 +1,116 @@
-const express = require('express'); // framework web (Express) usado para criar o servidor e rotas
+const express = require("express"); // framework web (Express) usado para criar o servidor e rotas
 const router = express.Router(); // instancia um roteador modular do Express para agrupar endpoints
 
-const db = require('../bd'); // importa o módulo de conexão com o banco de dados MySQL (bd.js)
+const db = require("../bd"); // importa o módulo de conexão com o banco de dados MySQL (bd.js)
 
 // ─── READ: Buscar todos os avisos ───────────────────────────────────────────
-router.get('/', (req, res) => {
-    const sql = `
-        SELECT 
-            a.idaviso,
-            a.titulo,
-            a.conteudo,
-            a.escopo,
-            a.\`date\`,
-            u.nome AS autor
-        FROM aviso a
-        JOIN usuario u ON a.idusuario = u.idusuario
-        ORDER BY a.idaviso DESC
+router.get("/:grupo", (req, res) => {
+
+  const grupo = req.params.grupo;
+
+  let sql = `
+    SELECT 
+      a.idaviso,
+      a.titulo,
+      a.conteudo,
+      a.escopo,
+      DATE_FORMAT(a.date, '%Y-%m-%d') AS data,
+      u.nome AS autor
+    FROM aviso a
+    JOIN usuario u 
+      ON a.idusuario = u.idusuario
+  `;
+
+  const params = [];
+
+  // ADMIN vê tudo
+  if (grupo !== "admin") {
+
+    sql += `
+      WHERE
+        a.escopo = ?
+        OR a.escopo = 'geral'
     `;
 
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ erro: 'Erro ao buscar avisos' });
-        }
+    params.push(grupo);
+  }
 
-        res.json(result);
-    });
+  sql += `
+    ORDER BY a.idaviso DESC
+  `;
+
+  db.query(sql, params, (err, result) => {
+
+    if (err) {
+      console.error(err);
+
+      return res.status(500).json({
+        erro: err.message
+      });
+    }
+
+    res.json(result);
+  });
 });
 
 // ─── CREATE: Criar novo aviso ────────────────────────────────────────────────
-// POST /api/avisos
-// Recebe os dados do novo aviso no corpo da requisição (req.body) e adiciona
-// um novo objeto ao array, gerando um ID incremental.
-router.post('/', (req,res) => {
-    try {
-        const avisos = lerAvisos(); // array atual de avisos
 
-        // Gera um novo ID: pega o maior ID existente e soma 1, ou usa 1 se vazio
-        const novoId = avisos.length > 0 ? Math.max(...avisos.map(a => a.id)) + 1 : 1;
+router.post("/", (req, res) => {
 
-        // Monta o novo aviso usando os campos enviados (com valores padrão)
-        const novoAviso = {
-            id: novoId,
-            titulo: req.body.titulo || 'Sem título',
-            conteudo: req.body.conteudo || '',
-            autor: req.body.autor,
-            // data no formato YYYY-MM-DD
-            data: new Date().toISOString().split('T')[0],
-            destaque: req.body.destaque || false
-        };
+  db.query(
+    `
+    INSERT INTO aviso
+    (titulo, conteudo, date, idusuario, escopo)
+    VALUES (?, ?, ?, ?, ?)
+    `,
+    [
+      req.body.titulo,
+      req.body.conteudo,
+      new Date(),
+      req.body.idusuario,
+      req.body.escopo
+    ],
+    (err, result) => {
 
-        // Adiciona o novo aviso ao array e salva no arquivo
-        avisos.push(novoAviso);
-        salvarDados(avisos);
+      if (err) {
+        console.error(err);
 
-        // 201 = recurso criado com sucesso
-        res.status(201).json(novoAviso);
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro ao criar aviso' });
+        return res.status(500).json({
+          erro: err.message
+        });
+      }
+
+      res.status(201).json({
+        message: "Aviso criado com sucesso",
+        id: result.insertId
+      });
     }
+  );
 });
 
 // ─── UPDATE: Editar um aviso existente ──────────────────────────────────────
 // PUT /api/avisos/:id
 // Atualiza os campos do aviso com base no corpo da requisição.
-router.put('/:id', (req, res) => {
-    try {
-        const avisos = lerAvisos();
-        const index = avisos.findIndex(a => a.id === parseInt(req.params.id));
-
-        if (index === -1) return res.status(404).json({ erro: 'Aviso não encontrado' });
-
-        // Substitui os campos antigos pelos novos enviados em req.body,
-        // preservando o ID original.
-        avisos[index] = {
-            ...avisos[index],    // mantém os campos que não foram alterados
-            ...req.body,         // sobrescreve com os campos enviados
-            id: avisos[index].id // garante que o ID não seja alterado
-        };
-
-        // Salva a lista atualizada no arquivo
-        salvarDados(avisos);
-        // Retorna o aviso atualizado
-        res.json(avisos[index]);
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro ao atualizar aviso' });
-    }
+router.put("/:id", (req, res) => {
+  // fazer a config no modal para ter a opcao de editar
 });
- 
+
 // ─── DELETE: Deletar um aviso ────────────────────────────────────────────────
 // DELETE /api/avisos/:id
 // Remove o aviso cujo ID foi passado na URL.
-router.delete('/:id', (req, res) => {
-    try {
-        const avisos = lerAvisos();
-        // Filtra a lista removendo o aviso com o ID informado
-        const novaLista = avisos.filter(a => a.id !== parseInt(req.params.id));
-
-        // Se o tamanho não mudou, nenhum aviso foi removido => não encontrado
-        if (novaLista.length === avisos.length) {
-            return res.status(404).json({ erro: 'Aviso não encontrado' });
-        }
-
-        // Salva a nova lista sem o aviso removido
-        salvarDados(novaLista);
-        res.json({ mensagem: 'Aviso deletado com sucesso' });
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro ao deletar aviso' });
-    }
+router.delete("/:id", (req, res) => {
+  console.log("ID do aviso a ser deletado:", req.params.id); // Log para verificar o ID recebido
+  db.query(
+    "DELETE FROM aviso WHERE idaviso = ?",
+    [req.params.id],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ erro: "Erro ao deletar aviso" });
+      }
+      res.json({ mensagem: "Aviso deletado com sucesso" });
+    },
+  );
 });
- 
+
 module.exports = router;

@@ -9,7 +9,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const encoder = bodyParser.urlencoded();
-const bd = require('./bd'); // importa o módulo de conexão com o banco de dados MySQL (bd.js)
+const conexao = require('./bd'); // importa o módulo de conexão com o banco de dados MySQL (bd.js)
 
 
 const app = express();
@@ -55,7 +55,7 @@ app.post('/', function(req, res) {
                
         if (result.length > 0) {
             console.log('Login bem-sucedido!');
-            res.redirect('/Gestao.html');
+            res.redirect('/home.html');
         } else {
             console.log('Usuário ou senha incorretos - nenhum registro encontrado');
             res.redirect('/');
