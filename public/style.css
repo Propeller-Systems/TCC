@@ -56,7 +56,7 @@ body{
   margin-right: auto;
 }
 
-.title {
+.login-title {
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 5px;
@@ -316,29 +316,37 @@ main p{
     margin-left: -1em;
 }
 
+/* dashboard */
+
 .dashboard {
-    display: flex;
+    display: grid;
     justify-content: center;
     align-items: center;
     padding: 1em;
     margin: 2rem 2rem;
-    width: 95%;
-    border: #1a1a1a 1px solid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     border-radius: 15px;
-    gap: 2rem
+    gap: 2em
 }
 
 .dashboard .dash{
-    display: block;
+    padding: 20px;
+    display: grid;
+    /* grid-template-rows: auto auto auto auto; */
     width: 250px;
     height: 250px;
-    border: #1a1a1a 1px solid;
     border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 
     span{
         color: #4d4d4d;
         
     }
+}
+
+.dash .label{
+    color: var(--primary-color);
+    font-size: 20px;
 }
 
 /* Responsividade */
@@ -480,6 +488,9 @@ p{
 ul{
     list-style: none;
 }
+
+/* Geral */
+
 /* Profile Styles */
 
 
