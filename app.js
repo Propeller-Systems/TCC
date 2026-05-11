@@ -91,9 +91,6 @@ app.get('/', (req, res) => {
 // Inicia o servidor na porta especificada
 app.listen(PORT, () => {
     console.log('Servidor rodando em http://localhost:' + PORT);
-    console.log('Site principal: http://localhost:' + PORT);
-    console.log('Painel CMS:    http://localhost:' + PORT + '/admin');
-    console.log('API de avisos:  http://localhost:' + PORT + '/api/avisos');
 });
 
 // para iniciar apenas use no terminal o comando "npm run dev" e acesse http://localhost:3000 no navegador.
