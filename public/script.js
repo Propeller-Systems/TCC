@@ -164,6 +164,8 @@ function abrirModal() {
         </form>
     `;
   document.body.appendChild(modal);
+  document.getElementById("main-content").style.filter = "blur(1px)"
+  document.getElementById("sidebar-placeholder").style.filter = "blur(1px)"
   document.getElementById("formAviso").addEventListener("submit", async (e) => {
     e.preventDefault();
     const novoAviso = {
@@ -190,6 +192,8 @@ function abrirModal() {
 
 function fecharModal() {
   const modal = document.getElementById("avisoModal");
+  document.getElementById("main-content").style.filter = "none"
+  document.getElementById("sidebar-placeholder").style.filter = "none"
   if (modal) modal.remove();
 }
 async function deletarAviso(id) {
