@@ -299,21 +299,21 @@ main p{
 }
 
 .container-cms{
-    border: 2px solid var(--secondary-color);
-    border-radius: 1em;
+    border: 0px;
+    border-radius: 15px;
     background-color: white;
     margin: 0 auto 2% auto;
     padding: min(3em, 2%);
     width: 50%;
     height: 50%;
-    transition: 0.5ms;
-
-
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    animation: animacaoOpenCms 0.5s ;
 }
 
 .container-cms p{
     margin-top: -1em;
     margin-left: -1em;
+    animation: animacaoOpenCms 0.5s ;
 }
 
 /* dashboard */
@@ -326,15 +326,15 @@ main p{
     padding: 1em;
     flex-wrap: wrap;
     border-radius: 15px;
-    gap: 2em
+    gap: 2em;
 }
 
 .dashboard .dash{
     padding: 20px;
     display: grid;
     /* grid-template-rows: auto auto auto auto; */
-    width: 225px;
-    height: 225px; 
+    width: 14rem;
+    height: 14rem; 
     border-radius: 15px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
@@ -367,6 +367,16 @@ main p{
         padding: 1rem;
         margin: 0 auto 20px auto;
     }
+
+    .dashboard .dash{
+    padding: 20px;
+    display: grid;
+    /* grid-template-rows: auto auto auto auto; */
+    width: 100%;
+    height: 14rem; 
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
     
     #sidebar{
         height: 60px;
@@ -463,6 +473,11 @@ main p{
             width: auto;
             justify-content: center;
         }
+
+        .profile{
+        position: absolute;
+        right: 0;
+}
     }
 }
 
@@ -491,10 +506,7 @@ ul{
     list-style: none;
 }
 
-/* Geral */
-
 /* Profile Styles */
-
 
 .picture-profile {
     width: 100px;
@@ -509,4 +521,24 @@ ul{
     font-size: 1.5em;
     font-weight: bold;
     margin-bottom: 0.5em;
+}
+
+.profile{
+    position: absolute;
+    bottom: 0;
+}
+
+/* animações */
+
+@keyframes animacaoOpenCms{
+    from {
+        opacity: 0;
+        width: 0%;
+        height: 0%;
+    }
+    to{
+        opacity: 1;
+        width: 50%;
+        height: 68%;
+    }
 }
