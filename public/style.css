@@ -316,6 +316,37 @@ main p{
     animation: animacaoOpenCms 0.5s ;
 }
 
+.container-doc{
+    border-radius: 1em;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    padding: min(1em, 15%);
+    width: 100%;
+    height: 100%;
+}
+
+/* Barra de pesquisa */
+
+.search {
+    width: 93%;
+    height: 30px;
+    border-radius: 20px 0 0 20px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+    border: none;
+}
+.search::placeholder{
+    content: "Busque por pistas";
+}
+
+.search + button{
+    position: relative;
+    background-color:blue;
+    border-radius: 0 20px 20px 0;
+    border: none;
+    right:20px;
+    top: -1px;
+    width: 25px;
+    height: 30px;
+}
 /* dashboard */
 
 .dashboard {
@@ -490,6 +521,64 @@ main p{
     right: 2%;
     top: 3%;
 }
+
+ /* Botão: Slider do documento */
+
+/* Oculta o checkbox padrão */
+.switch input {
+  display: none;
+}
+
+/* Container/Trilho do switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 40px;
+}
+
+/* Estilização base do trilho */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px; /* Deixa o trilho arredondado */
+  user-select: none;
+}
+
+.slider #doc-active{
+    position: absolute;
+    left: 18%;
+    top:20%;
+}
+
+.slider #atest-active{
+    position: absolute;
+    right: 20%;
+    top:20%;
+}
+/* A bolinha do interruptor */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 32px;
+  width: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  z-index: 0;
+  transition: 0.4s;
+  border-radius: 20px; /* Deixa a bolinha redonda */
+}
+
+/* Move a bolinha para a direita */
+.switch input:checked + .slider:before {
+  transform: translateX(98%);
+  content: "";
+}
+
 
 /* Tags */
 
