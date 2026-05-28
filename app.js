@@ -8,9 +8,11 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 const encoder = bodyParser.urlencoded();
 const conexao = require('./bd'); // importa o módulo de conexão com o banco de dados MySQL (bd.js)
 const login = require('./login')
+const auth = require('./middleware/auth'); // importa o middleware de autenticação
 
 const app = express();
 const PORT = 3000;
@@ -23,13 +25,37 @@ app.use(express.json());
 // Middleware para parse de form-data (login)
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(session({
+    secret: 'TUVH3lm9', // Chave secreta para assinar a sessão - foi gerada por um gerador de chaves online
+    resave: false,
+    saveUninitialized: false
+}));
 // Rotas da API - avisos
-app.use('/api/avisos', avisosRouter);
+app.use('/api/avisos', auth, avisosRouter);
 
 // Pieto --------------------------------------------------------   
 // Configura o Express para servir arquivos estáticos da pasta 'public'
 app.use('/', login); // Rota para o login
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/home.html', (req, res) => {
+
+
+    if (!req.session.usuario) {
+        return res.redirect('/index.html');
+    }
+    if (req.session.usuario.usuariocol !== 'admin') {
+        return res.send('Acesso negado'); // Redireciona para uma página de acesso dos funcionarios
+    }
+
+    res.sendFile(
+        path.join(__dirname, 'public', 'home.html')
+    );
+
+});
+
+app.use(express.static(path.join(__dirname, 'public'))); // Serve os arquivos estáticos do frontend (HTML, CSS, JS)
+
+
 
 // Arquivo estático no Express é qualquer arquivo que não precisa de processamento ou lógica do servidor para ser entregue ao cliente, como imagens, arquivos CSS, JavaScript, HTML, PDFs e outros.
 
