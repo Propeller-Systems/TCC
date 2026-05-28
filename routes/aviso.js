@@ -2,6 +2,7 @@ const express = require("express"); // framework web (Express) usado para criar 
 const router = express.Router(); // instancia um roteador modular do Express para agrupar endpoints
 
 const db = require("../bd"); // importa o módulo de conexão com o banco de dados MySQL (bd.js)
+const admin = require('../middleware/admin');
 
 // ─── READ: Buscar todos os avisos ───────────────────────────────────────────
 router.get("/:grupo", (req, res) => {
@@ -55,7 +56,7 @@ router.get("/:grupo", (req, res) => {
 
 // ─── CREATE: Criar novo aviso ────────────────────────────────────────────────
 
-router.post("/", (req, res) => {
+router.post("/", admin,(req, res) => {
 
   db.query(
     `
@@ -91,14 +92,14 @@ router.post("/", (req, res) => {
 // ─── UPDATE: Editar um aviso existente ──────────────────────────────────────
 // PUT /api/avisos/:id
 // Atualiza os campos do aviso com base no corpo da requisição.
-router.put("/:id", (req, res) => {
+router.put("/:id",admin , (req, res) => {
   // fazer a config no modal para ter a opcao de editar
 });
 
 // ─── DELETE: Deletar um aviso ────────────────────────────────────────────────
 // DELETE /api/avisos/:id
 // Remove o aviso cujo ID foi passado na URL.
-router.delete("/:id", (req, res) => {
+router.delete("/:id", admin, (req, res) => {
   console.log("ID do aviso a ser deletado:", req.params.id); // Log para verificar o ID recebido
   db.query(
     "DELETE FROM aviso WHERE idaviso = ?",
