@@ -6,9 +6,9 @@ const conexao = require('./bd'); // importa a conexão com o banco de dados MySQ
 
 
 router.post('/', function(req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
-
+    var idLogin = req.body.idLogin;
+    var senha = req.body.senha;
+    
 
     // para ver o que está sendo recebido do formulário de login, descomente os console.log abaixo. Eles mostram o valor e o comprimento dos campos username e password, o que pode ajudar a identificar problemas de formatação ou envio dos dados.
     // console.log('Tentativa de login:');
@@ -16,17 +16,33 @@ router.post('/', function(req, res) {
     // console.log('Senha recebida:', password, '(length:', password.length + ')');
 
     // Consulta o banco de dados com placeholders corretos
-    conexao.query('SELECT * FROM login WHERE idLogin = ? AND Senha = ?', [idLogin, Senha], function(err, result, fields){
+    conexao.query('SELECT * FROM login WHERE idLogin = ? AND Senha = ?', [idLogin, senha], function(err, result, fields){
         if (err) {
             console.error('Erro na query:', err);
             res.redirect('/');
             return;
         }
                
-        if (result.length > 0) {
-            console.log('Login bem-sucedido!');
-            res.redirect('/home.html');
-        } else {
+if (result.length > 0) {
+
+    console.log('Login bem-sucedido!');
+
+    const usuario = result[0];
+
+    req.session.usuario = {
+
+        id: usuario.idLogin,
+
+        usuario: usuario.idLogin,
+
+        usuariocol: usuario.usuariocol
+
+    };
+
+    res.redirect('home.html');
+
+}
+        else {
             console.log('Usuário ou senha incorretos - nenhum registro encontrado');
             res.redirect('/');
         }
@@ -34,7 +50,7 @@ router.post('/', function(req, res) {
 });
 
 // ROTA DE DEBUG - REMOVER DEPOIS
-    router.get('/', (req, res) => {
+    router.get('/debug-tableDB', (req, res) => {
     // coloque '/debug-tabela-login' na barra de endereços para ver o resultado da consulta e tire de comentarios o "Mostra os nomes das colunas" para ver os nomes das colunas da tabela
     conexao.query('SELECT * FROM login', (err, result, fields) => {
         if (err) {
