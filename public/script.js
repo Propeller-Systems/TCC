@@ -36,6 +36,8 @@ function toggleSubmenu(button) {
   }
 }
 
+const sidebarPlaceholder = document.getElementById("sidebar-placeholder");
+if (sidebarPlaceholder) {
 fetch("sidebar.html")
   .then((response) => response.text())
   .then((data) => {
@@ -47,7 +49,7 @@ fetch("sidebar.html")
     // Highlight a página atual
     highlightCurrentPage();
   });
-
+}
 function highlightCurrentPage() {
   // Pega o nome do arquivo atual da URL
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
@@ -204,4 +206,8 @@ async function deletarAviso(id) {
     carregarAvisos();
   }
 }
-carregarAvisos();
+if (avisosList) {
+
+    carregarAvisos();
+
+}
