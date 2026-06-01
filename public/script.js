@@ -147,8 +147,8 @@ function abrirModal() {
             <label class="form-label" for="escopo">Escopo:</label>
             <select id="escopo" class="border p-2 form-control">
                 <option value="geral">Geral</option>
-                <option value="funcionario">Professores</option>
-                <option value="aluno">Alunos</option>
+                <option value="funcionario">Funcionário</option>
+                <option value="aluno">Func. Específico</option>
             </select>
 
             <div class="flex gap-2">
@@ -174,8 +174,6 @@ function abrirModal() {
       titulo: document.getElementById("titulo").value,
       conteudo: document.getElementById("conteudo").value,
       escopo: document.getElementById("escopo").value,
-      // temporário até existir login
-      idusuario: 1,
     };
     const response = await fetch("/api/avisos", {
       method: "POST",
@@ -207,7 +205,5 @@ async function deletarAviso(id) {
   }
 }
 if (avisosList) {
-
-    carregarAvisos();
-
+  carregarAvisos();
 }
