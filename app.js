@@ -37,21 +37,21 @@ app.use('/api/avisos', auth, avisosRouter);
 // Configura o Express para servir arquivos estáticos da pasta 'public'
 app.use('/', login); // Rota para o login
 
-// app.get('/home.html', (req, res) => {
+app.get('/home.html', (req, res) => {
 
 
-//     if (!req.session.usuario) {
-//         return res.redirect('/index.html');
-//     }
-//     if (req.session.usuario.usuariocol !== 'admin') {
-//         return res.send('Acesso negado'); // Redireciona para uma página de acesso dos funcionarios
-//     }
+    if (!req.session.usuario) {
+        return res.redirect('/index.html');
+    }
+    if (req.session.usuario.usuariocol !== 'admin') {
+        return res.send('Acesso negado'); // Redireciona para uma página de acesso dos funcionarios
+    }
 
-//     res.sendFile(
-//         path.join(__dirname, 'public', 'home.html')
-//     );
+    res.sendFile(
+        path.join(__dirname, 'public', 'home.html')
+    );
 
-// });
+});
 
 app.use(express.static(path.join(__dirname, 'public'))); // Serve os arquivos estáticos do frontend (HTML, CSS, JS)
 

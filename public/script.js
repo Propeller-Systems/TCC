@@ -166,8 +166,9 @@ function abrirModal() {
         </form>
     `;
   document.body.appendChild(modal);
-  document.getElementById("main-content").style.filter = "blur(1px)"
-  document.getElementById("sidebar-placeholder").style.filter = "blur(1px)"
+  const mainContent = document.getElementById("main-content") || document.querySelector("main");
+  if (mainContent) mainContent.style.filter = "blur(1px)";
+  document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
   document.getElementById("formAviso").addEventListener("submit", async (e) => {
     e.preventDefault();
     const novoAviso = {
@@ -192,8 +193,9 @@ function abrirModal() {
 
 function fecharModal() {
   const modal = document.getElementById("avisoModal");
-  document.getElementById("main-content").style.filter = "none"
-  document.getElementById("sidebar-placeholder").style.filter = "none"
+  const mainContent = document.getElementById("main-content") || document.querySelector("main");
+  if (mainContent) mainContent.style.filter = "none";
+  document.getElementById("sidebar-placeholder").style.filter = "none";
   if (modal) modal.remove();
 }
 async function deletarAviso(id) {
@@ -207,3 +209,89 @@ async function deletarAviso(id) {
 if (avisosList) {
   carregarAvisos();
 }
+
+
+// Função para abrir o modal de foto
+function abrirModalFoto() {
+    if (document.getElementById("fotoModal")) return;
+  
+    let modalF = document.createElement("dialog");
+    modalF.id = "fotoModal";
+    modalF.className = "container-cms";
+    Object.assign(modalF.style, {
+      display: "flex",
+      flexDirection: "column",
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      zIndex: "1000",
+      height: "100%",
+    });
+
+    modalF.innerHTML = `
+                <button type="button" onclick="fecharFotoModal()" class="btn-close position-absolute top-0 end-0"></button>
+                <video autoplay="true" id="webcam"></video>
+                <form action="" method="POST">
+                
+                <button type="button" onclick="foto()" class="btn">Capturar Foto</button>
+                
+                <div class="image">
+                <img src="" alt="Foto Capturada" id="foto">
+                </div>
+                    <textarea name="image_base64" id="base64"></textarea>
+                    <button type="submit" class="btn">Enviar Imagem</button>
+                </form>
+            </div>`;
+    document.body.appendChild(modalF);
+    modalF.showModal();
+    const mainContent = document.getElementById("main-content") || document.querySelector("main");
+    if (mainContent) mainContent.style.filter = "blur(1px)";
+    document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
+
+    //função de abrir a webcam
+    let video = document.querySelector("#webcam");
+         
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({audio: false, video: {facingMode: 'user'}})
+        .then( function(stream) {
+            video.srcObject = stream;
+        })
+        .catch(function(error) {
+            alert("Não foi possível iniciar a webcam.");
+        });
+    }
+
+    function foto(){
+        let video = document.querySelector("#webcam");
+         
+        let canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        let ctx = canvas.getContext('2d');
+         
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+         
+        let dataURI = canvas.toDataURL('image/jpeg'); 
+        document.querySelector("#foto").src = dataURI;
+        document.querySelector("#base64").value = dataURI;
+    }
+}
+
+
+function fecharFotoModal() {
+  const modal = document.getElementById("fotoModal");
+  const video = document.querySelector("#webcam");
+  if (video && video.srcObject) {
+    video.srcObject.getTracks().forEach((track) => track.stop());
+    video.srcObject = null;
+  }
+  const mainContent = document.getElementById("main-content") || document.querySelector("main");
+  if (mainContent) mainContent.style.filter = "none";
+  document.getElementById("sidebar-placeholder").style.filter = "none";
+  if (modal) {
+    if (typeof modal.close === "function") modal.close();
+    modal.remove();
+  }
+}
+

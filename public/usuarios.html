@@ -11,7 +11,7 @@
 <body>
     <div id="sidebar-placeholder"></div>
 
-    <main>
+    <main id="main-content">
         <div class="container usuario">
             <h1>Adicione as credenciais necessarias</h1>
             <div>
@@ -30,11 +30,9 @@
 
             <!--Input foto-->
             <div>
-                <label class=>Foto:</label>
-                <input type="file" id="foto" required class="border p-2 form-control" accept="image/*">
-                <img id="preview">
+                <label>Foto:</label><br>
+                <button type="button" id="btnFoto" class="btn btn-dark btnFoto" onclick="abrirModalFoto()">+ Adicionar Foto</button>
             </div>
-
             <!--Input escopo-->
             <div>
                 <label class=>Escopo:</label>
@@ -43,8 +41,6 @@
                     <option value="admin">Gestor</option>
                 </select>
             </div>
-        </div>
-
         </div>
     </main>
 
