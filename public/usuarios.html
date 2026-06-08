@@ -1,52 +1,84 @@
 <!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Novo Funcionário</title>
     <link href="style.css" rel="stylesheet" />
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="sidebar-placeholder"></div>
 
     <main id="main-content">
-        <div class="container usuario">
-            <h1>Adicione as credenciais necessarias</h1>
-            <div>
-                <!--Input do nome-->
-                <label>Nome:</label>
-                <input type="text" id="nome-user" placeholder="Escreva o nome completo" required
-                    class="border p-2 form-control">
-            </div>
+      <form class="container usuario">
+        <div class="d-grid gap-2">
+          <h1 class="text-center">Adicione as credenciais necessarias</h1>
 
-            <!--Input do email-->
-            <div>
-                <label class=>E-mail:</label>
-                <input type="text" id="nome-email" placeholder="Escreva o E-mail" required
-                    class="border p-2 form-control">
-            </div>
+          <!--Input foto-->
+          <div>
+            <label>Foto:</label><br />
+            <button
+              type="button"
+              id="btnFoto"
+              class="btn btn-dark btnFoto w-100"
+              onclick="abrirModalFoto()"
+            >
+              + Adicionar Foto
+            </button>
+          </div>
 
-            <!--Input foto-->
-            <div>
-                <label>Foto:</label><br>
-                <button type="button" id="btnFoto" class="btn btn-dark btnFoto" onclick="abrirModalFoto()">+ Adicionar Foto</button>
-            </div>
-            <!--Input escopo-->
-            <div>
-                <label class=>Escopo:</label>
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option value="funcionario" selected>Funcionário</option>
-                    <option value="admin">Gestor</option>
-                </select>
-            </div>
+          <div>
+            <!--Input do nome-->
+            <label>Nome:</label>
+            <input
+              type="text"
+              id="nome-user"
+              placeholder="Escreva o nome completo"
+              required
+              class="border p-2 form-control"
+            />
+          </div>
+
+          <!--Input do email-->
+          <div>
+            <label>E-mail:</label>
+            <input
+              type="text"
+              id="nome-email"
+              placeholder="Escreva o E-mail"
+              required
+              class="border p-2 form-control"
+            />
+          </div>
+
+          <!--Input escopo-->
+          <div>
+            <label>Escopo:</label>
+            <select
+              class="form-select form-select-sm"
+              aria-label=".form-select-sm example"
+            >
+              <option value="funcionario" selected>Funcionário</option>
+              <option value="admin">Gestor</option>
+            </select>
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-success">Enviar</button>
+            <button type="reset" class="btn btn-danger">Cancelar</button>
+          </div>
         </div>
+      </form>
+
+      <form class="container usuario">
+        <h1 class="text-center">Veja e edite credenciais existentes</h1>
+        <!-- Fazer uma tabela que leia os usuarios existentes -->
+
+        <ul id="usuarios"></ul>
+      </form>
     </main>
 
-
-
     <script src="script.js" defer></script>
-</body>
-
+  </body>
 </html>

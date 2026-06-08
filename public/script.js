@@ -295,3 +295,7 @@ function fecharFotoModal() {
   }
 }
 
+// --- 2. FUNÇÃO PARA EXIBIR NA TELA USUARIOS ---
+// exemplo da função esta na linha 92 até 106 lá já está como estilizar o read
+
+
