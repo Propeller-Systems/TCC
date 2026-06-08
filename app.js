@@ -9,19 +9,19 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const encoder = bodyParser.urlencoded();
 const conexao = require('./bd'); // importa o módulo de conexão com o banco de dados MySQL (bd.js)
-const login = require('./login');
+const login = require('./login')
 const auth = require('./middleware/auth'); // importa o middleware de autenticação
 
 const app = express();
 const PORT = 3000;
 
+// Murilo --------------------------------------------------------
 // Importa o módulo de rotas para avisos
 const avisosRouter = require('./routes/aviso');
-
 // Permite que o servidor entenda JSON no corpo das requisições
 app.use(express.json());
-
 // Middleware para parse de form-data (login)
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -30,10 +30,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-
 // Rotas da API - avisos
 app.use('/api/avisos', auth, avisosRouter);
 
+// Pieto --------------------------------------------------------   
 // Configura o Express para servir arquivos estáticos da pasta 'public'
 app.use('/', login); // Rota para o login
 
@@ -54,6 +54,8 @@ app.get('/home.html', (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, 'public'))); // Serve os arquivos estáticos do frontend (HTML, CSS, JS)
+
+
 
 // Arquivo estático no Express é qualquer arquivo que não precisa de processamento ou lógica do servidor para ser entregue ao cliente, como imagens, arquivos CSS, JavaScript, HTML, PDFs e outros.
 

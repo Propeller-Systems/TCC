@@ -57,10 +57,6 @@ router.get("/:grupo", (req, res) => {
 // ─── CREATE: Criar novo aviso ────────────────────────────────────────────────
 
 router.post("/", admin,(req, res) => {
-  console.log('POST /api/avisos body:', req.body);
-  console.log('POST /api/avisos session.usuario:', req.session ? req.session.usuario : null);
-  // Usa o id do usuário armazenado na sessão em vez de confiar no cliente
-  const idusuario = req.session && req.session.usuario ? req.session.usuario.idusuario : null;
 
   db.query(
     `
@@ -72,7 +68,7 @@ router.post("/", admin,(req, res) => {
       req.body.titulo,
       req.body.conteudo,
       new Date(),
-      idusuario,
+      req.body.idusuario,
       req.body.escopo
     ],
     (err, result) => {
