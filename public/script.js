@@ -38,17 +38,17 @@ function toggleSubmenu(button) {
 
 const sidebarPlaceholder = document.getElementById("sidebar-placeholder");
 if (sidebarPlaceholder) {
-fetch("sidebar.html")
-  .then((response) => response.text())
-  .then((data) => {
-    document.getElementById("sidebar-placeholder").innerHTML = data;
+  fetch("sidebar.html")
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("sidebar-placeholder").innerHTML = data;
 
-    toggleBtn = document.getElementById("toggle-btn");
-    sidebar = document.getElementById("sidebar");
+      toggleBtn = document.getElementById("toggle-btn");
+      sidebar = document.getElementById("sidebar");
 
-    // Highlight a página atual
-    highlightCurrentPage();
-  });
+      // Highlight a página atual
+      highlightCurrentPage();
+    });
 }
 function highlightCurrentPage() {
   // Pega o nome do arquivo atual da URL
@@ -98,7 +98,11 @@ function renderizarAvisos(avisos) {
                 <h3>${aviso.titulo}</h3>
                 <h6>${aviso.data} • Autor: ${aviso.autor || "Anônimo"}</h6>
                 <p>${aviso.conteudo}</p>
-                <button onclick="deletarAviso(${aviso.idaviso})" class="btn-delete">Excluir</button>
+                <button onclick="deletarAviso(${aviso.idaviso})" class="btn btn-delete position-absolute top-0 end-0"><svg fill="#000000" xmlns="http://www.w3.org/2000/svg" 
+	 width="100px" height="1000px" viewBox="0 0 52 52" enable-background="new 0 0 52 52" xml:space="preserve">
+<path d="M20,44c0-3.3,2.7-6,6-6s6,2.7,6,6s-2.7,6-6,6S20,47.3,20,44z M20,26c0-3.3,2.7-6,6-6s6,2.7,6,6s-2.7,6-6,6
+	S20,29.3,20,26z M20,8c0-3.3,2.7-6,6-6s6,2.7,6,6s-2.7,6-6,6S20,11.3,20,8z"/>
+</svg></button>
             </div>
         `;
     avisosList.appendChild(li);
@@ -126,6 +130,7 @@ function abrirModal() {
   });
 
   modal.innerHTML = `
+  <button type="button" onclick="fecharModal()" class="btn btn-close position-absolute top-0 end-0"></button>
         <h3>Criar Novo Aviso</h3>
 
         <form id="formAviso" class="flex flex-col gap-4">
@@ -166,7 +171,8 @@ function abrirModal() {
         </form>
     `;
   document.body.appendChild(modal);
-  const mainContent = document.getElementById("main-content") || document.querySelector("main");
+  const mainContent =
+    document.getElementById("main-content") || document.querySelector("main");
   if (mainContent) mainContent.style.filter = "blur(1px)";
   document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
   document.getElementById("formAviso").addEventListener("submit", async (e) => {
@@ -187,13 +193,23 @@ function abrirModal() {
     if (response.ok) {
       fecharModal();
       carregarAvisos();
+    } else {
+      // Tenta extrair a mensagem de erro do servidor e mostrar para o usuário
+      let err;
+      try {
+        err = await response.json();
+      } catch (e) {
+        err = { error: "Erro desconhecido ao comunicar com o servidor" };
+      }
+      alert(err.error || err.erro || JSON.stringify(err));
     }
   });
 }
 
 function fecharModal() {
   const modal = document.getElementById("avisoModal");
-  const mainContent = document.getElementById("main-content") || document.querySelector("main");
+  const mainContent =
+    document.getElementById("main-content") || document.querySelector("main");
   if (mainContent) mainContent.style.filter = "none";
   document.getElementById("sidebar-placeholder").style.filter = "none";
   if (modal) modal.remove();
@@ -210,26 +226,25 @@ if (avisosList) {
   carregarAvisos();
 }
 
-
 // Função para abrir o modal de foto
 function abrirModalFoto() {
-    if (document.getElementById("fotoModal")) return;
-  
-    let modalF = document.createElement("dialog");
-    modalF.id = "fotoModal";
-    modalF.className = "container-cms";
-    Object.assign(modalF.style, {
-      display: "flex",
-      flexDirection: "column",
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: "1000",
-      height: "100%",
-    });
+  if (document.getElementById("fotoModal")) return;
 
-    modalF.innerHTML = `
+  let modalF = document.createElement("dialog");
+  modalF.id = "fotoModal";
+  modalF.className = "container-cms";
+  Object.assign(modalF.style, {
+    display: "flex",
+    flexDirection: "column",
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    zIndex: "1000",
+    height: "100%",
+  });
+
+  modalF.innerHTML = `
                 <button type="button" onclick="fecharFotoModal()" class="btn-close position-absolute top-0 end-0"></button>
                 <video autoplay="true" id="webcam"></video>
                 <form action="" method="POST">
@@ -243,41 +258,42 @@ function abrirModalFoto() {
                     <button type="submit" class="btn">Enviar Imagem</button>
                 </form>
             </div>`;
-    document.body.appendChild(modalF);
-    modalF.showModal();
-    const mainContent = document.getElementById("main-content") || document.querySelector("main");
-    if (mainContent) mainContent.style.filter = "blur(1px)";
-    document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
+  document.body.appendChild(modalF);
+  modalF.showModal();
+  const mainContent =
+    document.getElementById("main-content") || document.querySelector("main");
+  if (mainContent) mainContent.style.filter = "blur(1px)";
+  document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
 
-    //função de abrir a webcam
+  //função de abrir a webcam
+  let video = document.querySelector("#webcam");
+
+  if (navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices
+      .getUserMedia({ audio: false, video: { facingMode: "user" } })
+      .then(function (stream) {
+        video.srcObject = stream;
+      })
+      .catch(function (error) {
+        alert("Não foi possível iniciar a webcam.");
+      });
+  }
+
+  function foto() {
     let video = document.querySelector("#webcam");
-         
-    if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({audio: false, video: {facingMode: 'user'}})
-        .then( function(stream) {
-            video.srcObject = stream;
-        })
-        .catch(function(error) {
-            alert("Não foi possível iniciar a webcam.");
-        });
-    }
 
-    function foto(){
-        let video = document.querySelector("#webcam");
-         
-        let canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        let ctx = canvas.getContext('2d');
-         
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-         
-        let dataURI = canvas.toDataURL('image/jpeg'); 
-        document.querySelector("#foto").src = dataURI;
-        document.querySelector("#base64").value = dataURI;
-    }
+    let canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    let ctx = canvas.getContext("2d");
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    let dataURI = canvas.toDataURL("image/jpeg");
+    document.querySelector("#foto").src = dataURI;
+    document.querySelector("#base64").value = dataURI;
+  }
 }
-
 
 function fecharFotoModal() {
   const modal = document.getElementById("fotoModal");
@@ -286,7 +302,8 @@ function fecharFotoModal() {
     video.srcObject.getTracks().forEach((track) => track.stop());
     video.srcObject = null;
   }
-  const mainContent = document.getElementById("main-content") || document.querySelector("main");
+  const mainContent =
+    document.getElementById("main-content") || document.querySelector("main");
   if (mainContent) mainContent.style.filter = "none";
   document.getElementById("sidebar-placeholder").style.filter = "none";
   if (modal) {
@@ -294,4 +311,3 @@ function fecharFotoModal() {
     modal.remove();
   }
 }
-

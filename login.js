@@ -31,11 +31,10 @@ if (result.length > 0) {
 
     req.session.usuario = {
 
-        id: usuario.idLogin,
-
+        idusuario: usuario.idLogin,
         usuario: usuario.idLogin,
-
-        usuariocol: usuario.usuariocol
+        usuariocol: usuario.usuariocol,
+        nome: usuario.nome || null
 
     };
 
