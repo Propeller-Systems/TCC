@@ -10,14 +10,17 @@
 
    <div id="sidebar-placeholder"></div>
     <main id="main-content">
-        <div><h1> Avisos e Notícias </h1>
-            <p>Envie informações para alunos, professores e turmas</p>
-            <button type="button" id="btnAviso" class="btn btn-dark btnAviso" onclick="abrirModal()">+ Criar Notícia</button>
+        <div class="p-4">
+            <div><h1> Avisos e Notícias </h1>
+                <p>Envie informações para alunos, professores e turmas</p>
+                <button type="button" id="btnAviso" class="btn btn-dark btnAviso" onclick="abrirModal()">+ Criar Notícia</button>
+            </div>
+            
+            <hr>
+            
+            <ul id="avisosList">
+            </ul>
         </div>
-        
-        <ul id="avisosList">
-        </ul>
-        
     </main>
 
    <script src="script.js" defer></script>

@@ -98,11 +98,7 @@ function renderizarAvisos(avisos) {
                 <h3>${aviso.titulo}</h3>
                 <h6>${aviso.data} • Autor: ${aviso.autor || "Anônimo"}</h6>
                 <p>${aviso.conteudo}</p>
-                <button onclick="deletarAviso(${aviso.idaviso})" class="btn btn-delete position-absolute top-0 end-0"><svg fill="#000000" xmlns="http://www.w3.org/2000/svg" 
-	 width="100px" height="1000px" viewBox="0 0 52 52" enable-background="new 0 0 52 52" xml:space="preserve">
-<path d="M20,44c0-3.3,2.7-6,6-6s6,2.7,6,6s-2.7,6-6,6S20,47.3,20,44z M20,26c0-3.3,2.7-6,6-6s6,2.7,6,6s-2.7,6-6,6
-	S20,29.3,20,26z M20,8c0-3.3,2.7-6,6-6s6,2.7,6,6s-2.7,6-6,6S20,11.3,20,8z"/>
-</svg></button>
+                <button onclick="deletarAviso(${aviso.idaviso})" class="btn btn-danger"><img src="icons/options.png"></button>
             </div>
         `;
     avisosList.appendChild(li);

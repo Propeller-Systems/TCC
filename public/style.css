@@ -288,14 +288,20 @@ main p{
 }
 
 .container-aviso{
-    border: 2px solid var(--secondary-color);
     border-radius: 1em;
-    margin: 0 auto 2% auto;
     padding: min(3em, 2%);
-    width: 99%;
+    width: 100%;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+.container-aviso p{
+    padding: 0 0 0 0;
+}
 
-    margin-left: 0;
-    margin-top: 0;
+.container-aviso button{
+    position: absolute;
+    right: 3em;
+    top: 40%;
 }
 
 .container-cms{
@@ -581,7 +587,11 @@ main p{
   content: "";
 }
 
-
+.btnOptions{
+    position: absolute;
+    right: 0;
+    top: 0;
+}
 
 /* Tags */
 
@@ -601,6 +611,7 @@ input {
 
 ul{
     list-style: none;
+    padding-left: 0;
 }
 
 /* Profile Styles */
