@@ -1,28 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Avisos e notícias</title>
-    <link href="style.css" rel="stylesheet">
-</head>
-<body class="with-sidebar">
-
-   <div id="sidebar-placeholder"></div>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body class="with-sidebar">
+    <div id="sidebar-placeholder"></div>
     <main id="main-content">
-        <div class="p-4">
-            <div><h1> Avisos e Notícias </h1>
-                <p>Envie informações para alunos, professores e turmas</p>
-                <button type="button" id="btnAviso" class="btn btn-dark btnAviso" onclick="abrirModal()">+ Criar Notícia</button>
-            </div>
-            
-            <hr>
-            
-            <ul id="avisosList">
-            </ul>
+      <div class="p-4">
+        <div>
+          <h1>Avisos e Notícias</h1>
+          <p>Envie informações para alunos, professores e turmas</p>
+          <button
+            type="button"
+            id="btnAviso"
+            class="btn btn-dark"
+            onclick="abrirModal()"
+          >
+            + Criar Notícia
+          </button>
         </div>
+
+        <hr>
+
+        <ul id="avisosList"></ul>
+      </div>
     </main>
 
-   <script src="script.js" defer></script>
-</body>
+    <script src="script.js" defer></script>
+    <script src="modal.js" defer></script>
+    <!--Bootstrap-->
+    <script>
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        });
+    </script>
 </html>

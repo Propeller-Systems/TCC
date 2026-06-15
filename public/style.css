@@ -1,5 +1,6 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css");
 
+
 :root { 
     --primary-color: #1a1a1a;
     --secondary-color: #333333;
@@ -133,7 +134,7 @@ body{
     background-color: var(--primary-color);
     color: var(--text-color-sec);
     border-right: 1px solid var(--secondary-color);
-
+    z-index: 10;
     position: sticky;
     top: 0;
     align-self: start;
@@ -288,11 +289,14 @@ main p{
 }
 
 .container-aviso{
+    display: flex;
+    flex-direction: column;
     border-radius: 1em;
     padding: min(3em, 2%);
     width: 100%;
     margin: 0 auto 20px auto;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
 }
 .container-aviso p{
     padding: 0 0 0 0;
@@ -300,8 +304,8 @@ main p{
 
 .container-aviso button{
     position: absolute;
-    right: 3em;
-    top: 40%;
+    right: 1em;
+    top: 1em;
 }
 
 .container-cms{
@@ -522,12 +526,13 @@ main p{
 
 /* Botoes */
 
-.btnAviso{
+#btnAviso{
     display: block;
     margin-left: auto;
     position: fixed;
     right: 2%;
     top: 3%;
+    z-index: 9;
 }
 
  /* Botão: Slider do documento */
@@ -585,12 +590,6 @@ main p{
 .switch input:checked + .slider:before {
   transform: translateX(98%);
   content: "";
-}
-
-.btnOptions{
-    position: absolute;
-    right: 0;
-    top: 0;
 }
 
 /* Tags */
