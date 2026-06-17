@@ -75,4 +75,28 @@ console.log(window.location.pathname.split("/"));
 // --- 2. FUNÇÃO PARA EXIBIR NA TELA USUARIOS ---
 // exemplo da função esta na linha 92 até 106 lá já está como estilizar o read
 
+async function fetchUsuarios() {
+  const response = await fetch("/api/usuarios");
+  const usuarios = await response.json();
+
+  const tbody = document.querySelector("#tabela-usuarios");
+
+  tbody.innerHTML = ""; // Limpa a tabela antes de preencher
+
+  usuarios.forEach((usuario) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${usuario.idusuario}</td>
+      <td><img src="${usuario.foto}" alt="Foto" style="width: 50px; height: 50px;"></td>
+      <td>${usuario.nome}</td>
+      <td>${usuario.email}</td>
+      <td>${usuario.usuariocol}</td>
+      <td>${new Date(usuario.dataCriacao).toLocaleDateString("pt-BR")}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+fetchUsuarios();
+
 

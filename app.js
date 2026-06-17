@@ -59,6 +59,13 @@ app.use(express.static(path.join(__dirname, 'public'))); // Serve os arquivos es
 
 // Arquivo estático no Express é qualquer arquivo que não precisa de processamento ou lógica do servidor para ser entregue ao cliente, como imagens, arquivos CSS, JavaScript, HTML, PDFs e outros.
 
+const usuarioRouter = require('./routes/usuario');
+app.use('/api/usuarios', auth, usuarioRouter); // Rota para o CRUD de usuários, protegida por autenticação
+
+
+
+
+
 // Rota para a página inicial (GET)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
