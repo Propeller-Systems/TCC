@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model aviso {
   idaviso   Int           @id @default(autoincrement())
   titulo    String        @db.VarChar(80)
@@ -20,15 +19,6 @@ model aviso {
   @@index([idusuario], map: "idusuario")
 }
 
-model login {
-  idLogin    Int              @id @unique(map: "idLogin_UNIQUE")
-  Nome       String           @db.VarChar(45)
-  Senha      String           @db.VarChar(45)
-  usuariocol login_usuariocol
-
-  @@index([usuariocol], map: "login_fk_idx")
-}
-
 model usuario {
   idusuario   Int                @id @unique(map: "idusuario_UNIQUE")
   nome        String             @db.VarChar(45)
@@ -36,12 +26,8 @@ model usuario {
   dataCriacao DateTime?          @default(now()) @db.DateTime(0)
   foto        String             @db.VarChar(45)
   usuariocol  usuario_usuariocol
+  senha       String             @db.VarChar(45)
   aviso       aviso[]
-}
-
-enum login_usuariocol {
-  admin
-  funcionario
 }
 
 enum aviso_escopo {

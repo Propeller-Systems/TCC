@@ -2,12 +2,10 @@
 // Função para abrir o modal de criação de aviso (exemplo simples)
 const avisosList = document.getElementById("avisosList");
 
-const grupo = "admin"; // ou "funcionario" ou "geral", dependendo do grupo do usuário logado. Por enquanto é fixo, mas depois deve ser dinâmico com base no login do usuário.(so para teste, depois tem que ser dinamico com base no login do usuario)
-
 // --- 1. FUNÇÃO PARA BUSCAR AVISOS (READ) ---
 async function carregarAvisos() {
   try {
-    const response = await fetch(`/api/avisos/${grupo}`); // Chama a rota GET do Express
+    const response = await fetch(`/api/avisos`); // Chama a rota GET do Express
     const avisos = await response.json();
     renderizarAvisos(avisos);
   } catch (err) {
@@ -27,7 +25,7 @@ function renderizarAvisos(avisos) {
               </button>
               <button class="btn"><img src="icons/options.png"></button>
                   <h3>${aviso.titulo}</h3>
-                  <h6>${aviso.data} • Autor: ${aviso.autor || "Anônimo"}</h6>
+                  <h6>${aviso.date? new Date(aviso.date).toLocaleDateString() : 'sem data'} • Autor: ${aviso.usuario?.nome || "Anônimo"}</h6>
                   <p>${aviso.conteudo}</p>
             </div>
         `;
@@ -149,86 +147,185 @@ if (avisosList) {
 }
 
 
+let fotoBlob = null;
+
 // Função para abrir o modal de foto
 function abrirModalFoto() {
     if (document.getElementById("fotoModal")) return;
-  
+
     let modalF = document.createElement("dialog");
     modalF.id = "fotoModal";
     modalF.className = "container-cms";
+
     Object.assign(modalF.style, {
-      display: "flex",
-      flexDirection: "column",
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      zIndex: "1000",
-      height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        zIndex: "1000",
+        height: "100%"
     });
 
     modalF.innerHTML = `
-                <button type="button" onclick="fecharFotoModal()" class="btn-close position-absolute top-0 end-0"></button>
-                <video autoplay="true" id="webcam"></video>
-                <form action="" method="POST">
-                
-                <button type="button" onclick="foto()" class="btn">Capturar Foto</button>
-                
-                <div class="image">
-                <img src="" alt="Foto Capturada" id="foto">
-                </div>
-                    <textarea name="image_base64" id="base64"></textarea>
-                    <button type="submit" class="btn">Enviar Imagem</button>
-                </form>
-            </div>`;
+        <button
+            type="button"
+            onclick="fecharFotoModal()"
+            class="btn-close position-absolute top-0 end-0">
+        </button>
+
+        <video autoplay playsinline id="webcam"></video>
+
+        <div class="mt-2">
+            <button
+                type="button"
+                onclick="capturarFoto()"
+                class="btn">
+                Capturar Foto
+            </button>
+
+            <button
+                type="button"
+                onclick="enviarFoto()"
+                class="btn">
+                Enviar Imagem
+            </button>
+        </div>
+
+        <div class="image mt-3">
+            <img
+                src=""
+                alt="Foto Capturada"
+                id="foto"
+                style="max-width:100%;">
+        </div>
+    `;
+
     document.body.appendChild(modalF);
     modalF.showModal();
-    const mainContent = document.getElementById("main-content") || document.querySelector("main");
-    if (mainContent) mainContent.style.filter = "blur(1px)";
-    document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
 
-    //função de abrir a webcam
-    let video = document.querySelector("#webcam");
-         
-    if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({audio: false, video: {facingMode: 'user'}})
-        .then( function(stream) {
-            video.srcObject = stream;
-        })
-        .catch(function(error) {
-            alert("Não foi possível iniciar a webcam.");
-        });
+    const mainContent =
+        document.getElementById("main-content") ||
+        document.querySelector("main");
+
+    if (mainContent) {
+        mainContent.style.filter = "blur(1px)";
     }
 
-    function foto(){
-        let video = document.querySelector("#webcam");
-         
-        let canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        let ctx = canvas.getContext('2d');
-         
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-         
-        let dataURI = canvas.toDataURL('image/jpeg'); 
-        document.querySelector("#foto").src = dataURI;
-        document.querySelector("#base64").value = dataURI;
+    document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
+
+    const video = document.querySelector("#webcam");
+
+    navigator.mediaDevices
+        .getUserMedia({
+            audio: false,
+            video: {
+                facingMode: "user"
+            }
+        })
+        .then((stream) => {
+            video.srcObject = stream;
+        })
+        .catch(() => {
+            alert("Não foi possível iniciar a webcam.");
+        });
+}
+
+function capturarFoto() {
+    const video = document.querySelector("#webcam");
+
+    if (!video.videoWidth) {
+        alert("A câmera ainda não está pronta.");
+        return;
+    }
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // Apenas preview
+    document.querySelector("#foto").src =
+        canvas.toDataURL("image/jpeg");
+
+    // JPG real para upload
+    canvas.toBlob(
+        (blob) => {
+            fotoBlob = blob;
+        },
+        "image/jpeg",
+        0.9
+    );
+}
+
+async function enviarFoto() {
+    if (!fotoBlob) {
+        alert("Capture uma foto primeiro.");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append(
+        "foto",
+        fotoBlob,
+        `foto-${Date.now()}.jpg`
+    );
+
+    try {
+        const response = await fetch("/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+        alert("Foto enviada com sucesso!");
+    } catch (erro) {
+        console.error(erro);
+        alert("Erro ao enviar foto.");
     }
 }
 
-
 function fecharFotoModal() {
-  const modal = document.getElementById("fotoModal");
-  const video = document.querySelector("#webcam");
-  if (video && video.srcObject) {
-    video.srcObject.getTracks().forEach((track) => track.stop());
-    video.srcObject = null;
-  }
-  const mainContent = document.getElementById("main-content") || document.querySelector("main");
-  if (mainContent) mainContent.style.filter = "none";
-  document.getElementById("sidebar-placeholder").style.filter = "none";
-  if (modal) {
-    if (typeof modal.close === "function") modal.close();
-    modal.remove();
-  }
+    const modal = document.getElementById("fotoModal");
+    const video = document.querySelector("#webcam");
+
+    if (video && video.srcObject) {
+        video.srcObject
+            .getTracks()
+            .forEach(track => track.stop());
+
+        video.srcObject = null;
+    }
+
+    const mainContent =
+        document.getElementById("main-content") ||
+        document.querySelector("main");
+
+    if (mainContent) {
+        mainContent.style.filter = "none";
+    }
+
+    document.getElementById("sidebar-placeholder").style.filter = "none";
+
+    fotoBlob = null;
+
+    if (modal) {
+        modal.close();
+        modal.remove();
+    }
 }

@@ -73,7 +73,6 @@ function highlightCurrentPage() {
 console.log(window.location.pathname.split("/"));
 
 // --- 2. FUNÇÃO PARA EXIBIR NA TELA USUARIOS ---
-// exemplo da função esta na linha 92 até 106 lá já está como estilizar o read
 
 async function fetchUsuarios() {
   const response = await fetch("/api/usuarios");
@@ -99,4 +98,23 @@ async function fetchUsuarios() {
 
 fetchUsuarios();
 
+// total de usuarios
+async function carregarTotalUsuarios() {
+  try {
+    const res = await fetch("/totalUsuarios");
 
+    console.log("STATUS:", res.status);
+
+    const text = await res.text();
+    console.log("RESPOSTA:", text);
+
+    const data = JSON.parse(text);
+
+    document.querySelector("#totalUsuarios").textContent = data.total;
+
+  } catch (err) {
+    console.error("ERRO:", err);
+  }
+}
+
+carregarTotalUsuarios();

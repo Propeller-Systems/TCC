@@ -1,9 +1,4 @@
 function auth(req, res, next) {
-    console.log(req.session);
-        console.log(req.session?.usuario);
-                console.log(req.session?req.session.usuario:null);
-
-
 
     if (req.session && req.session.usuario) {
         // O usuário está autenticado, continue para a próxima função de middleware ou rota

@@ -9,13 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const login_usuariocol = {
-  admin: 'admin',
-  funcionario: 'funcionario'
-} as const
-
-export type login_usuariocol = (typeof login_usuariocol)[keyof typeof login_usuariocol]
-
 
 export const aviso_escopo = {
   funcionario: 'funcionario',

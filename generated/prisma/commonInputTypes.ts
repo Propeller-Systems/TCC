@@ -121,23 +121,6 @@ export type Enumaviso_escopoNullableWithAggregatesFilter<$PrismaModel = never> =
   _max?: Prisma.NestedEnumaviso_escopoNullableFilter<$PrismaModel>
 }
 
-export type Enumlogin_usuariocolFilter<$PrismaModel = never> = {
-  equals?: $Enums.login_usuariocol | Prisma.Enumlogin_usuariocolFieldRefInput<$PrismaModel>
-  in?: $Enums.login_usuariocol[]
-  notIn?: $Enums.login_usuariocol[]
-  not?: Prisma.NestedEnumlogin_usuariocolFilter<$PrismaModel> | $Enums.login_usuariocol
-}
-
-export type Enumlogin_usuariocolWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.login_usuariocol | Prisma.Enumlogin_usuariocolFieldRefInput<$PrismaModel>
-  in?: $Enums.login_usuariocol[]
-  notIn?: $Enums.login_usuariocol[]
-  not?: Prisma.NestedEnumlogin_usuariocolWithAggregatesFilter<$PrismaModel> | $Enums.login_usuariocol
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumlogin_usuariocolFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumlogin_usuariocolFilter<$PrismaModel>
-}
-
 export type DateTimeNullableFilter<$PrismaModel = never> = {
   equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null
   in?: Date[] | string[] | null
@@ -302,23 +285,6 @@ export type NestedIntNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
-}
-
-export type NestedEnumlogin_usuariocolFilter<$PrismaModel = never> = {
-  equals?: $Enums.login_usuariocol | Prisma.Enumlogin_usuariocolFieldRefInput<$PrismaModel>
-  in?: $Enums.login_usuariocol[]
-  notIn?: $Enums.login_usuariocol[]
-  not?: Prisma.NestedEnumlogin_usuariocolFilter<$PrismaModel> | $Enums.login_usuariocol
-}
-
-export type NestedEnumlogin_usuariocolWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.login_usuariocol | Prisma.Enumlogin_usuariocolFieldRefInput<$PrismaModel>
-  in?: $Enums.login_usuariocol[]
-  notIn?: $Enums.login_usuariocol[]
-  not?: Prisma.NestedEnumlogin_usuariocolWithAggregatesFilter<$PrismaModel> | $Enums.login_usuariocol
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumlogin_usuariocolFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumlogin_usuariocolFilter<$PrismaModel>
 }
 
 export type NestedDateTimeNullableFilter<$PrismaModel = never> = {

@@ -22,11 +22,7 @@ export * from './enums.ts';
  * 
  */
 export type aviso = Prisma.avisoModel
-/**
- * Model login
- * 
- */
-export type login = Prisma.loginModel
+
 /**
  * Model usuario
  * 
