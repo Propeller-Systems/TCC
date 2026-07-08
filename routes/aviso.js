@@ -14,7 +14,6 @@ router.get("/", async (req, res) => {
         idaviso: 'desc'
       }
     });
-    console.log(avisos);
     res.json(avisos);
   } catch (error) {
     console.error(error);

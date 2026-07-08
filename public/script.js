@@ -102,12 +102,8 @@ fetchUsuarios();
 async function carregarTotalUsuarios() {
   try {
     const res = await fetch("/totalUsuarios");
-
-    console.log("STATUS:", res.status);
-
     const text = await res.text();
     console.log("RESPOSTA:", text);
-
     const data = JSON.parse(text);
 
     document.querySelector("#totalUsuarios").textContent = data.total;
