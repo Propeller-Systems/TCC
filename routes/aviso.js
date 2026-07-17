@@ -1,115 +1,71 @@
-// routes/avisos.js
-// Aqui ficam todas as "rotas" (endereços) que o React vai usar
-// para buscar, criar, editar e deletar avisos.
-// CRUD = Create (criar), Read (ler), Update (atualizar), Delete (deletar)
-
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
-
-const router = express.Router();
-
-// Caminho para o arquivo JSON que guarda os dados
-const DB_PATH = path.join(__dirname, '../data/avisos.json');
-
-// Função auxiliar: lê o arquivo JSON e retorna os dados
-function lerAvisos(){
-    const conteudo = fs.readFileSync(DB_PATH, 'utf-8');
-    return JSON.parse('conteudo');
-}
-
-// Função auxiliar: salva os dados de volta no arquivo JSON
-function salvarDados(avisos){
-    fs.writeFileSync(DB_PATH, JSON.stringify(avisos, null, 2), 'utf-8');
-}
+const express = require("express"); // framework web (Express) usado para criar o servidor e rotas
+const router = express.Router(); // instancia um roteador modular do Express para agrupar endpoints
+const prisma = require("../prismaClient");
+const admin = require('../middleware/admin');
 
 // ─── READ: Buscar todos os avisos ───────────────────────────────────────────
-// Quando o React faz GET /api/avisos, ele recebe a lista completa
-router.get('/', (req, res) =>{
-    try{
-        const avisos = lerAvisos();
-        res.json(avisos);
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro em ler avisos'});
-    }
-});
-
-// ─── READ: Buscar um aviso específico pelo ID ────────────────────────────────
-// Quando o React faz GET /api/avisos/:id, ele recebe o aviso com aquele ID
-router.get('/:id', (req, res) => {
-    try {
-        const avisos = lerAvisos();
-        const aviso = avisos.find(a => a.id === parseInt(req.params.id))
-        if (!aviso) return res.status(404).json({ erro: 'Aviso não encontrado' });
-        res.json(aviso);
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro em ler avisos'});
-    }
+router.get("/", async (req, res) => {
+  try {
+    const avisos = await prisma.aviso.findMany({
+      include: {
+        usuario: true
+      },
+      orderBy: {
+        idaviso: 'desc'
+      }
+    });
+    res.json(avisos);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao buscar avisos' });
+  }
 });
 
 // ─── CREATE: Criar novo aviso ────────────────────────────────────────────────
-// O React envia os dados do novo aviso no corpo da requisição
-router.post('/', (req,res) => {
-    try {
-        const aviso = lerAvisos();
-
-        // Gera um ID novo (pega o maior ID existente e soma 1)
-        const novoId =aviso.length >0 ? Math.max(... avisos.map(a => a.id)) + 1 : 1;
-
-        const novoAviso = {
-            id: novoId,
-            titulo: req.body.titulo || 'Sem título',
-            conteudo: req.body.conteudo || '',
-            autor: req.body.autor,
-            data: new Date().toISOString().split('T')[0], // Data atual no formato YYYY-MM-DD
-            destaque: req.body.destaque || false
-        };
-        aviso.push(novoAviso); // o push adiciona o novo aviso no array
-        salvarDados(avisos); // salva o array atualizado no arquivo JSON
-
-        res.status(201).json(novoAviso); // Retorna o aviso criado / 201 = "aviso criado com sucesso"
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro em criar aviso'});
-    }
-     
+router.post("/", admin, async (req, res) => {
+  try{
+    const { titulo, conteudo, escopo, idusuario } = req.body;
+    
+    const novoAviso =  await prisma.aviso.create({
+      data: {
+        titulo,
+        conteudo,
+        date: new Date(),
+        escopo,
+        idusuario: idusuario || req.session.usuario.idusuario // Usa o ID do usuário logado se não for fornecido no corpo da requisição
+      }
+    });
+    
+    res.status(201).json(novoAviso);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao criar aviso' });
+  }
 });
+
+
 // ─── UPDATE: Editar um aviso existente ──────────────────────────────────────
-// O React envia os dados atualizados no corpo da requisição
-router.put('/:id', (req, res) => {
-    try {
-        const avisos = lerAvisos();
-        const index = avisos.findIndex(a => a.id === parseInt(req.params.id));
-        
-        if (index === -1) return res.status(404).json({ erro: 'Aviso não encontrado' });
-                // Atualiza só os campos que vieram na requisição
-        avisos[indice] = {
-            ...avisos[indice],           // mantém os campos antigos
-            ...req.body,                 // sobrescreve com os novos
-            id: avisos[indice].id        // garante que o ID não muda
-        };
-        
-        salvarAvisos(avisos);
-        res.json(avisos[indice]);
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro ao atualizar aviso' });
-    }
+// PUT /api/avisos/:id
+// Atualiza os campos do aviso com base no corpo da requisição.
+router.put("/:id",admin , (req, res) => {
+  // fazer a config no modal para ter a opcao de editar
 });
- 
+
 // ─── DELETE: Deletar um aviso ────────────────────────────────────────────────
-router.delete('/:id', (req, res) => {
-    try {
-        const avisos = lerAvisos();
-        const novaLista = avisos.filter(a => a.id !== parseInt(req.params.id));
-        
-        if (novaLista.length === avisos.length) {
-            return res.status(404).json({ erro: 'Aviso não encontrado' });
-        }
-        
-        salvarAvisos(novaLista);
-        res.json({ mensagem: 'Aviso deletado com sucesso' });
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro ao deletar aviso' });
-    }
+// DELETE /api/avisos/:id
+router.delete("/:id", admin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    await prisma.aviso.delete({
+      where: {
+        idaviso: parseInt(id)
+      }
+    });
+    res.status(200).json({ message: 'Aviso deletado com sucesso' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao deletar aviso' });
+  }
 });
- 
+
 module.exports = router;

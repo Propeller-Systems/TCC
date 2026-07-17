@@ -8,123 +8,130 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 const encoder = bodyParser.urlencoded();
-
-// Importa o módulo de conexão com o banco de dados (MySQL)
-const mysql = require('mysql2');
+const prisma = require("./prismaClient");
+const login = require('./login')
+const auth = require('./middleware/auth'); // importa o middleware de autenticação
+const router = express.Router();
 
 const app = express();
 const PORT = 3000;
 
-//configura a conexão com o banco de dados MySQL
-const conexao = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '123321',
-    database: 'gerenciamento_escolar'
-});
-
-//teste de conexao
-conexao.connect((err) => {
-    if (err) {
-        console.error('Erro ao conectar ao banco de dados:', err);
-        return;
+// multer para lidar com uploads de arquivos (imagens)
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "public/uploads/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, `foto-${Date.now()}.jpg`);
     }
-    console.log('Conexão com o banco de dados estabelecida.');
+});
+const upload = multer({ storage: storage }); // Configura o destino dos arquivos enviados
+
+app.post('/upload', upload.single('foto'), async (req, res) => {
+    try {
+
+        if (!req.session?.usuario?.idusuario) {
+            return res.status(401).json({
+                sucesso: false,
+                mensagem: "Usuário não logado"
+            });
+        }
+
+        const nomeArquivo = req.file.filename;
+
+        await prisma.usuario.update({
+            where: {
+                idusuario: req.session.usuario.idusuario
+            },
+            data: {
+                foto: nomeArquivo
+            }
+        });
+
+        return res.json({
+            sucesso: true,
+            mensagem: "Foto salva com sucesso!"
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            sucesso: false,
+            mensagem: "Erro ao salvar foto"
+        });
+    }
 });
 
+// total de usuarios
+router.get("/totalUsuarios", async (req, res) => {
+  try {
+    const total = await prisma.usuario.count();
+
+    res.json({ total });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao contar usuários" });
+  }
+});
+app.use(router);
 
 // Murilo --------------------------------------------------------
 // Importa o módulo de rotas para avisos
 const avisosRouter = require('./routes/aviso');
-// Permite que o servidor entenda JSON no corpo das requisições
 app.use(express.json());
 // Middleware para parse de form-data (login)
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Permite que o React se comunique com este servidor (CORS)
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
-
+app.use(session({
+    secret: 'TUVH3lm9', // Chave secreta para assinar a sessão - foi gerada por um gerador de chaves online
+    resave: false,
+    saveUninitialized: false
+}));
 // Rotas da API - avisos
-app.use('/api/avisos', avisosRouter);
+app.use('/api/avisos', auth, avisosRouter);
 
-// Servir o painel de administração (React compilado)
-app.use('/admin', express.static(path.join(__dirname, 'admin/dist')));
-app.get('/admin/*splat', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin/dist/index.html'));
-});
-    
 // Pieto --------------------------------------------------------   
 // Configura o Express para servir arquivos estáticos da pasta 'public'
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/', login); // Rota para o login
+
+app.get('/home.html', (req, res) => {
+
+
+    if (!req.session.usuario) {
+        return res.redirect('/index.html');
+    }
+    if (req.session.usuario.usuariocol !== 'admin') {
+        return res.send('Acesso negado'); // Redireciona para uma página de acesso dos funcionarios
+    }
+
+    res.sendFile(
+        path.join(__dirname, 'public', 'home.html')
+    );
+
+});
+
+app.use(express.static(path.join(__dirname, 'public'))); // Serve os arquivos estáticos do frontend (HTML, CSS, JS)
+
+
 
 // Arquivo estático no Express é qualquer arquivo que não precisa de processamento ou lógica do servidor para ser entregue ao cliente, como imagens, arquivos CSS, JavaScript, HTML, PDFs e outros.
 
-// Rota POST para o login
-app.post('/', function(req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
-
-
-    // para ver o que está sendo recebido do formulário de login, descomente os console.log abaixo. Eles mostram o valor e o comprimento dos campos username e password, o que pode ajudar a identificar problemas de formatação ou envio dos dados.
-    // console.log('Tentativa de login:');
-    // console.log('Usuário recebido:', username, '(length:', username.length + ')');
-    // console.log('Senha recebida:', password, '(length:', password.length + ')');
-
-    // Consulta o banco de dados com placeholders corretos
-    conexao.query('SELECT * FROM login WHERE idLogin = ? AND Senha = ?', [username, password], function(err, result, fields){
-        if (err) {
-            console.error('Erro na query:', err);
-            res.redirect('/');
-            return;
-        }
-               
-        if (result.length > 0) {
-            console.log('Login bem-sucedido!');
-            res.redirect('/avisos.html');
-        } else {
-            console.log('Usuário ou senha incorretos - nenhum registro encontrado');
-            res.redirect('/');
-        }
-    });
-});
+const usuarioRouter = require('./routes/usuario');
+app.use('/api/usuarios', auth, usuarioRouter); // Rota para o CRUD de usuários, protegida por autenticação
 
 // Rota para a página inicial (GET)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ROTA DE DEBUG - REMOVER DEPOIS
-app.get('/', (req, res) => {
-    // coloque '/debug-tabela-login' na barra de endereços para ver o resultado da consulta e tire de comentarios o "Mostra os nomes das colunas" para ver os nomes das colunas da tabela
-    conexao.query('SELECT * FROM login', (err, result, fields) => {
-        if (err) {
-            res.json({ erro: err });
-            return;
-        }
-        
-        // Mostra os nomes das colunas
-        const nomesColunas = fields.map(field => field.name);
-        
-        res.json({
-            colunas: nomesColunas,
-            dados: result,
-            totalRegistros: result.length
-        });
-    });
-});
-
 // Inicia o servidor na porta especificada
 app.listen(PORT, () => {
     console.log('Servidor rodando em http://localhost:' + PORT);
-    console.log('Site principal: http://localhost:' + PORT);
-    console.log('Painel CMS:    http://localhost:' + PORT + '/admin');
-    console.log('API de avisos:  http://localhost:' + PORT + '/api/avisos');
 });
 
 // para iniciar apenas use no terminal o comando "npm run dev" e acesse http://localhost:3000 no navegador.

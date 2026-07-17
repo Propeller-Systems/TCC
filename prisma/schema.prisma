@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model aviso {
+  idaviso   Int           @id @default(autoincrement())
+  titulo    String        @db.VarChar(80)
+  date      DateTime      @default(now()) @db.DateTime(0)
+  conteudo  String        @db.VarChar(500)
+  idusuario Int
+  escopo    aviso_escopo?
+  usuario   usuario       @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "aviso_ibfk_1")
+
+  @@index([idusuario], map: "idusuario")
+}
+
+model usuario {
+  idusuario   Int                @id @unique(map: "idusuario_UNIQUE")
+  nome        String             @db.VarChar(45)
+  email       String             @unique(map: "email_UNIQUE") @db.VarChar(45)
+  dataCriacao DateTime?          @default(now()) @db.DateTime(0)
+  foto        String             @db.VarChar(45)
+  usuariocol  usuario_usuariocol
+  senha       String             @db.VarChar(45)
+  aviso       aviso[]
+}
+
+enum aviso_escopo {
+  funcionario
+  geral
+}
+
+enum usuario_usuariocol {
+  admin
+  funcionario
+}
