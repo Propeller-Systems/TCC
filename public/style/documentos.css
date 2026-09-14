@@ -4,47 +4,86 @@
     padding: min(1em, 15%);
     width: 100%;
     height: 100%;
+    background-color: white;
 }
 
 /* Barra de pesquisa */
 .container-src{
     display: flex;
+    gap: 10px;
+    margin: 1.5rem 0;
 }
 
+.container-src .search {
+    flex: 1;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
 
-/* .search::before {
-    content: url("../icons/search.svg");
-    display: inline-block;
-    width: 100px;
-    height: 100px;
-    background-color: aqua;
-} */
+.container-src .search:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+    background-color: #f9f9f9;
+}
 
 /* Botões */
 .addDocument{
     border: none;
-    border-radius: 5px;
-    padding: 1rem;
-    margin: 1rem 50%;
-    transform: translate(-50%,0);
-    width: 200px;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    margin: 1rem auto;
+    display: block;
+    width: auto;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.addDocument:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
 }
 
 /* containeres */
 .documento{
     display: flex;
     flex-direction: row;
-    border-radius: 1em;
-    padding: min(3em, 2%);
+    border-radius: 12px;
+    padding: 1.5rem;
     width: 100%;
-    margin: 0 auto 20px auto;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    margin: 0 auto 15px auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: relative;
-    gap: 1rem;
+    gap: 1.5rem;
     user-select: none;
+    border-left: 5px solid #198754;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    align-items: center;
 }
+
 .documento p{
-    padding: 0 0 0 0;
+    padding: 0;
+    margin: 0.25rem 0 0 0   ;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.documento h3 {
+    margin: 0 0 0.5rem 0;
+    color: #1a1a1a;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.documento h6 {
+    margin: 0;
+    color: #999;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .documento .doc-icon{
@@ -53,6 +92,9 @@
     align-items: center;
     width: 5rem;
     height: 5rem;
+    background-color: white;
+    border-radius: 8px;
+    flex-shrink: 0;
 }
 
 .documento .doc-icon img{
@@ -61,15 +103,61 @@
 }
 
 .documento button{
-    height: 3rem;
-    background-color: transparent;
-    border: none;
+    height: 2.5rem;
+    width: 2.5rem;
+    background-color: white;
+    border: 1px solid #e0e0e0;
     margin-left: auto;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.documento button:hover {
+    background-color: #f0f0f0;
+    border-color: #198754;
+}
+
+.documento button img {
+    width: 1.2rem;
+    height: auto;
 }
 
 .documento:hover{
     cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Oculta todos os documentos por padrão */
+.documento {
+    display: none;
+}
+
+/* Mostra apenas os documentos ativos */
+.documento.atestado.active {
+    display: flex;
+    border-left-color: #0d6efd;
+    animation: fadeIn 0.4s ease;
+}
+
+.documento.enviado.active {
+    display: flex;
+    animation: fadeIn 0.4s ease;
+}
+
+/* Animação de fade in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 /* Botão: Slider do documento */
@@ -84,7 +172,8 @@
   position: relative;
   display: inline-block;
   width: 100%;
-  height: 40px;
+  height: 50px;
+  margin-bottom: 2rem;
 }
 
 /* Estilização base do trilho */
@@ -92,61 +181,97 @@
   position: absolute;
   display: flex;
   justify-content: space-around;
-  padding: 10px;
+  align-items: center;
+  padding: 5px;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 5px; /* Deixa o trilho arredondado */
+  background-color: #e9ecef;
+  transition: 0.3s ease;
+  border-radius: 10px;
   user-select: none;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.slider .doc{
+.slider .doc {
     z-index: 1;
+    font-weight: 600;
+    color: #666;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
 }   
 
-.slider .atest{
+.slider .atest {
     z-index: 1;
+    font-weight: 600;
+    color: #666;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
 }
 
-.slider .doc::before{
+.slider .doc::before {
     content: "";
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
     background-image: url("../icons/paper-plane.svg");
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center
+    background-position: center;
+    vertical-align: middle;
 }
 
-.slider .atest::before{
+.slider .atest::before {
     content: "";
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
     background-image: url("../icons/place-item.svg");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-}   
+    vertical-align: middle;
+}
 
 /* A bolinha do interruptor */
-.slider:before {
+.slider:after {
   position: absolute;
   content: "";
-  height: 32px;
-  width: 50%;
-  left: 4px;
-  bottom: 4px;
+  height: 40px;
+  width: calc(50% - 5px);
+  left: 5px;
+  top: 5px;
   background-color: white;
   z-index: 0;
-  transition: 0.4s;
-  border-radius: 5px; /* Deixa a bolinha redonda */
+  transition: transform 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transform: translateX(0);
 }
 
 /* Move a bolinha para a direita */
-.switch input:checked + .slider:before {
-  transform: translateX(98%);
-  content: "";
+.switch input:checked + .slider:after {
+  transform: translateX(calc(100% + 2px));
+}
+
+/* Estilo ativo */
+.switch input:checked + .slider .doc {
+    color: #666;
+}
+
+.switch input:checked + .slider .atest {
+    color: #198754;
+}
+
+.switch input + .slider .doc {
+    color: #198754;
+}
+
+.switch input + .slider .atest {
+    color: #666;
 }

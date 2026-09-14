@@ -26,32 +26,99 @@
                 <label class="switch">
                     <input type="checkbox" id="slider">
                     <span class="slider">
-                        <span class="doc active">Documentos Enviados</span>
+                        <span class="doc">Documentos Enviados</span>
                         <span class="atest">Atestados Recebidos</span>
                     </span>
                 </label>
-                <hr>
                 <form class="container-src input-group" action="/pesquisa" method="get">
                     <input class="search form-control" type="search" name="search" placeholder="Faça sua busca">
                     <button type="submit" class="btn btn-success">Buscar</button>
                 </form>
                 <button class="addDocument bg-success text-white">+ Enviar Documento</button>
-                <section>
-                    <div class="documento">
-                        
+                <section id="documentos-container">
+                    <!-- DOCUMENTOS ENVIADOS -->
+                    <div class="documento enviado active">
                         <div class="doc-icon">
                             <img src="icons/pdf-icon.png">
                         </div>
-                        
                         <div>
                             <h3>Acidente nas Torres Gêmeas</h3>
                             <h6>11/09/2001 • Enviado para: Celso Portiolli</h6>
-                            <p>anexo documento</p>
+                            <p>Documento importante enviado com sucesso</p>
                         </div>
-                        
-                        <button type="button" class="btn btn-secondary" data-bs-container="body"
-                        data-bs-toggle="popover" data-bs-placement="left" data-bs-content="Left popover">
-                        <img src="icons/options.png">
+                        <button type="button" class="btn btn-secondary">
+                            <img src="icons/options.png">
+                        </button>
+                    </div>
+
+                    <div class="documento enviado active">
+                        <div class="doc-icon">
+                            <img src="icons/pdf-icon.png">
+                        </div>
+                        <div>
+                            <h3>Relatório Mensal - Setembro</h3>
+                            <h6>15/09/2026 • Enviado para: Direção</h6>
+                            <p>Relatório de atividades do mês</p>
+                        </div>
+                        <button type="button" class="btn btn-secondary">
+                            <img src="icons/options.png">
+                        </button>
+                    </div>
+
+                    <div class="documento enviado active">
+                        <div class="doc-icon">
+                            <img src="icons/pdf-icon.png">
+                        </div>
+                        <div>
+                            <h3>Solicitação de Transferência</h3>
+                            <h6>10/09/2026 • Enviado para: Coordenação</h6>
+                            <p>Solicitação de transferência de turma</p>
+                        </div>
+                        <button type="button" class="btn btn-secondary">
+                            <img src="icons/options.png">
+                        </button>
+                    </div>
+
+                    <!-- ATESTADOS RECEBIDOS -->
+                    <div class="documento atestado">
+                        <div class="doc-icon">
+                            <img src="icons/pdf-icon.png">
+                        </div>
+                        <div>
+                            <h3>Atestado Médico</h3>
+                            <h6>12/09/2026 • Recebido de: Hospital Central</h6>
+                            <p>Atestado de comparecimento médico</p>
+                        </div>
+                        <button type="button" class="btn btn-secondary">
+                            <img src="icons/options.png">
+                        </button>
+                    </div>
+
+                    <div class="documento atestado">
+                        <div class="doc-icon">
+                            <img src="icons/pdf-icon.png">
+                        </div>
+                        <div>
+                            <h3>Certificado de Participação</h3>
+                            <h6>08/09/2026 • Recebido de: Eventos</h6>
+                            <p>Certificado do workshop de tecnologia</p>
+                        </div>
+                        <button type="button" class="btn btn-secondary">
+                            <img src="icons/options.png">
+                        </button>
+                    </div>
+
+                    <div class="documento atestado">
+                        <div class="doc-icon">
+                            <img src="icons/pdf-icon.png">
+                        </div>
+                        <div>
+                            <h3>Atestado de Residência</h3>
+                            <h6>05/09/2026 • Recebido de: Cartório</h6>
+                            <p>Atestado de residência atualizado</p>
+                        </div>
+                        <button type="button" class="btn btn-secondary">
+                            <img src="icons/options.png">
                         </button>
                     </div>
                 </section>
