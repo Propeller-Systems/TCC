@@ -174,7 +174,7 @@ function abrirTabela(){
 
                 dados.forEach(item => {
                     const{id, nome, foto} = item;
-                    htmlTabela +=
+                    htmlTabela += ``
                 })
             }catch{}
         }
