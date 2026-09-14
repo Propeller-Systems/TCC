@@ -121,4 +121,4 @@ async function excluirUsuario(id) {
     fetchUsuarios();
   }
 }
-  fetchUsuarios();
+fetchUsuarios();

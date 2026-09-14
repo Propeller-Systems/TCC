@@ -1,20 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Novo Funcionário</title>
-  <link href="style/style.css" rel="stylesheet" />
+  <link href="style/style.css" rel="stylesheet"/>
+  <link href="style/usuarios.css" rel="stylesheet"/>
 </head>
 
 <body>
   <div id="sidebar-placeholder"></div>
 
   <main id="main-content">
-    <form class="container usuario" id="user-form">
+    <h1 class="text-center">Cadastro de Funcionário</h1>
+
+    <form class="container" id="user-form">
       <div class="d-grid gap-2">
-        <h1 class="text-center">Adicione as credenciais necessarias</h1>
+        <h5>Adicione as credenciais necessárias</h5>
 
         <!--Input foto-->
         <div>
@@ -54,17 +57,17 @@
     </form>
 
     <form class="container usuario">
-      <h1 class="text-center">Veja e edite credenciais existentes</h1>
+      <h5>Veja e edite credenciais existentes</h5>
       <!-- Fazer uma tabela que leia os usuarios existentes -->
       <table class="table table-striped table-hover">
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <th scope="col"></th>
             <th scope="col">Foto</th>
             <th scope="col">Nome</th>
             <th scope="col">E-mail</th>
             <th scope="col">Escopo</th>
-            <th scope="col">data de criação</th>
+            <th scope="col">riação</th>
           </tr>
         </thead>
         <tbody id="tabela-usuarios">
@@ -170,5 +173,4 @@ userForm.addEventListener('submit', async (event) => {
 
   </script>
 </body>
-
 </html>
