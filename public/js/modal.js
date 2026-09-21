@@ -78,11 +78,13 @@ function abrirModal(aviso = null) {
                 class="border p-2 form-control">${aviso ? aviso.conteudo : ""}</textarea>
 
             <label class="form-label" for="escopo">Escopo:</label>
-            <select id="escopo" class="border p-2 form-control">
+            <select id="escopo" class="border p-2 form-control" onchange="abrirTabela()">
                 <option value="geral" ${aviso && aviso.escopo === "geral" ? "selected" : ""}>Geral</option>
                 <option value="funcionario" ${aviso && aviso.escopo === "funcionario" ? "selected" : ""}>Funcionário</option>
                 <!-- <option value="aluno" ${aviso && aviso.escopo === "aluno" ? "selected" : ""}>Func. Específico</option> -->
             </select>
+
+            <div id="exibirTabela"></div>
 
             <div class="flex gap-2">
                 <button type="submit" class="btn btn-success">
@@ -98,59 +100,120 @@ function abrirModal(aviso = null) {
             </div>
         </form>
     `;
-  document.body.appendChild(modal);
-  const mainContent = document.getElementById("main-content") || document.querySelector("main");
-  if (mainContent) mainContent.style.filter = "blur(1px)";
-  document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
-  document.getElementById("formAviso").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const novoAviso = {
-      titulo: document.getElementById("titulo").value,
-      conteudo: document.getElementById("conteudo").value,
-      escopo: document.getElementById("escopo").value,
-    };
-    let response;
-    if (aviso) {
-      // Atualizar aviso existente
-      response = await fetch(`/api/avisos/${aviso.idaviso}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(novoAviso),
-      });
-    } else {
-      // Criar novo aviso
-      response = await fetch("/api/avisos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(novoAviso),
-      });
-    }
-
-    if (response.ok) {
+    document.body.appendChild(modal);
+    const mainContent = document.getElementById("main-content") || document.querySelector("main");
+    if (mainContent) mainContent.style.filter = "blur(1px)";
+    document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
+    document.getElementById("formAviso").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const novoAviso = {
+            titulo: document.getElementById("titulo").value,
+            conteudo: document.getElementById("conteudo").value,
+            escopo: document.getElementById("escopo").value,
+        };
+        let response;
+        if (aviso) {
+            // Atualizar aviso existente
+            response = await fetch(`/api/avisos/${aviso.idaviso}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(novoAviso),
+            });
+        } else {
+            // Criar novo aviso
+            response = await fetch("/api/avisos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(novoAviso),
+            });
+        }
+        
+        if (response.ok) {
       fecharModal();
       carregarAvisos();
     } else {
-      let err;
-      try {
-        err = await response.json();
-      } catch (e) {
-        err = { error: 'Erro desconhecido ao comunicar com o servidor' };
-      }
-      alert(err.error || err.erro || JSON.stringify(err));
+        let err;
+        try {
+            err = await response.json();
+        } catch (e) {
+            err = { error: 'Erro desconhecido ao comunicar com o servidor' };
+        }
+        alert(err.error || err.erro || JSON.stringify(err));
     }
-  });
+});
 }
+function abrirTabela(){
+    const select = document.getElementById("escopo");
+    const tabela = document.getElementById("exibirTabela");
+
+    select.addEventListener('change', async function(event) {
+        const vlEspecifico = "funcionario";
+
+        if(event.target.value === vlEspecifico){
+            tabela.style.display = 'block';
+            tabela.innerHTML = '<p>Carregando dados...</p>';
+
+            try{
+                const response = await fetch('/api/usuarios');
+                const dados = await response.json();
+
+                let htmlTabela= `
+                <table class="tabela-modal">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Foto</th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                dados.forEach(item => {
+                    const{id, nome, foto} = item;
+                    htmlTabela += ``
+                })
+            }catch{}
+        }
+//         `
+//                     <tr>
+//                         <td>${id}</td>
+//                         <td><img src="${foto}" alt="Foto" width="40"></td>
+//                         <td>${nome}</td>
+//                     </tr>
+//                 `;
+//             });
+
+//             htmlTabela += `</tbody></table>`;
+
+//             // 2. Joga a tabela pronta DENTRO da div
+//             areaTabelaModal.innerHTML = htmlTabela;
+
+//         } catch (error) {
+//             console.error('Erro ao buscar dados:', error);
+//             areaTabelaModal.innerHTML = '<p>Erro ao carregar a tabela.</p>';
+//         }
+
+//     } else {
+//         // Se selecionar outra coisa, esconde a div e limpa
+//         areaTabelaModal.style.display = 'none';
+//         areaTabelaModal.innerHTML = '';
+//     }
+// });
+    })
+}
+// /api/usuarios
+
 
 function fecharModal() {
-  const modal = document.getElementById("avisoModal");
-  const mainContent = document.getElementById("main-content") || document.querySelector("main");
-  if (mainContent) mainContent.style.filter = "none";
-  document.getElementById("sidebar-placeholder").style.filter = "none";
-  if (modal) modal.remove();
+    const modal = document.getElementById("avisoModal");
+    const mainContent = document.getElementById("main-content") || document.querySelector("main");
+    if (mainContent) mainContent.style.filter = "none";
+    document.getElementById("sidebar-placeholder").style.filter = "none";
+    if (modal) modal.remove();
 }
 
 function atualizarAviso(id) {
