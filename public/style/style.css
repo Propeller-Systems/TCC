@@ -292,12 +292,8 @@ ul{
 @keyframes animacaoOpenCms{
     from {
         opacity: 0;
-        width: 0%;
-        height: 0%;
     }
     to{
         opacity: 1;
-        width: 50%;
-        height: 68%;
     }
 }

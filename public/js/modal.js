@@ -48,6 +48,7 @@ function abrirModal(aviso = null) {
 
   Object.assign(modal.style, {
     display: "flex",
+    opacity: "1",
     flexDirection: "column",
     position: "fixed",
     top: "50%",
