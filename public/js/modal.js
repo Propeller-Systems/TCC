@@ -147,6 +147,7 @@ function abrirModal(aviso = null) {
     }
 });
 }
+
 function abrirTabela() {
     const select = document.getElementById("escopo");
     const tabela = document.getElementById("exibirTabela");
@@ -213,8 +214,6 @@ function abrirTabela() {
     select.addEventListener('change', verificarSelecao);
     verificarSelecao();
 }
-
-
 
 function fecharModal() {
     const modal = document.getElementById("avisoModal");
@@ -418,3 +417,151 @@ function fecharFotoModal() {
     limparFotoModal();
     fotoBlob = null;
 }
+
+function abrirModalDoc() {
+    if (document.getElementById("docModal")) return;
+
+    let modalF = document.createElement("dialog");
+    modalF.id = "docModal";
+    modalF.className = "container-cms";
+
+    Object.assign(modalF.style, {
+        display: "flex",
+        flexDirection: "column",
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        zIndex: "1000",
+        width: "80%",
+        maxWidth: "900px",
+        height: "80%"
+    });
+
+    modalF.innerHTML = `
+        <button
+            type="button"
+            onclick="fecharDocModal()"
+            class="btn-close position-absolute top-0 end-0">
+        </button>
+
+        <div class="p-3">
+
+            <h2 class="mb-4">
+                Novo Documento
+            </h2>
+
+            <!-- TÍTULO -->
+            <div class="mb-3">
+                <label
+                    for="tituloDocumento"
+                    class="form-label">
+                    Título
+                </label>
+
+                <input
+                    type="text"
+                    id="tituloDocumento"
+                    name="tituloDocumento"
+                    class="form-control"
+                    placeholder="Digite o título do documento">
+            </div>
+
+            <!-- TEXTO SOBRE -->
+            <div class="mb-3">
+                <label
+                    for="textoDocumento"
+                    class="form-label">
+                    Sobre o documento
+                </label>
+
+                <textarea
+                    id="textoDocumento"
+                    name="textoDocumento"
+                    class="form-control"
+                    rows="8"
+                    placeholder="Digite uma descrição ou informações sobre o documento..."></textarea>
+            </div>
+
+            <!-- ARQUIVO -->
+            <div class="mb-3">
+                <label
+                    for="arquivoDocumento"
+                    class="form-label">
+                    Arquivo
+                </label>
+
+                <input
+                    type="file"
+                    id="arquivoDocumento"
+                    name="arquivoDocumento"
+                    class="form-control"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+                
+                <small class="text-muted">
+                    Formatos aceitos: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX e TXT.
+                </small>
+            </div>
+
+            <!-- BOTÕES -->
+            <div class="mt-4">
+                <button
+                    type="button"
+                    onclick="fecharDocModal()"
+                    class="btn">
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    onclick="salvarDocumento()"
+                    class="btn">
+                    Salvar Documento
+                </button>
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modalF);
+    modalF.showModal();
+
+    const mainContent =
+        document.getElementById("main-content") ||
+        document.querySelector("main");
+
+    if (mainContent) {
+        mainContent.style.filter = "blur(1px)";
+    }
+
+    const sidebar = document.getElementById("sidebar-placeholder");
+
+    if (sidebar) {
+        sidebar.style.filter = "blur(1px)";
+    }
+}
+
+function fecharDocModal() {
+    const modal = document.getElementById("docModal");
+
+    if (!modal) return;
+
+    modal.close();
+    modal.remove();
+
+    const mainContent =
+        document.getElementById("main-content") ||
+        document.querySelector("main");
+
+    if (mainContent) {
+        mainContent.style.filter = "none";
+    }
+
+    const sidebar = document.getElementById("sidebar-placeholder");
+
+    if (sidebar) {
+        sidebar.style.filter = "none";
+    }
+}
+
+
