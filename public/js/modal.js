@@ -147,22 +147,24 @@ function abrirModal(aviso = null) {
     }
 });
 }
-function abrirTabela(){
+function abrirTabela() {
     const select = document.getElementById("escopo");
     const tabela = document.getElementById("exibirTabela");
 
-    select.addEventListener('change', async function(event) {
-        const vlEspecifico = "funcionario";
+    async function carregarTabela() {
+        tabela.style.display = 'block';
+        tabela.innerHTML = '<p>Carregando dados...</p>';
 
-        if(event.target.value === vlEspecifico){
-            tabela.style.display = 'block';
-            tabela.innerHTML = '<p>Carregando dados...</p>';
+        try {
+            const response = await fetch('/api/usuarios');
 
-            try{
-                const response = await fetch('/api/usuarios');
-                const dados = await response.json();
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status}`);
+            }
 
-                let htmlTabela= `
+            const dados = await response.json();
+
+            let htmlTabela = `
                 <table class="tabela-modal">
                     <thead>
                         <tr>
@@ -171,42 +173,47 @@ function abrirTabela(){
                             <th>Nome</th>
                         </tr>
                     </thead>
-                    <tbody>`;
+                    <tbody>
+            `;
 
-                dados.forEach(item => {
-                    const{id, nome, foto} = item;
-                    htmlTabela += ``
-                })
-            }catch{}
+            dados.forEach(item => {
+                const { idusuario, nome, foto } = item;
+
+                htmlTabela += `
+                    <tr>
+                        <td>${idusuario}</td>
+                        <td>${foto}</td>
+                        <td>${nome}</td>
+                    </tr>
+                `;
+            });
+
+            htmlTabela += `
+                    </tbody>
+                </table>
+            `;
+
+            tabela.innerHTML = htmlTabela;
+
+        } catch (error) {
+            console.error('Erro ao buscar dados:', error);
+            tabela.innerHTML = '<p>Erro ao carregar a tabela.</p>';
         }
-//         `
-//                     <tr>
-//                         <td>${id}</td>
-//                         <td><img src="${foto}" alt="Foto" width="40"></td>
-//                         <td>${nome}</td>
-//                     </tr>
-//                 `;
-//             });
+    }
 
-//             htmlTabela += `</tbody></table>`;
+    function verificarSelecao() {
+        if (select.value === "funcionario") {
+            carregarTabela();
+        } else {
+            tabela.style.display = 'none';
+            tabela.innerHTML = '';
+        }
+    }
 
-//             // 2. Joga a tabela pronta DENTRO da div
-//             areaTabelaModal.innerHTML = htmlTabela;
-
-//         } catch (error) {
-//             console.error('Erro ao buscar dados:', error);
-//             areaTabelaModal.innerHTML = '<p>Erro ao carregar a tabela.</p>';
-//         }
-
-//     } else {
-//         // Se selecionar outra coisa, esconde a div e limpa
-//         areaTabelaModal.style.display = 'none';
-//         areaTabelaModal.innerHTML = '';
-//     }
-// });
-    })
+    select.addEventListener('change', verificarSelecao);
+    verificarSelecao();
 }
-// /api/usuarios
+
 
 
 function fecharModal() {
