@@ -16,33 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `usuario`
+-- Table structure for table `documento`
 --
 
-DROP TABLE IF EXISTS `usuario`;
+DROP TABLE IF EXISTS `documento`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `usuario` (
-  `idusuario` int NOT NULL AUTO_INCREMENT,
-  `nome` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `dataCriacao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `foto` varchar(45) NOT NULL,
-  `usuariocol` enum('admin','funcionario') NOT NULL,
-  `senha` varchar(45) NOT NULL DEFAULT 'h3IpM3',
-  PRIMARY KEY (`idusuario`),
-  UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `documento` (
+  `iddocumento` int NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(255) NOT NULL,
+  `texto` varchar(500) NOT NULL,
+  `caminho` varchar(255) NOT NULL,
+  PRIMARY KEY (`iddocumento`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `usuario`
+-- Dumping data for table `documento`
 --
 
-LOCK TABLES `usuario` WRITE;
-/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'admin','admin@gmail.com','2026-04-28 16:19:00','leon_foto.jpg','admin','admin');
-/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+LOCK TABLES `documento` WRITE;
+/*!40000 ALTER TABLE `documento` DISABLE KEYS */;
+INSERT INTO `documento` VALUES (1,'algo','teste da silvia','nada');
+/*!40000 ALTER TABLE `documento` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
