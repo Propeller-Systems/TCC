@@ -38,4 +38,29 @@ router.get("/",admin, async (req, res) => {
             });
         }});
 
+router.post("/", admin, upload.single("arquivo"), async (req, res) => {
+    const { titulo, texto} = req.body;
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                error: "Nenhum documento enviado."
+            });
+        }
+        const novoDocumento = await prisma.documento.create({
+            data: {
+                titulo,
+                texto,
+                caminho: req.file.filename
+            }
+        });
+        res.status(201).json(novoDocumento);
+
+    } catch (error) {
+        console.error("Erro ao criar documento:", error);
+        res.status(500).json({
+            error: "Ocorreu um erro ao criar o documento."
+        });
+    }
+});
+
 module.exports = router;

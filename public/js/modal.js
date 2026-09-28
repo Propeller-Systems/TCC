@@ -246,7 +246,6 @@ if (avisosList) {
 
 let fotoBlob = null;
 
-// Função para abrir o modal de foto
 function abrirModalFoto() {
     if (document.getElementById("fotoModal")) return;
 
@@ -352,11 +351,9 @@ function capturarFoto() {
         canvas.height
     );
 
-    // Apenas preview
     document.querySelector("#foto").src =
         canvas.toDataURL("image/jpeg");
 
-    // JPG real para upload
     canvas.toBlob(
         (blob) => {
             fotoBlob = blob;
@@ -370,7 +367,6 @@ function limparFotoModal() {
     const modal = document.getElementById("fotoModal");
     const video = document.querySelector("#webcam");
 
-    // Para a câmera
     if (video && video.srcObject) {
         video.srcObject
             .getTracks()
@@ -379,7 +375,6 @@ function limparFotoModal() {
         video.srcObject = null;
     }
 
-    // Remove o filtro do conteúdo
     const mainContent =
         document.getElementById("main-content") ||
         document.querySelector("main");
@@ -388,14 +383,12 @@ function limparFotoModal() {
         mainContent.style.filter = "none";
     }
 
-    // Remove o filtro da sidebar
     const sidebar = document.getElementById("sidebar-placeholder");
 
     if (sidebar) {
         sidebar.style.filter = "none";
     }
 
-    // Fecha e remove o modal
     if (modal) {
         modal.close();
         modal.remove();
@@ -451,7 +444,6 @@ function abrirModalDoc() {
                 Novo Documento
             </h2>
 
-            <!-- TÍTULO -->
             <div class="mb-3">
                 <label
                     for="tituloDocumento"
@@ -461,40 +453,38 @@ function abrirModalDoc() {
 
                 <input
                     type="text"
-                    id="tituloDocumento"
-                    name="tituloDocumento"
+                    id="titulo"
+                    name="titulo"
                     class="form-control"
                     placeholder="Digite o título do documento">
             </div>
 
-            <!-- TEXTO SOBRE -->
             <div class="mb-3">
                 <label
-                    for="textoDocumento"
+                    for="texto"
                     class="form-label">
                     Sobre o documento
                 </label>
 
                 <textarea
-                    id="textoDocumento"
-                    name="textoDocumento"
+                    id="texto"
+                    name="texto"
                     class="form-control"
                     rows="8"
                     placeholder="Digite uma descrição ou informações sobre o documento..."></textarea>
             </div>
 
-            <!-- ARQUIVO -->
             <div class="mb-3">
                 <label
-                    for="arquivoDocumento"
+                    for="arquivo"
                     class="form-label">
                     Arquivo
                 </label>
 
                 <input
                     type="file"
-                    id="arquivoDocumento"
-                    name="arquivoDocumento"
+                    id="arquivo"
+                    name="arquivo"
                     class="form-control"
                     accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
                 
@@ -503,7 +493,6 @@ function abrirModalDoc() {
                 </small>
             </div>
 
-            <!-- BOTÕES -->
             <div class="mt-4">
                 <button
                     type="button"
@@ -538,6 +527,43 @@ function abrirModalDoc() {
 
     if (sidebar) {
         sidebar.style.filter = "blur(1px)";
+    }
+}
+
+async function salvarDocumento(){
+    const titulo = document.getElementById("titulo").value;
+    const texto = document.getElementById("texto").value;
+    const arquivo = document.getElementById("arquivo").files[0];
+
+    if(!titulo || !texto || !arquivo){
+        alert("Preencha todos os campos e selecione um arquivo");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("titulo", titulo);
+    formData.append("texto", texto);
+    formData.append("arquivo", arquivo);
+
+    try{
+        const response = await fetch("/api/doc", {
+            method: "POST",
+            body: formData
+        });
+
+        const resultado = await response.json();
+
+        if(!response.ok) throw new Error(resultado.error || "Erro ao criar documento");
+
+        alert("Documento criado com sucesso")
+
+        fecharDocModal();
+
+        carregarDocumentos();
+    }catch(error){
+        console.error("Erro ao salvar documento", error);
+        alert("Não foi possivel salvar o documento");
     }
 }
 
