@@ -1,5 +1,6 @@
 .fotoIcon{
-    max-height: 50px;
+    min-height: 3rem;
+    max-height: 3rem;
     width: 50px;
     border: 2px solid black;
     border-radius: 50%;
