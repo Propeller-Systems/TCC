@@ -1,11 +1,17 @@
 const slider = document.getElementById("slider");
 const documentosContainer = document.getElementById("documentos-container");
+const btnDoc = document.getElementById("btnDoc");
 
-if (slider && documentosContainer) {
+if (slider && documentosContainer && btnDoc) {
     slider.addEventListener("change", function() {
         const isChecked = this.checked;
         const documentos = documentosContainer.querySelectorAll(".documento");
         
+        if (!isChecked){
+            btnDoc.classList.add("active");
+        } else{
+            btnDoc.classList.remove("active")
+        }
         documentos.forEach(doc => {
             if (isChecked) {
                 // Mostrar atestados, esconder enviados
@@ -75,13 +81,14 @@ function criarDocumentoHTML(documento) {
 
         <button 
             type="button"
-            class="btn btn-secondary"
+            class="btnOptions btn btn-secondary"
             onclick="abrirOpcaoDocumentos(${documento.iddocumento})">
 
             <img 
                 src="icons/options.png"
                 alt="opções">
-        </button>`;
+        </button>`
+        ;
     return div;
 }
 
