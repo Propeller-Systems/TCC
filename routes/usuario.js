@@ -10,7 +10,7 @@ const path = require("path");
 // ─── Configuração de fotos ─────────────────────────────────────────────
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "public/uploads/");
+        cb(null, "public/uploads/img/");
     },
     filename: (req, file, cb) => {
         const nomeArquivo = `foto-${Date.now()}.jpg`;

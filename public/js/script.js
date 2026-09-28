@@ -88,7 +88,7 @@ async function fetchUsuarios() {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${usuario.idusuario}</td>
-      <td><img src="/uploads/${usuario.foto}" alt="Foto" class="fotoIcon"></td>
+      <td><img src="/uploads/img/${usuario.foto}" alt="Foto" class="fotoIcon"></td>
       <td>${usuario.nome}</td>
       <td>${usuario.email}</td>
       <td>${usuario.usuariocol}</td>

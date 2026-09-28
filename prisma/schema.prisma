@@ -16,18 +16,25 @@ model aviso {
   escopo    aviso_escopo?
   usuario   usuario       @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "aviso_ibfk_1")
 
-  @@index([idusuario], map: "idusuario")
+  @@index([idusuario], map: "fk_aviso_usuario")
 }
 
 model usuario {
   idusuario   Int                @id @default(autoincrement())
   nome        String             @db.VarChar(45)
   email       String             @unique(map: "email_UNIQUE") @db.VarChar(45)
-  dataCriacao DateTime?          @default(now()) @db.DateTime(0)
-  foto        String?             @db.VarChar(45)
+  dataCriacao DateTime           @default(now()) @db.DateTime(0)
+  foto        String             @db.VarChar(45)
   usuariocol  usuario_usuariocol
-  senha       String             @db.VarChar(45) @default("h3IpM3")
+  senha       String             @default("h3IpM3") @db.VarChar(45)
   aviso       aviso[]
+}
+
+model documento {
+  iddocumento Int    @id @default(autoincrement())
+  titulo      String @db.VarChar(255)
+  texto       String @db.VarChar(500)
+  caminho     String @db.VarChar(255)
 }
 
 enum aviso_escopo {
