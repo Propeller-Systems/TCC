@@ -1,6 +1,12 @@
+# dependencias do node e vscode
 node_modules/
 dist/
 .idea/
 .vscode/
 README.md
+
+# conexão do prisma / banco de dados
 .env
+
+# documentos na pasta uploads
+public/uploads/doc/
