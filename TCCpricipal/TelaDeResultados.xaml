@@ -26,24 +26,34 @@
                 <!-- Card 1 -->
                 <Frame CornerRadius="12"
                        HasShadow="True"
-                       Padding="18"
+                       Padding="12"
                        BackgroundColor="White"
                        BorderColor="#E8E8E8">
-                    
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Total de Funcionários"
-                               FontSize="16"
-                               TextColor="#212121" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="6" Grid.Column="0">
+                            <Label Text="Total de Funcionários"
+                                   FontSize="16"
+                                   TextColor="#212121" />
 
-                        <Label Text="101"
-                               FontSize="40"
-                               FontAttributes="Bold"
-                               TextColor="#000000" />
+                            <Label Text="101"
+                                   FontSize="40"
+                                   FontAttributes="Bold"
+                                   TextColor="#000000" />
 
-                        <Label Text="+20% esse mês*"
-                               FontSize="14"
-                               TextColor="#2E7D32" />
-                    </VerticalStackLayout>
+                            <Label Text="+20% esse mês*"
+                                   FontSize="14"
+                                   TextColor="#2E7D32" />
+                        </VerticalStackLayout>
+
+                        <Image x:Name="Card1ImageView" Source="dotnet_bot.png"
+                               Grid.Column="1"
+                               WidthRequest="80"
+                               HeightRequest="80"
+                               Aspect="AspectFit"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               Margin="8,0,0,0" />
+                    </Grid>
                 </Frame>
 
                 <!-- Card 2 -->
@@ -52,20 +62,31 @@
                        Padding="18"
                        BackgroundColor="White"
                        BorderColor="#E8E8E8">
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Funcionários Ativos"
-                               FontSize="16"
-                               TextColor="#212121" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="6" Grid.Column="0">
+                            <Label Text="Funcionários Ativos"
+                                   FontSize="16"
+                                   TextColor="#212121" />
 
-                        <Label Text="22"
-                               FontSize="40"
-                               FontAttributes="Bold"
-                               TextColor="#000000" />
+                            <Label Text="22"
+                                   FontSize="40"
+                                   FontAttributes="Bold"
+                                   TextColor="#000000" />
 
-                        <Label Text="+5% esse mês*"
-                               FontSize="14"
-                               TextColor="#2E7D32" />
-                    </VerticalStackLayout>
+                            <Label Text="+5% esse mês*"
+                                   FontSize="14"
+                                   TextColor="#2E7D32" />
+                        </VerticalStackLayout>
+
+                        <Image x:Name="Card2ImageView" Source="{Binding Card2Image}"
+                               Grid.Column="1"
+                               WidthRequest="72"
+                               HeightRequest="72"
+                               Aspect="AspectFit"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               Margin="8,0,0,0" />
+                    </Grid>
                 </Frame>
 
                 <!-- Card 3 -->
@@ -74,20 +95,31 @@
                        Padding="18"
                        BackgroundColor="White"
                        BorderColor="#E8E8E8">
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Em licença/férias"
-                               FontSize="16"
-                               TextColor="#212121" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="6" Grid.Column="0">
+                            <Label Text="Em licença/férias"
+                                   FontSize="16"
+                                   TextColor="#212121" />
 
-                        <Label Text="5"
-                               FontSize="40"
-                               FontAttributes="Bold"
-                               TextColor="#000000" />
+                            <Label Text="5"
+                                   FontSize="40"
+                                   FontAttributes="Bold"
+                                   TextColor="#000000" />
 
-                        <Label Text="3 voltam semana que vem*"
-                               FontSize="14"
-                               TextColor="#9E9E9E" />
-                    </VerticalStackLayout>
+                            <Label Text="3 voltam semana que vem*"
+                                   FontSize="14"
+                                   TextColor="#9E9E9E" />
+                        </VerticalStackLayout>
+
+                        <Image x:Name="Card3ImageView" Source="{Binding Card3Image}"
+                               Grid.Column="1"
+                               WidthRequest="72"
+                               HeightRequest="72"
+                               Aspect="AspectFit"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               Margin="8,0,0,0" />
+                    </Grid>
                 </Frame>
 
                 <!-- Card 4 -->
@@ -96,20 +128,31 @@
                        Padding="18"
                        BackgroundColor="White"
                        BorderColor="#E8E8E8">
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Novas Contratações"
-                               FontSize="16"
-                               TextColor="#212121" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="6" Grid.Column="0">
+                            <Label Text="Novas Contratações"
+                                   FontSize="16"
+                                   TextColor="#212121" />
 
-                        <Label Text="2"
-                               FontSize="40"
-                               FontAttributes="Bold"
-                               TextColor="#000000" />
+                            <Label Text="2"
+                                   FontSize="40"
+                                   FontAttributes="Bold"
+                                   TextColor="#000000" />
 
-                        <Label Text="Nas últimas semanas*"
-                               FontSize="14"
-                               TextColor="#2E7D32" />
-                    </VerticalStackLayout>
+                            <Label Text="Nas últimas semanas*"
+                                   FontSize="14"
+                                   TextColor="#2E7D32" />
+                        </VerticalStackLayout>
+
+                        <Image x:Name="Card4ImageView" Source="{Binding Card4Image}"
+                               Grid.Column="1"
+                               WidthRequest="72"
+                               HeightRequest="72"
+                               Aspect="AspectFit"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               Margin="8,0,0,0" />
+                    </Grid>
                 </Frame>
 
             </VerticalStackLayout>

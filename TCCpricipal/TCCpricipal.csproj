@@ -76,4 +76,6 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<!-- Excluir imagens com nomes inv�lidos para evitar erro do Resizetizer; substitua por arquivos v�lidos em Resources/Images -->
+
 </Project>
