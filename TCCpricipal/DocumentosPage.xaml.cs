@@ -1,3 +1,6 @@
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
+
 namespace TCCpricipal
 {
     public partial class DocumentosPage : ContentPage
@@ -5,12 +8,26 @@ namespace TCCpricipal
         public DocumentosPage()
         {
             Title = "Documentos";
+            BackgroundColor = Colors.White;
+
+            // Criar controles que precisam ser referenciados
+           
+            var btnRecebidos = new Button
+            {
+                Text = "📁 Atestados Recebidos",
+                TextColor = Color.FromArgb("#000000"),
+                BackgroundColor = Color.FromArgb("#ededed"),
+                CornerRadius = 6,
+                HorizontalOptions = LayoutOptions.Fill
+            };
+
+            
+            Grid.SetColumn(btnRecebidos, 0);
 
             Content = new ScrollView
             {
                 Content = new VerticalStackLayout
                 {
-          
                     Padding = 20,
                     Spacing = 16,
                     Children =
@@ -33,13 +50,13 @@ namespace TCCpricipal
                             {
                                 ColumnDefinitions = new ColumnDefinitionCollection
                                 {
-                                    new ColumnDefinition { Width = GridLength.Star },
+                                   
                                     new ColumnDefinition { Width = GridLength.Star }
                                 },
                                 Children =
                                 {
-                                    new Button { Text = "📤 Documentos Enviados", BackgroundColor = Colors.White, CornerRadius = 6, HorizontalOptions = LayoutOptions.Fill } ,
-                                    new Button { Text = "📥 Atestados Recebidos", BackgroundColor = Color.FromArgb("#D8D8D8"), CornerRadius = 6, HorizontalOptions = LayoutOptions.Fill }
+                                   
+                                    btnRecebidos
                                 }
                             }
                         },
@@ -55,15 +72,8 @@ namespace TCCpricipal
                             }
                         },
 
-                        // Botão central de enviar documento
-                        new HorizontalStackLayout
-                        {
-                            HorizontalOptions = LayoutOptions.Center,
-                            Children =
-                            {
-                                new Button { Text = "+ Enviar Documento", BackgroundColor = Color.FromArgb("#117A4D"), TextColor = Colors.White, CornerRadius = 8, Padding = new Thickness(20,10) }
-                            }
-                        },
+                       
+                       
 
                         // Lista de documentos - exemplo de item sem o frame do ícone
                         new Frame
@@ -71,7 +81,7 @@ namespace TCCpricipal
                             CornerRadius = 12,
                             HasShadow = true,
                             Padding = new Thickness(18),
-                            BackgroundColor = Color.FromArgb("#FAFAFA"),
+                            BackgroundColor = Color.FromArgb("ededed"),
                             Content = new Grid
                             {
                                 ColumnDefinitions = new ColumnDefinitionCollection { new ColumnDefinition { Width = GridLength.Star }, new ColumnDefinition { Width = GridLength.Auto } },
@@ -81,6 +91,13 @@ namespace TCCpricipal
                                     new VerticalStackLayout
                                     {
                                         Spacing = 6,
+                                        Shadow = new Shadow
+                                        {
+                                            Brush = Brush.Black,
+                                            Offset = new Point (0,2),
+                                            Radius = 8,
+                                            Opacity = 0.25f
+                                        },
                                         Children =
                                         {
                                             new Label { Text = "Acidente nas Torres Gêmeas", FontSize = 20, FontAttributes = FontAttributes.Bold, TextColor = Colors.Black },

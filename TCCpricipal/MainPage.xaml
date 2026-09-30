@@ -4,7 +4,14 @@
              x:Class="TCCpricipal.MainPage"
              
            Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource OffBlack}">
+            BackgroundColor="{StaticResource OffBlack}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Garantir que OffBlack esteja disponível localmente caso Application.Resources não seja carregado a tempo -->
+            <Color x:Key="OffBlack">#0B0B0B</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Grid>
         <Frame

@@ -5,10 +5,20 @@
              x:Class="TCCpricipal.App">
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
-                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            <!-- Cores usadas pela aplicação -->
+            <Color x:Key="OffBlack">#0B0B0B</Color>
+            <Color x:Key="White">#FFFFFF</Color>
+            <Color x:Key="MidnightBlue">#001F3F</Color>
+            <Color x:Key="Gray600">#757575</Color>
+            <Color x:Key="Gray200">#EEEEEE</Color>
+            <Color x:Key="Gray950">#0A0A0A</Color>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
+
+
+
+
+
+
+

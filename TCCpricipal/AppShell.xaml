@@ -7,18 +7,19 @@
     Title="TCCpricipal"
     FlyoutBehavior="Locked"
     Shell.NavBarIsVisible="False"
-    FlyoutWidth="220"
+    FlyoutWidth="200"
     >
 
     <!-- Cabeçalho do menu lateral -->
     <Shell.FlyoutHeader>
-        <Grid Padding="5" BackgroundColor="#121212" ColumnDefinitions="Auto, *">
-            <Label Text="LOGO" TextColor="White" FontAttributes="Bold" FontSize="18" VerticalOptions="Center" />
-            <Button x:Name="ToggleFlyoutButton" Text="«" TextColor="White" FontSize="20" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" BackgroundColor="Transparent" BorderWidth="0" Padding="0" />
+        <!-- Ajuste: usar "*, Auto" para garantir que o botão de alternância fique em uma coluna de tamanho automático
+             assim ele permanece visível mesmo quando a flyout é reduzida. -->
+        <Grid Padding="5" BackgroundColor="#121212" ColumnDefinitions="*, Auto">
+            <Button x:Name="ToggleFlyoutButton" Text="«" TextColor="White" FontSize="30" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" BackgroundColor="Transparent" BorderWidth="0" Padding="0" />
         </Grid>
     </Shell.FlyoutHeader>
 
-    <!-- Nav bar desativada globalmente (sem espaço superior) -->
+  
 
     <!-- Home: TelaDeResultados será a página principal -->
     <FlyoutItem Title="Home" Icon="home.png" Route="TelaDeResultados">
@@ -30,7 +31,7 @@
     <FlyoutItem Title="Adicionar/Criar" Icon="add_box.png">
         <!-- Mantém títulos nos itens do menu lateral -->
         <ShellContent Title="Avisos" ContentTemplate="{DataTemplate local:AvisosPage}" />
-        <ShellContent Title="Novo Usuário" ContentTemplate="{DataTemplate local:NovoUsuarioPage}" />
+        <!-- NovoUsuarioPage removida do projeto -->
         <ShellContent Title="Documentos" ContentTemplate="{DataTemplate local:DocumentosPage}" />
     </FlyoutItem>
 
