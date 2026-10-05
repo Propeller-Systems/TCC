@@ -4,6 +4,7 @@ const router = express.Router();
 const multer = require("multer");
 const prisma = require("../prismaClient");
 const admin = require('../middleware/admin');
+const auth = require("../middleware/auth");
 const fs = require("fs");
 const path = require("path");
 
@@ -32,6 +33,29 @@ router.get("/", admin, async (req, res) => {
     catch (error) { console.error("Erro ao buscar usuários:", error);
         res.status(500).json({ error: "Ocorreu um erro ao buscar os usuários."
         });
+    }
+});
+
+router.get("/perfil", auth, async (req, res) => {
+    try {
+        const idusuario = req.session.usuario.idusuario;
+
+        const usuario = await prisma.usuario.findUnique({
+            where: {
+                idusuario: idusuario
+            }
+        });
+
+        if (!usuario) {
+            return res.status(404).json({
+                error: "Usuário não encontrado"
+            });
+        }
+        res.json(usuario);
+
+    } catch (error) {
+        console.error("Erro ao buscar perfil:", error);
+        res.status(500).json({error: "Erro ao buscar perfil"});
     }
 });
 
