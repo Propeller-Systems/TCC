@@ -265,28 +265,32 @@ function abrirModalFoto() {
     });
 
     modalF.innerHTML = `
+        <h2 class="text-center">Capture uma foto</h2>
         <button
             type="button"
             onclick="fecharFotoModal()"
-            class="btn-close position-absolute top-0 end-0">
+            class="btn-close btn-danger position-absolute">
         </button>
+        <div class="fotoSection">
+            <div class="camera">
+                <video autoplay playsinline id="webcam"></video>
+            </div>
+            
+            <div class="cameraOptions">
+                <button
+                    type="button"
+                    onclick="capturarFoto()"
+                    class="btn btn-secondary">
+                    Capturar Foto
+                </button>
 
-        <video autoplay playsinline id="webcam"></video>
-
-        <div class="mt-2">
-            <button
-                type="button"
-                onclick="capturarFoto()"
-                class="btn">
-                Capturar Foto
-            </button>
-
-            <button
-                type="button"
-                onclick="confirmarFoto()"
-                class="btn">
-                Confirmar Foto
-            </button>
+                <button
+                    type="button"
+                    onclick="confirmarFoto()"
+                    class="btn btn-success">
+                    Confirmar Foto
+                </button>
+            </div>
         </div>
 
         <div class="image mt-3">
