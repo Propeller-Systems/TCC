@@ -1,9 +1,24 @@
 //CRUD do usuario.html
 const express = require("express"); 
 const router = express.Router();
+const multer = require("multer");
 const prisma = require("../prismaClient");
 const admin = require('../middleware/admin');
+const auth = require("../middleware/auth");
+const fs = require("fs");
+const path = require("path");
 
+// ─── Configuração de fotos ─────────────────────────────────────────────
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "public/uploads/img/");
+    },
+    filename: (req, file, cb) => {
+        const nomeArquivo = `foto-${Date.now()}.jpg`;
+        cb(null, nomeArquivo);
+    }
+});
+const upload = multer({ storage: storage }); // Configura o destino dos arquivos enviados
 
 // ─── READ: Buscar todos os usuários ───────────────────────────────────────────
 router.get("/", admin, async (req, res) => {
@@ -21,17 +36,44 @@ router.get("/", admin, async (req, res) => {
     }
 });
 
-// ─── CREATE: Criar novo usuário ────────────────────────────────────────────────
-router.post("/", admin, async (req, res) => {
-    const { nome, email, senha, usuariocol } = req.body;
-
+router.get("/perfil", auth, async (req, res) => {
     try {
+        const idusuario = req.session.usuario.idusuario;
+
+        const usuario = await prisma.usuario.findUnique({
+            where: {
+                idusuario: idusuario
+            }
+        });
+
+        if (!usuario) {
+            return res.status(404).json({
+                error: "Usuário não encontrado"
+            });
+        }
+        res.json(usuario);
+
+    } catch (error) {
+        console.error("Erro ao buscar perfil:", error);
+        res.status(500).json({error: "Erro ao buscar perfil"});
+    }
+});
+
+// ─── CREATE: Criar novo usuário ────────────────────────────────────────────────
+router.post("/", admin, upload.single('foto'), async (req, res) => {
+    const { nome, email, usuariocol } = req.body;
+    
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "Nenhuma imagem enviada." });
+        }
+
         const novoUsuario = await prisma.usuario.create({
             data: {
                 nome,
                 email,
-                senha,
-                usuariocol
+                usuariocol,
+                foto: req.file.filename
             }
         });
         res.status(201).json(novoUsuario);
@@ -42,8 +84,68 @@ router.post("/", admin, async (req, res) => {
 });
 
 // ─── UPDATE: Atualizar usuário ────────────────────────────────────────────────
+router.put("/:id", admin, upload.single('foto'), async (req, res) => {
+  const { id } = req.params;
+  const { nome, email, usuariocol } = req.body;
+  try {
+    const data = {
+      nome,
+      email,
+      usuariocol
+    };
+    if (req.file) {
+      data.foto = req.file.filename;
+    }
+    const usuarioAtualizado = await prisma.usuario.update({
+      where: {
+        idusuario: parseInt(id)
+      },
+      data
+    });
+    res.json(usuarioAtualizado);
+  } catch (error) {
+    console.error("Erro ao atualizar usuário:", error);
+    res.status(500).json({
+      error: "Ocorreu um erro ao atualizar o usuário."
+    });
+  }
+});
 
 // ─── DELETE: Deletar usuário ────────────────────────────────────────────────
+router.delete("/:id", admin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const usuario = await prisma.usuario.findUnique({
+            where: {
+                idusuario: parseInt(id)
+            }
+        });
 
-
+        if (!usuario) {
+            return res.status(404).json({
+                error: "Usuário não encontrado."
+            });
+        }
+        const caminhoFoto = path.join(
+            __dirname,
+            "../public/uploads",
+            usuario.foto
+        );
+        if (usuario.foto && fs.existsSync(caminhoFoto)) {
+            fs.unlinkSync(caminhoFoto);
+        }
+        await prisma.usuario.delete({
+            where: {
+                idusuario: parseInt(id)
+            }
+        });
+        res.status(200).json({
+            message: "Usuário e foto deletados com sucesso."
+        });
+    } catch (error) {
+        console.error("Erro ao deletar usuário:", error);
+        res.status(500).json({
+            error: "Erro ao deletar usuário."
+        });}
+});
 module.exports = router;

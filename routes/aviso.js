@@ -47,8 +47,27 @@ router.post("/", admin, async (req, res) => {
 // ─── UPDATE: Editar um aviso existente ──────────────────────────────────────
 // PUT /api/avisos/:id
 // Atualiza os campos do aviso com base no corpo da requisição.
-router.put("/:id",admin , (req, res) => {
-  // fazer a config no modal para ter a opcao de editar
+router.put("/:id", admin, async (req, res) => {
+    const id = Number(req.params.id);
+    const { titulo, conteudo, escopo } = req.body;
+    try {
+        const avisoAtualizado = await prisma.aviso.update({
+            where: {
+                idaviso: id
+            },
+            data: {
+                titulo,
+                conteudo,
+                escopo
+            }
+        });
+        res.json(avisoAtualizado);
+    } catch (error) {
+        console.error("Erro ao atualizar aviso:", error);
+        res.status(500).json({
+            error: "Erro ao atualizar aviso."
+        });
+    }
 });
 
 // ─── DELETE: Deletar um aviso ────────────────────────────────────────────────

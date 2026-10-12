@@ -1,0 +1,42 @@
+/* modal foto */
+.fotoSection{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-grow: 1;
+}
+
+.fotoSection .camera{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 35%;
+    align-items: center;
+    justify-content: center;
+}
+.camera #webcam{
+    margin: 1rem 0;
+    max-height: 95%;
+}
+
+.cameraOptions{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem
+}
+
+.btn-close{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+/* tabela */
+.fotoIcon{
+    min-height: 3rem;
+    max-height: 3rem;
+    width: 50px;
+    border: 2px solid black;
+    border-radius: 50%;
+}

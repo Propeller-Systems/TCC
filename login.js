@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
-const bycrpt = require("bcrypt");
 const prisma = require("./prismaClient");
 
 router.post("/", async (req, res) => {

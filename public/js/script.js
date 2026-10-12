@@ -1,3 +1,5 @@
+let usuarios = [];
+let usuariosEditando = null;
 let toggleBtn;
 let sidebar;
 
@@ -76,7 +78,7 @@ console.log(window.location.pathname.split("/"));
 
 async function fetchUsuarios() {
   const response = await fetch("/api/usuarios");
-  const usuarios = await response.json();
+  usuarios = await response.json();
 
   const tbody = document.querySelector("#tabela-usuarios");
 
@@ -86,31 +88,37 @@ async function fetchUsuarios() {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${usuario.idusuario}</td>
-      <td><img src="${usuario.foto}" alt="Foto" style="width: 50px; height: 50px;"></td>
+      <td><img src="/uploads/img/${usuario.foto}" alt="Foto" class="fotoIcon"></td>
       <td>${usuario.nome}</td>
       <td>${usuario.email}</td>
       <td>${usuario.usuariocol}</td>
       <td>${new Date(usuario.dataCriacao).toLocaleDateString("pt-BR")}</td>
+      <td>
+        <button type="button" class="btn btn-warning" onclick="editarUsuario(${usuario.idusuario})">Editar</button>
+        <button type="button" class="btn btn-danger" onclick="excluirUsuario(${usuario.idusuario})">Excluir</button>
+      </td>
     `;
     tbody.appendChild(row);
   });
 }
-
-fetchUsuarios();
-
-// total de usuarios
-async function carregarTotalUsuarios() {
-  try {
-    const res = await fetch("/totalUsuarios");
-    const text = await res.text();
-    console.log("RESPOSTA:", text);
-    const data = JSON.parse(text);
-
-    document.querySelector("#totalUsuarios").textContent = data.total;
-
-  } catch (err) {
-    console.error("ERRO:", err);
-  }
+async function editarUsuario(id) {
+    const usuario = usuarios.find(u => u.idusuario === id);
+    if (!usuario) {
+        alert("Usuário não encontrado.");
+        return;
+    }
+    usuarioEditando = id;
+    document.getElementById("nome-user").value = usuario.nome;
+    document.getElementById("nome-email").value = usuario.email;
+    document.getElementById("escopo-user").value = usuario.usuariocol;
 }
 
-carregarTotalUsuarios();
+async function excluirUsuario(id) {
+  if (confirm("Deseja mesmo excluir este usuário?")) {
+    await fetch(`/api/usuarios/${id}`, {
+      method: "DELETE",
+    });
+    fetchUsuarios();
+  }
+}
+fetchUsuarios();
