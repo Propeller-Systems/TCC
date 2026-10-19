@@ -594,4 +594,80 @@ function fecharDocModal() {
     }
 }
 
+// visualizar documentos
+function abrirModalVisualizacao(documento) {
+    let modal = document.getElementById("modalVisualizacaoDoc");
+
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "modalVisualizacaoDoc";
+
+        Object.assign(modal.style, {
+            position: "fixed",
+            inset: "0",
+            background: "rgba(0, 0, 0, 0.7)",
+            zIndex: "9999",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px"
+        });
+
+        document.body.appendChild(modal);
+
+        modal.addEventListener("click", event => {
+            if (event.target === modal) modal.style.display = "none";
+        });
+    }
+
+    modal.innerHTML = "";
+
+    const conteudo = document.createElement("div");
+
+    Object.assign(conteudo.style, {
+        background: "#fff",
+        color: "#222",
+        width: "90%",
+        maxWidth: "1000px",
+        height: "85vh",
+        padding: "20px",
+        overflow: "auto",
+        borderRadius: "8px",
+        position: "relative"
+    });
+
+    const fechar = document.createElement("button");
+    fechar.type = "button";
+    fechar.textContent = "Fechar";
+
+    Object.assign(fechar.style, {
+        float: "right",
+        cursor: "pointer"
+    });
+
+    fechar.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    const titulo = document.createElement("h2");
+    titulo.textContent = documento.titulo;
+
+    const texto = document.createElement("p");
+    texto.textContent = documento.texto || "Sem descrição.";
+
+    const visualizador = document.createElement("iframe");
+    visualizador.title = documento.titulo;
+    visualizador.src =
+        `/uploads/doc/${encodeURIComponent(documento.caminho)}`;
+
+    Object.assign(visualizador.style, {
+        width: "100%",
+        height: "70%",
+        border: "none"
+    });
+
+    conteudo.append(fechar, titulo, texto, visualizador);
+    modal.appendChild(conteudo);
+    modal.style.display = "flex";
+}
 

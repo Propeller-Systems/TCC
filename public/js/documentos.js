@@ -1,6 +1,7 @@
 const slider = document.getElementById("slider");
 const documentosContainer = document.getElementById("documentos-container");
 const btnDoc = document.getElementById("btnDoc");
+let documentosCarregados = [];
 
 if (slider && documentosContainer && btnDoc) {
     slider.addEventListener("change", function() {
@@ -33,10 +34,9 @@ if (slider && documentosContainer && btnDoc) {
 }
 
 async function carregarDocumentos() {
-    const container = document.getElementById("documentos-container");
+    if (!documentosContainer) return;
 
-    if (!container) return;
-    container.innerHTML = `<p>Carregando documentos...</p>`;
+    documentosContainer.innerHTML = "<p>Carregando documentos...</p>";
 
     try {
         const response = await fetch("/api/doc");
@@ -45,21 +45,30 @@ async function carregarDocumentos() {
             throw new Error("Erro ao buscar documentos");
         }
 
-        const documentos = await response.json();
-        if (documentos.length === 0) {
-            container.innerHTML = `<p>Nenhum documento encontrado.</p>`;
+        documentosCarregados = await response.json();
+
+        if (documentosCarregados.length === 0) {
+            documentosContainer.innerHTML =
+                "<p>Nenhum documento encontrado.</p>";
             return;
         }
-        container.innerHTML = "";
-        documentos.forEach(documento => {
-            const elemento = criarDocumentoHTML(documento);
-            container.appendChild(elemento);
 
+        documentosContainer.innerHTML = "";
+
+        documentosCarregados.forEach(documento => {
+            const elemento = criarDocumentoHTML(documento);
+
+            // Guarda o ID real no elemento HTML
+            elemento.dataset.id = documento.iddocumento;
+            elemento.style.cursor = "pointer";
+
+            documentosContainer.appendChild(elemento);
         });
 
     } catch (error) {
         console.error("Erro ao carregar documentos:", error);
-        container.innerHTML = `<p>Erro ao carregar documentos.</p>`;
+        documentosContainer.innerHTML =
+            "<p>Erro ao carregar documentos.</p>";
     }
 }
 
@@ -91,5 +100,29 @@ function criarDocumentoHTML(documento) {
         ;
     return div;
 }
+
+//visualizar documentos
+documentosContainer.addEventListener("click", (event) => {
+    const elemento = event.target.closest("[data-id]");
+
+    if (!elemento || !documentosContainer.contains(elemento)) {
+        return;
+    }
+
+    // Evita abrir a visualização ao clicar em botões internos
+    if (event.target.closest("button, a")) {
+        return;
+    }
+
+    const id = Number(elemento.dataset.id);
+
+    const documento = documentosCarregados.find(
+        doc => doc.iddocumento === id
+    );
+
+    if (documento) {
+        abrirModalVisualizacao(documento);
+    }
+});
 
 carregarDocumentos();
