@@ -293,7 +293,9 @@ function abrirModalFoto() {
             </div>
         </div>
 
-        <div class="image mt-3">
+        <h4 class="text-center">Veja uma prévia</h4>
+
+        <div class="image mt-2">
             <img
                 src=""
                 alt="Foto Capturada"
@@ -415,8 +417,10 @@ function fecharFotoModal() {
     fotoBlob = null;
 }
 
-function abrirModalDoc() {
+function abrirModalDoc(documento = null) {
     if (document.getElementById("docModal")) return;
+
+    const modoEdicao = Boolean(documento);
 
     let modalF = document.createElement("dialog");
     modalF.id = "docModal";
@@ -445,7 +449,7 @@ function abrirModalDoc() {
         <div class="p-3">
 
             <h2 class="mb-4">
-                Novo Documento
+                ${modoEdicao ? "Editar Documento" : "Novo Documento"}
             </h2>
 
             <div class="mb-3">
@@ -460,7 +464,8 @@ function abrirModalDoc() {
                     id="titulo"
                     name="titulo"
                     class="form-control"
-                    placeholder="Digite o título do documento">
+                    placeholder="Digite o título do documento"
+                    value="${documento ? documento.titulo.replace(/"/g, '&quot;') : ''}">
             </div>
 
             <div class="mb-3">
@@ -475,14 +480,14 @@ function abrirModalDoc() {
                     name="texto"
                     class="form-control"
                     rows="8"
-                    placeholder="Digite uma descrição ou informações sobre o documento..."></textarea>
+                    placeholder="Digite uma descrição ou informações sobre o documento...">${documento ? documento.texto : ''}</textarea>
             </div>
 
             <div class="mb-3">
                 <label
                     for="arquivo"
                     class="form-label">
-                    Arquivo
+                    ${modoEdicao ? "Trocar arquivo (opcional)" : "Arquivo"}
                 </label>
 
                 <input
@@ -490,7 +495,8 @@ function abrirModalDoc() {
                     id="arquivo"
                     name="arquivo"
                     class="form-control"
-                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+                    ${modoEdicao ? "" : "required"}>
                 
                 <small class="text-muted">
                     Formatos aceitos: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX e TXT.
@@ -507,9 +513,9 @@ function abrirModalDoc() {
 
                 <button
                     type="button"
-                    onclick="salvarDocumento()"
+                    onclick="salvarDocumento(${documento ? documento.iddocumento : "null"})"
                     class="btn">
-                    Salvar Documento
+                    ${modoEdicao ? "Salvar Alterações" : "Salvar Documento"}
                 </button>
             </div>
 
@@ -534,13 +540,13 @@ function abrirModalDoc() {
     }
 }
 
-async function salvarDocumento(){
-    const titulo = document.getElementById("titulo").value;
-    const texto = document.getElementById("texto").value;
-    const arquivo = document.getElementById("arquivo").files[0];
+async function salvarDocumento(idDocumento = null){
+    const titulo = document.getElementById("titulo").value.trim();
+    const texto = document.getElementById("texto").value.trim();
+    const arquivo = document.getElementById("arquivo")?.files[0];
 
-    if(!titulo || !texto || !arquivo){
-        alert("Preencha todos os campos e selecione um arquivo");
+    if(!titulo || !texto || (!arquivo && !idDocumento)){
+        alert(idDocumento ? "Preencha título e descrição antes de salvar." : "Preencha todos os campos e selecione um arquivo");
         return;
     }
 
@@ -548,19 +554,22 @@ async function salvarDocumento(){
 
     formData.append("titulo", titulo);
     formData.append("texto", texto);
-    formData.append("arquivo", arquivo);
+
+    if (arquivo) {
+        formData.append("arquivo", arquivo);
+    }
 
     try{
-        const response = await fetch("/api/doc", {
-            method: "POST",
+        const response = await fetch(idDocumento ? `/api/doc/${idDocumento}` : "/api/doc", {
+            method: idDocumento ? "PUT" : "POST",
             body: formData
         });
 
-        const resultado = await response.json();
+        const resultado = await response.json().catch(() => ({}));
 
-        if(!response.ok) throw new Error(resultado.error || "Erro ao criar documento");
+        if(!response.ok) throw new Error(resultado.error || "Erro ao salvar documento");
 
-        alert("Documento criado com sucesso")
+        alert(idDocumento ? "Documento atualizado com sucesso" : "Documento criado com sucesso");
 
         fecharDocModal();
 

@@ -69,6 +69,58 @@
     align-items: center;
 }
 
+.documento .doc-actions {
+    position: relative;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.documento .dropdown-box {
+    position: absolute;
+    top: -50%;
+    right: 3rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+    background: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(6px);
+    transition: all 0.2s ease;
+    z-index: 15;
+    overflow: hidden;
+}
+
+.documento .dropdown-box.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+.documento .dropdown-item {
+    border: 0;
+    background: transparent;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-size: 0.92rem;
+    color: #1f2937;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.documento .dropdown-item:hover {
+    background: #f3f4f6;
+}
+
+.documento .dropdown-item.danger {
+    color: #b42318;
+}
+
 .documento p{
     padding: 0;
     margin: 0.25rem 0 0 0   ;
