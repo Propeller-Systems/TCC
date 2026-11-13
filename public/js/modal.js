@@ -166,15 +166,16 @@ function abrirTabela() {
             const dados = await response.json();
 
             let htmlTabela = `
-                <table class="tabela-modal">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Foto</th>
-                            <th>Nome</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="tabela-modal-container">
+                    <table class="tabela-modal">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Foto</th>
+                                <th>Nome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
             `;
 
             dados.forEach(item => {
@@ -182,16 +183,17 @@ function abrirTabela() {
 
                 htmlTabela += `
                     <tr>
-                        <td>${idusuario}</td>
-                        <td>${foto}</td>
-                        <td>${nome}</td>
+                        <td class="tabela-modal-id">${idusuario}</td>
+                        <td><img src="/uploads/img/${encodeURIComponent(foto)}" alt="Foto do funcionário" class="foto-funcionario"></td>
+                        <td class="tabela-modal-nome">${nome}</td>
                     </tr>
                 `;
             });
 
             htmlTabela += `
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             `;
 
             tabela.innerHTML = htmlTabela;

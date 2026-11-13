@@ -19,3 +19,76 @@
     background-color: transparent;
     border: none;
 }
+
+.tabela-modal-container {
+    max-height: 260px;
+    margin: 0.25rem 0 1rem;
+    overflow: auto;
+    border: 1px solid #e2e6ea;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.tabela-modal {
+    width: 100%;
+    min-width: 320px;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: #333;
+}
+
+.tabela-modal th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0.75rem 1rem;
+    background: #f3f5f7;
+    color: #555;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.tabela-modal td {
+    padding: 0.6rem 1rem;
+    border-top: 1px solid #edf0f2;
+    vertical-align: middle;
+}
+
+.tabela-modal tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.tabela-modal tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.tabela-modal-id {
+    width: 4rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.foto-funcionario {
+    display: block;
+    width: 42px;
+    height: 42px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tabela-modal-nome {
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    .tabela-modal th,
+    .tabela-modal td {
+        padding: 0.55rem 0.7rem;
+    }
+}
