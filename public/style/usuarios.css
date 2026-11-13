@@ -3,20 +3,19 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    flex-grow: 1;
 }
 
 .fotoSection .camera{
     display: flex;
     flex-direction: column;
     width: 50%;
-    height: 35%;
-    align-items: center;
+    height: 100%;
     justify-content: center;
 }
 .camera #webcam{
     margin: 1rem 0;
     max-height: 95%;
+    border-radius: 1rem;
 }
 
 .cameraOptions{

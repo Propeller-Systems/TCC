@@ -74,103 +74,101 @@
           <!-- Aqui serão inseridos os usuários dinamicamente e automaticamente-->
         </tbody>
       </table>
-
-
     </form>
   </main>
+
   <script src="js/modal.js" defer></script>
   <script src="js/script.js" defer></script>
   <script>
     let usuarioEditando = null;
-const userForm = document.getElementById('user-form');
+    const userForm = document.getElementById('user-form');
 
-userForm.addEventListener('submit', async (event) => {
+    userForm.addEventListener('submit', async (event) => {
 
-    event.preventDefault();
+      event.preventDefault();
 
-    const formData = new FormData();
+      const formData = new FormData();
 
-    formData.append(
-        'nome',
-        document.getElementById('nome-user').value
-    );
+      formData.append(
+          'nome',
+          document.getElementById('nome-user').value
+      );
 
-    formData.append(
-        'email',
-        document.getElementById('nome-email').value
-    );
+      formData.append(
+          'email',
+          document.getElementById('nome-email').value
+      );
 
-    formData.append(
-        'usuariocol',
-        document.getElementById('escopo-user').value
-    );
+      formData.append(
+          'usuariocol',
+          document.getElementById('escopo-user').value
+      );
 
-    // Foto só é obrigatória ao CRIAR
-    if (!usuarioEditando) {
+      // Foto só é obrigatória ao CRIAR
+      if (!usuarioEditando) {
 
-        if (!fotoBlob) {
-            alert("Por favor, capture uma foto antes de enviar o formulário.");
-            return;
-        }
+          if (!fotoBlob) {
+              alert("Por favor, capture uma foto antes de enviar o formulário.");
+              return;
+          }
 
-        formData.append(
-            'foto',
-            fotoBlob,
-            `foto-${Date.now()}.jpg`
-        );
+          formData.append(
+              'foto',
+              fotoBlob,
+              `foto-${Date.now()}.jpg`
+          );
 
-    } else {
+      } else {
 
-        // Se estiver editando e o usuário tirou uma nova foto,
-        // envia a nova foto.
-        if (fotoBlob) {
-            formData.append(
-                'foto',
-                fotoBlob,
-                `foto-${Date.now()}.jpg`
-            );
-        }
-    }
+          // Se estiver editando e o usuário tirou uma nova foto,
+          // envia a nova foto.
+          if (fotoBlob) {
+              formData.append(
+                  'foto',
+                  fotoBlob,
+                  `foto-${Date.now()}.jpg`
+              );
+          }
+      }
 
-    try {
-        let response;
-        if (usuarioEditando) {
-            response = await fetch(
-                `/api/usuarios/${usuarioEditando}`,
-                {
-                    method: 'PUT',
-                    body: formData
-                });} else {
-            response = await fetch(
-                '/api/usuarios',
-                {
-                    method: 'POST',
-                    body: formData
-                });}
+      try {
+          let response;
+          if (usuarioEditando) {
+              response = await fetch(
+                  `/api/usuarios/${usuarioEditando}`,
+                  {
+                      method: 'PUT',
+                      body: formData
+                  });} else {
+              response = await fetch(
+                  '/api/usuarios',
+                  {
+                      method: 'POST',
+                      body: formData
+                  });}
 
-        const result = await response.json();
-        if (!response.ok) {
-            throw new Error(
-                result.error || "Erro ao salvar usuário."
-            );}
-        if (usuarioEditando) {
-            alert("Usuário alterado com sucesso!");} else {
-            alert("Usuário adicionado com sucesso!");
-        }
-        userForm.reset();
-        fotoBlob = null;
-        usuarioEditando = null;
-        fetchUsuarios();
-    } catch (error) {
-        console.error(
-            'Erro ao enviar o formulário:',
-            error
-        );
-        alert(
-            `Ocorreu um erro ao salvar o usuário: ${error.message}`
-        );}
-});
-
+          const result = await response.json();
+          if (!response.ok) {
+              throw new Error(
+                  result.error || "Erro ao salvar usuário."
+              );}
+          if (usuarioEditando) {
+              alert("Usuário alterado com sucesso!");} else {
+              alert("Usuário adicionado com sucesso!");
+          }
+          userForm.reset();
+          fotoBlob = null;
+          usuarioEditando = null;
+          fetchUsuarios();
+      } catch (error) {
+          console.error(
+              'Erro ao enviar o formulário:',
+              error
+          );
+          alert(
+              `Ocorreu um erro ao salvar o usuário: ${error.message}`
+          );}
+    });
   </script>
 </body>
 </html>
