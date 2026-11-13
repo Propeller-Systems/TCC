@@ -72,6 +72,29 @@
     font-variant-numeric: tabular-nums;
 }
 
+.tabela-modal-selecao {
+    width: 5.5rem;
+    text-align: center;
+}
+
+.tabela-modal-selecao input {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0;
+    accent-color: #198754;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.tabela-modal-selecao input:focus-visible {
+    outline: 3px solid rgba(25, 135, 84, 0.3);
+    outline-offset: 2px;
+}
+
+.tabela-modal tbody tr.funcionario-selecionado {
+    background: #eaf5ee;
+}
+
 .foto-funcionario {
     display: block;
     width: 42px;

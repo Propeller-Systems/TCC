@@ -170,6 +170,7 @@ function abrirTabela() {
                     <table class="tabela-modal">
                         <thead>
                             <tr>
+                                <th scope="col">Selecionar</th>
                                 <th>ID</th>
                                 <th>Foto</th>
                                 <th>Nome</th>
@@ -183,6 +184,9 @@ function abrirTabela() {
 
                 htmlTabela += `
                     <tr>
+                        <td class="tabela-modal-selecao">
+                            <input type="checkbox" name="funcionariosSelecionados" value="${idusuario}" aria-label="Selecionar funcionário ID ${idusuario}">
+                        </td>
                         <td class="tabela-modal-id">${idusuario}</td>
                         <td><img src="/uploads/img/${encodeURIComponent(foto)}" alt="Foto do funcionário" class="foto-funcionario"></td>
                         <td class="tabela-modal-nome">${nome}</td>
@@ -197,6 +201,11 @@ function abrirTabela() {
             `;
 
             tabela.innerHTML = htmlTabela;
+            tabela.querySelectorAll('input[name="funcionariosSelecionados"]').forEach(selecao => {
+                selecao.addEventListener("change", () => {
+                    selecao.closest("tr").classList.toggle("funcionario-selecionado", selecao.checked);
+                });
+            });
 
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
