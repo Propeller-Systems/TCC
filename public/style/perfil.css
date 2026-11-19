@@ -1,0 +1,227 @@
+/* Profile Styles */
+
+.picture-profile {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1em;
+}
+
+.name{
+    margin-left: 10px;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+.profile{
+    margin-top: 100%;
+}
+
+/* Profile page */
+.profile-page .profile-main {
+    min-width: 0;
+    margin: 0;
+    padding: 1.5rem 2rem;
+}
+
+.profile-shell {
+    width: 95%;
+    max-width: 68rem;
+    margin: 0 auto;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.profile-header h1 {
+    padding: 1rem 0;
+    color: #000;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.profile-logout {
+    margin: 0;
+}
+
+.profile-logout button {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid #d5dce7;
+    border-radius: 0.75rem;
+    background: #fff;
+    color: #a43131;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.profile-logout button:hover,
+.profile-logout button:focus-visible {
+    border-color: #e7bcbc;
+    background: #fff5f5;
+}
+
+.profile-logout svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: currentColor;
+}
+
+.profile-card {
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto 20px;
+    border: 0;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.profile-cover {
+    position: relative;
+    z-index: 0;
+    height: clamp(6.5rem, 13vw, 8rem);
+    overflow: hidden;
+    background: linear-gradient(115deg, var(--primary-color), var(--secondary-color));
+}
+
+.profile-cover::before,
+.profile-cover::after {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    content: "";
+}
+
+.profile-cover::before {
+    top: -8rem;
+    right: 6%;
+    width: 20rem;
+    height: 20rem;
+}
+
+.profile-cover::after {
+    top: -5rem;
+    right: 18%;
+    width: 14rem;
+    height: 14rem;
+}
+
+#profile-div {
+    position: relative;
+    z-index: 1;
+    padding: 0 clamp(1.25rem, 5vw, 3rem) 2.5rem;
+}
+
+.profile-identity {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-top: -3.5rem;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    display: grid;
+    width: 7rem;
+    height: 7rem;
+    flex: 0 0 7rem;
+    place-items: center;
+    overflow: hidden;
+    border: 5px solid #fff;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #dce8f3, #b8cce0);
+    color: #244766;
+    font-size: 1.8rem;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(20, 42, 66, 0.18);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-identity-copy {
+    min-width: 0;
+    padding: 3.5rem 0 0.55rem;
+}
+
+.profile-identity-copy h2 {
+    overflow-wrap: anywhere;
+    margin: 0 0 0.55rem;
+    color: #172033;
+    font-size: clamp(1.35rem, 3vw, 1.8rem);
+    font-weight: 700;
+}
+
+.profile-role {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: #eaf2f8;
+    color: #315c83;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.profile-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e8edf3;
+}
+
+.profile-detail {
+    min-width: 0;
+    padding: 1rem 1.1rem;
+    border: 1px solid #e1e1e1;
+    border-radius: 0.85rem;
+    background: var(--background-color);
+}
+
+.profile-detail span {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.profile-detail p {
+    overflow-wrap: anywhere;
+    margin: 0;
+    padding: 0;
+    color: #1e293b;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.profile-loading,
+.profile-error {
+    margin: 0;
+    padding: 2rem 0;
+    color: #526176;
+}
+
+.profile-error {
+    color: #a43131;
+}

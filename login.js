@@ -51,4 +51,16 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/logout", (req, res) => {
+  req.session.destroy((error) => {
+    if (error) {
+      console.error("Erro ao encerrar sessão:", error);
+      return res.status(500).send("Não foi possível encerrar a sessão.");
+    }
+
+    res.clearCookie("connect.sid", { path: "/" });
+    return res.redirect("/");
+  });
+});
+
 module.exports = router; // exporta o roteador para ser usado em outros arquivos (como app.js)

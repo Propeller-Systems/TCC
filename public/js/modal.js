@@ -88,16 +88,16 @@ function abrirModal(aviso = null) {
             <div id="exibirTabela"></div>
 
             <div class="flex gap-2">
-                <button type="submit" class="btn btn-success">
-                    ${aviso ? "Atualizar" : "Publicar"}
-                </button>
-
-                <button
+                <button class="btn btn-danger"
                     type="button"
                     onclick="fecharModal()"
                     class="btn">
                     Cancelar
                 </button>
+                <button type="submit" class="btn btn-success">
+                    ${aviso ? "Atualizar" : "Publicar"}
+                </button>
+
             </div>
         </form>
     `;
@@ -518,14 +518,14 @@ function abrirModalDoc(documento = null) {
                 <button
                     type="button"
                     onclick="fecharDocModal()"
-                    class="btn">
+                    class="btn btn-danger">
                     Cancelar
                 </button>
 
                 <button
                     type="button"
                     onclick="salvarDocumento(${documento ? documento.iddocumento : "null"})"
-                    class="btn">
+                    class="btn btn-success">
                     ${modoEdicao ? "Salvar Alterações" : "Salvar Documento"}
                 </button>
             </div>

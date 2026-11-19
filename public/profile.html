@@ -1,24 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avisos e notícias</title>
+    <title>Meu perfil</title>
     <link href="style/style.css" rel="stylesheet">
+    <link href="style/perfil.css" rel="stylesheet">
 </head>
-<body>
+<body class="profile-page">
 
-   <div id="sidebar-placeholder"></div>
-        <main> 
-            <div class="container">
-                <div id="profile-div">
-                <!-- <img class="picture-profile" src="/image/icon.png">
-                 <label class="name">Leon da silvia Ada</label>
-                 <h2>Mensagens:</h2>
-                 <p>"AQUI VAI RECEBER ALGUMA MENSAGEM ENVIADA A ELE"</p> -->
+    <div id="sidebar-placeholder"></div>
+
+    <main class="profile-main">
+        <div class="profile-shell">
+            <header class="profile-header">
+                <div>
+                    <h1>Meu perfil</h1>
                 </div>
-            </div>
-        </main>
+                <form class="profile-logout" action="/logout" method="POST">
+                    <button type="submit">
+                        <svg aria-hidden="true" viewBox="0 0 24 24">
+                            <path d="M10 17l1.4-1.4L9.8 14H20v-2H9.8l1.6-1.6L10 9l-5 4 5 4zm-5 4h9a2 2 0 0 0 2-2v-2h-2v2H5V5h9v2h2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"/>
+                        </svg>
+                        Sair
+                    </button>
+                </form>
+            </header>
+            <section class="profile-card" aria-label="Informações do perfil">
+                <div class="profile-cover" aria-hidden="true"></div>
+                <div id="profile-div" aria-live="polite">
+                    <p class="profile-loading" role="status">Carregando perfil...</p>
+                </div>
+            </section>
+        </div>
+    </main>
     
    <script src="js/script.js" defer></script>
    <script src="js/profile.js" defer></script>
