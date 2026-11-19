@@ -30,6 +30,7 @@ CREATE TABLE `usuario` (
   `foto` varchar(45) NOT NULL,
   `usuariocol` enum('admin','funcionario') NOT NULL,
   `senha` varchar(45) NOT NULL DEFAULT 'h3IpM3',
+  `estado` tinyint NOT NULL,
   PRIMARY KEY (`idusuario`),
   UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -41,7 +42,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'admin','admin@gmail.com','2026-04-28 16:19:00','leon_foto.jpg','admin','admin');
+INSERT INTO `usuario` VALUES (1,'admin','admin@gmail.com','2026-04-28 16:19:00','leon_foto.jpg','admin','admin',1);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-28  1:39:29
+-- Dump completed on 2026-11-16 11:36:30

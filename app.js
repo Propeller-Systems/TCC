@@ -12,6 +12,7 @@ const admin = require("./middleware/admin");
 const avisosRouter = require("./routes/aviso");
 const usuarioRouter = require("./routes/usuario");
 const documentoRouter = require("./routes/doc");
+const { error } = require("console");
 
 const app = express();
 const PORT = 3000;
@@ -31,6 +32,7 @@ app.use("/api/avisos", auth, admin, avisosRouter);
 app.use("/api/usuarios", auth, admin, usuarioRouter);
 app.use("/api/doc", auth, admin, documentoRouter);
 
+// Dashboard - HOME - Parte onde mostra os dados dos usuarios 
 app.get("/totalUsuarios", auth, admin, async (req, res) => {
     try {
         const total = await prisma.usuario.count();
@@ -42,6 +44,18 @@ app.get("/totalUsuarios", auth, admin, async (req, res) => {
         });
     }
 });
+
+app.get("/usuarioAtivo", auth, admin, async(req, res) =>{
+    try{
+        const ativos = await prisma.usuario.count({
+            where:{estado: 1}
+        });
+        return res.status(200).json({ativos});
+    }catch(error){
+        console.error('Erro ao contar usuarios ativos: ', error);
+        return res.status(500).json("Erro ao buscar usuarios ativos")
+    }
+})
 
 app.use((req, res, next) => {
     const PaginaHTML = path.extname(req.path).toLowerCase() === ".html";

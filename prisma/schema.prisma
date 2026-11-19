@@ -27,6 +27,7 @@ model usuario {
   foto        String             @db.VarChar(45)
   usuariocol  usuario_usuariocol
   senha       String             @default("h3IpM3") @db.VarChar(45)
+  estado      Int                @default(1) @db.TinyInt
   aviso       aviso[]
 }
 

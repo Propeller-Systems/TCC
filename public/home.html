@@ -27,7 +27,7 @@
                 <div class="dash">
                     <img src="icons/activef.png" class="dash-icon" alt="">
                     <span class="label">Funcionários Ativos</span>
-                    <span class="fs-1">0</span>
+                    <span class="fs-1" id="usuarioAtivo">0</span>
                 </div>
                 <div class="dash">
                     <img src="icons/contratf.png" class="dash-icon" alt="">
@@ -56,7 +56,21 @@
             }
         }
 
+        async function carregarAtivos() {
+            try{
+                const response = await fetch("/usuarioAtivo");
+                const text = await response.text();
+                console.log("ATIVOS:", text);
+                const data = JSON.parse(text);
+
+                document.querySelector("#usuarioAtivo").textContent = data.ativos
+            }catch(err){
+                console.error("Erro: ",err)
+            }
+        }
+
         carregarTotalUsuarios();
+        carregarAtivos();
     </script>
 </body>
 
