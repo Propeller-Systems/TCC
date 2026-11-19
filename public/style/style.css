@@ -230,7 +230,7 @@ main p{
         border-radius: 15px;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     }
-    
+
 }
 
 /* Botoes */
@@ -242,6 +242,118 @@ main p{
     right: 2%;
     top: 3%;
     z-index: 9;
+}
+
+/* Daltonism filter controls */
+html[data-color-filter="color-filter-protanopia"] {
+    filter: url("#color-filter-protanopia");
+}
+
+html[data-color-filter="color-filter-deuteranopia"] {
+    filter: url("#color-filter-deuteranopia");
+}
+
+html[data-color-filter="color-filter-tritanopia"] {
+    filter: url("#color-filter-tritanopia");
+}
+
+html[data-color-filter="color-filter-achromatopsia"] {
+    filter: url("#color-filter-achromatopsia");
+}
+
+#color-filter-definitions {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+#daltonism-widget {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 10000;
+    font-family: inherit;
+}
+
+#daltonism-toggle {
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--primary-color);
+    color: var(--text-color-primary);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#daltonism-toggle:hover,
+#daltonism-toggle:focus-visible {
+    background: var(--secondary-color);
+}
+
+#daltonism-panel {
+    position: absolute;
+    right: calc(100% + 0.75rem);
+    bottom: 0;
+    width: min(19rem, calc(100vw - 2rem));
+    padding: 1rem;
+    border: 1px solid #d0d0d0;
+    border-radius: 0.75rem;
+    background: #fff;
+    color: #222;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+#daltonism-panel[hidden] {
+    display: none;
+}
+
+.daltonism-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.daltonism-panel-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+#daltonism-close {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#daltonism-panel label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-weight: 600;
+}
+
+#daltonism-select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem;
+    border: 1px solid #777;
+    border-radius: 0.35rem;
+    background: #fff;
+    color: #222;
+    font: inherit;
+}
+
+#daltonism-panel p {
+    margin: 0.65rem 0 0;
+    padding: 0;
+    font-size: 0.85rem;
 }
 
 /* Tags */
@@ -294,5 +406,16 @@ ul{
     }
     to{
         opacity: 1;
+    }
+}
+
+@media(max-width: 800px){
+    #daltonism-widget {
+        bottom: 76px;
+    }
+
+    #daltonism-panel {
+        right: 0;
+        bottom: calc(100% + 0.75rem);
     }
 }
