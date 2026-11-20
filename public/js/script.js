@@ -56,7 +56,7 @@ function initializeDaltonismFilter() {
       <p>O filtro de simulação é aplicado ao conteúdo do site.</p>
     </section>
     <button type="button" id="daltonism-toggle" aria-expanded="false" aria-controls="daltonism-panel">
-      Acessibilidade
+      Filtro
     </button>
   `;
   document.body.appendChild(widget);

@@ -39,11 +39,11 @@
 }
 
 #sidebar ul li.active a {
-    color: rgb(0, 0, 255);
+    color: #d7263d;
 }
 
 #sidebar ul li.active a svg {
-    fill: blue;
+    fill: #d7263d;
 }
 
 #sidebar a, #sidebar .dropdown-btn, #sidebar .logo{
