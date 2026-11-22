@@ -45,7 +45,7 @@
                                    TextColor="#2E7D32" />
                         </VerticalStackLayout>
 
-                        <Image x:Name="Card1ImageView" Source="dotnet_bot.png"
+                        <Image x:Name="Card1ImageView" Source="totalfuncionarios.png"
                                Grid.Column="1"
                                WidthRequest="80"
                                HeightRequest="80"
@@ -78,7 +78,7 @@
                                    TextColor="#2E7D32" />
                         </VerticalStackLayout>
 
-                        <Image x:Name="Card2ImageView" Source="{Binding Card2Image}"
+                        <Image x:Name="Card2ImageView" Source="funcionariosativos.png"
                                Grid.Column="1"
                                WidthRequest="72"
                                HeightRequest="72"
@@ -111,7 +111,7 @@
                                    TextColor="#9E9E9E" />
                         </VerticalStackLayout>
 
-                        <Image x:Name="Card3ImageView" Source="{Binding Card3Image}"
+                        <Image x:Name="Card3ImageView" Source="emlicenca.png"
                                Grid.Column="1"
                                WidthRequest="72"
                                HeightRequest="72"

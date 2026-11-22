@@ -8,6 +8,34 @@ namespace TCCpricipal
     {
         private Entry campoBusca;
         private VerticalStackLayout listaDocumentos;
+        private Grid modalEnvioDocumento = new();
+        private readonly Entry tituloDocumentoEntry = new()
+        {
+            Placeholder = "Digite o título do documento",
+            FontSize = 14,
+            TextColor = Color.FromArgb("#222222"),
+            BackgroundColor = Colors.White
+        };
+        private readonly Editor descricaoDocumentoEditor = new()
+        {
+            Placeholder = "Digite uma descrição ou informações sobre o documento...",
+            FontSize = 14,
+            TextColor = Color.FromArgb("#222222"),
+            BackgroundColor = Colors.White,
+            HeightRequest = 170
+        };
+        private readonly Label arquivoSelecionadoLabel = new()
+        {
+            Text = "Nenhum arquivo escolhido",
+            TextColor = Color.FromArgb("#444444"),
+            VerticalTextAlignment = TextAlignment.Center,
+            LineBreakMode = LineBreakMode.TailTruncation
+        };
+        private FileResult? arquivoSelecionado;
+        private static readonly HashSet<string> ExtensoesPermitidas = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt"
+        };
 
         public DocumentosPage()
         {
@@ -172,7 +200,140 @@ namespace TCCpricipal
 
             scroll.Content = conteudo;
 
-            Content = scroll;
+            Button escolherArquivoButton = new Button
+            {
+                Text = "Escolher arquivo",
+                FontSize = 14,
+                TextColor = Color.FromArgb("#333333"),
+                BackgroundColor = Color.FromArgb("#E9ECEF"),
+                CornerRadius = 4,
+                HorizontalOptions = LayoutOptions.Start
+            };
+            escolherArquivoButton.Clicked += SelecionarArquivo;
+
+            Button fecharModalButton = new Button
+            {
+                Text = "×",
+                FontSize = 24,
+                TextColor = Color.FromArgb("#222222"),
+                BackgroundColor = Colors.Transparent,
+                Padding = new Thickness(8, 0),
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Center
+            };
+            fecharModalButton.Clicked += (_, _) => modalEnvioDocumento.IsVisible = false;
+
+            Button cancelarEnvioButton = new Button
+            {
+                Text = "Cancelar",
+                FontSize = 14,
+                TextColor = Colors.White,
+                BackgroundColor = Color.FromArgb("#DC3545"),
+                CornerRadius = 4,
+                HorizontalOptions = LayoutOptions.Start
+            };
+            cancelarEnvioButton.Clicked += (_, _) => modalEnvioDocumento.IsVisible = false;
+
+            Button salvarDocumentoButton = new Button
+            {
+                Text = "Salvar Documento",
+                FontSize = 14,
+                TextColor = Colors.White,
+                BackgroundColor = Color.FromArgb("#198754"),
+                CornerRadius = 4,
+                HorizontalOptions = LayoutOptions.Start
+            };
+            salvarDocumentoButton.Clicked += SalvarDocumento;
+
+            Grid cabecalhoModal = new Grid
+            {
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto }
+                },
+                Children =
+                {
+                    new Label
+                    {
+                        Text = "Novo Documento",
+                        FontSize = 26,
+                        FontAttributes = FontAttributes.Bold,
+                        TextColor = Color.FromArgb("#222222"),
+                        VerticalOptions = LayoutOptions.Center
+                    },
+                    fecharModalButton
+                }
+            };
+            Grid.SetColumn(fecharModalButton, 1);
+
+            Grid selecaoArquivo = new Grid
+            {
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Star }
+                },
+                BackgroundColor = Colors.White,
+                ColumnSpacing = 8
+            };
+            selecaoArquivo.Add(escolherArquivoButton, 0);
+            selecaoArquivo.Add(arquivoSelecionadoLabel, 1);
+
+            VerticalStackLayout formulario = new VerticalStackLayout
+            {
+                Spacing = 8,
+                Children =
+                {
+                    cabecalhoModal,
+                    new Label { Text = "Título", TextColor = Color.FromArgb("#333333") },
+                    tituloDocumentoEntry,
+                    new Label { Text = "Sobre o documento", TextColor = Color.FromArgb("#333333") },
+                    descricaoDocumentoEditor,
+                    new Label { Text = "Arquivo", TextColor = Color.FromArgb("#333333") },
+                    selecaoArquivo,
+                    new Label
+                    {
+                        Text = "Formatos aceitos: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX e TXT.",
+                        FontSize = 12,
+                        TextColor = Colors.Gray
+                    },
+                    new HorizontalStackLayout
+                    {
+                        Spacing = 8,
+                        Children = { cancelarEnvioButton, salvarDocumentoButton }
+                    }
+                }
+            };
+
+            modalEnvioDocumento = new Grid
+            {
+                IsVisible = false,
+                BackgroundColor = Color.FromArgb("#66000000"),
+                Padding = 12,
+                Children =
+                {
+                    new ScrollView
+                    {
+                        VerticalOptions = LayoutOptions.Center,
+                        Content = new Frame
+                        {
+                            BackgroundColor = Colors.White,
+                            CornerRadius = 14,
+                            Padding = new Thickness(28, 24),
+                            HasShadow = true,
+                            HorizontalOptions = LayoutOptions.Center,
+                            MaximumWidthRequest = 760,
+                            Content = formulario
+                        }
+                    }
+                }
+            };
+
+            Content = new Grid
+            {
+                Children = { scroll, modalEnvioDocumento }
+            };
         }
 
         // CRIAR DOCUMENTO
@@ -180,7 +341,9 @@ namespace TCCpricipal
         Frame CriarDocumento(
             string nome,
             string data,
-            string destinatario)
+            string destinatario,
+            string? descricaoDocumento = null,
+            string? nomeArquivo = null)
         {
             Grid documento = new Grid
             {
@@ -233,13 +396,22 @@ namespace TCCpricipal
 
             Label anexo = new Label
             {
-                Text = "anexo documento",
+                Text = nomeArquivo ?? "anexo documento",
                 FontSize = 13,
                 TextColor = Color.FromArgb("#333333")
             };
 
             informacoes.Children.Add(tituloDocumento);
             informacoes.Children.Add(detalhes);
+            if (!string.IsNullOrWhiteSpace(descricaoDocumento))
+            {
+                informacoes.Children.Add(new Label
+                {
+                    Text = descricaoDocumento,
+                    FontSize = 13,
+                    TextColor = Color.FromArgb("#444444")
+                });
+            }
             informacoes.Children.Add(anexo);
 
             // MENU ⋮
@@ -342,11 +514,68 @@ namespace TCCpricipal
 
         async void EnviarDocumento(object sender, EventArgs e)
         {
-            await DisplayAlert(
-                "Enviar Documento",
-                "Aqui você poderá selecionar um documento para enviar.",
-                "OK"
-            );
+            modalEnvioDocumento.IsVisible = true;
+            await Task.CompletedTask;
+        }
+
+        async void SelecionarArquivo(object sender, EventArgs e)
+        {
+            try
+            {
+                FileResult? arquivo = await FilePicker.Default.PickAsync(new PickOptions
+                {
+                    PickerTitle = "Escolha um documento"
+                });
+
+                if (arquivo is null)
+                    return;
+
+                string extensao = Path.GetExtension(arquivo.FileName);
+                if (!ExtensoesPermitidas.Contains(extensao))
+                {
+                    await DisplayAlert(
+                        "Formato não aceito",
+                        "Selecione um arquivo PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX ou TXT.",
+                        "OK"
+                    );
+                    return;
+                }
+
+                arquivoSelecionado = arquivo;
+                arquivoSelecionadoLabel.Text = arquivo.FileName;
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro ao selecionar arquivo", ex.Message, "OK");
+            }
+        }
+
+        async void SalvarDocumento(object sender, EventArgs e)
+        {
+            string titulo = tituloDocumentoEntry.Text?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(titulo) || arquivoSelecionado is null)
+            {
+                await DisplayAlert(
+                    "Campos obrigatórios",
+                    "Informe o título e escolha um arquivo para salvar o documento.",
+                    "OK"
+                );
+                return;
+            }
+
+            listaDocumentos.Children.Insert(0, CriarDocumento(
+                titulo,
+                DateTime.Now.ToString("dd/MM/yyyy"),
+                "Enviado por você",
+                descricaoDocumentoEditor.Text?.Trim(),
+                arquivoSelecionado.FileName
+            ));
+
+            tituloDocumentoEntry.Text = string.Empty;
+            descricaoDocumentoEditor.Text = string.Empty;
+            arquivoSelecionado = null;
+            arquivoSelecionadoLabel.Text = "Nenhum arquivo escolhido";
+            modalEnvioDocumento.IsVisible = false;
         }
     }
 }

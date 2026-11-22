@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:TCCpricipal"
     Title="TCCpricipal"
-    FlyoutBehavior="Locked"
+    FlyoutBehavior="Flyout"
     Shell.NavBarIsVisible="False"
     FlyoutWidth="200">
 
@@ -13,13 +13,7 @@
     <Shell.FlyoutHeader>
         <Grid Padding="10" BackgroundColor="#121212" ColumnDefinitions="Auto, *">
 
-            <Label
-                Text="LOGO"
-                TextColor="White"
-                FontAttributes="Bold"
-                FontSize="16"
-                VerticalOptions="Center" />
-
+           
             <Button
                 x:Name="ToggleFlyoutButton"
                 Clicked="OnToggleFlyoutButtonClicked"

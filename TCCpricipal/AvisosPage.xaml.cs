@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Graphics;
 
 namespace TCCpricipal
@@ -84,20 +85,125 @@ namespace TCCpricipal
             AddAviso("Manutenção no Sistema", "31/08/2026 • Autor: admin", "Informamos que o sistema interno da empresa passará por uma manutenção programada amanhã, das 18h às 20h. Durante esse período, alguns serviços poderão ficar indisponíveis. Agradecemos a compreensão de todos.");
             AddAviso("Reunião de Equipe", "31/08/2026 • Autor: admin", "Haverá reunião de equipe na próxima segunda-feira às 09h para alinhamento das atividades da semana. Participação obrigatória para líderes de projeto.");
 
-            // Monta a página
-            Content = new ScrollView
+            var tituloEntry = new Entry
             {
-                Content = new VerticalStackLayout
+                Placeholder = "Adicione um título para seu evento/aviso/notícia",
+                TextColor = Colors.Black,
+                PlaceholderColor = Colors.Gray,
+                BackgroundColor = Colors.White
+            };
+            var conteudoEditor = new Editor
+            {
+                Placeholder = "Adicione o conteúdo do seu evento/aviso/notícia",
+                TextColor = Colors.Black,
+                PlaceholderColor = Colors.Gray,
+                BackgroundColor = Colors.White,
+                HeightRequest = 90
+            };
+            var escopoEntry = new Entry
+            {
+                Text = "Geral",
+                TextColor = Colors.Black,
+                BackgroundColor = Colors.White
+            };
+
+            var cancelarButton = new Button
+            {
+                Text = "Cancelar",
+                BackgroundColor = Color.FromArgb("#DC3545"),
+                TextColor = Colors.White,
+                CornerRadius = 4,
+                HorizontalOptions = LayoutOptions.Start
+            };
+            var publicarButton = new Button
+            {
+                Text = "Publicar",
+                BackgroundColor = Color.FromArgb("#198754"),
+                TextColor = Colors.White,
+                CornerRadius = 4,
+                HorizontalOptions = LayoutOptions.Start
+            };
+
+            var modalOverlay = new Grid
+            {
+                IsVisible = false,
+                BackgroundColor = Color.FromArgb("#66000000"),
+                Padding = 24,
+                Children =
                 {
-                    Padding = 20,
-                    Spacing = 12,
-                    Children =
+                    new Border
                     {
-                        headerGrid,
-                        subtitle,
-                        new BoxView { HeightRequest = 1, BackgroundColor = Color.FromArgb("#E0E0E0") },
-                        avisosList
+                        BackgroundColor = Colors.White,
+                        Stroke = Colors.Transparent,
+                        StrokeShape = new RoundRectangle { CornerRadius = 14 },
+                        Padding = 24,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center,
+                        MaximumWidthRequest = 760,
+                        Content = new VerticalStackLayout
+                        {
+                            Spacing = 6,
+                            Children =
+                            {
+                                new Label { Text = "Criar Novo Aviso", FontSize = 24, FontAttributes = FontAttributes.Bold, TextColor = Colors.Black },
+                                new Label { Text = "Título:", TextColor = Colors.Black },
+                                tituloEntry,
+                                new Label { Text = "Conteúdo:", TextColor = Colors.Black },
+                                conteudoEditor,
+                                new Label { Text = "Escopo:", TextColor = Colors.Black },
+                                escopoEntry,
+                                new HorizontalStackLayout
+                                {
+                                    Spacing = 8,
+                                    Children = { cancelarButton, publicarButton }
+                                }
+                            }
+                        }
                     }
+                }
+            };
+
+            btnCriar.Clicked += (_, _) => modalOverlay.IsVisible = true;
+            cancelarButton.Clicked += (_, _) => modalOverlay.IsVisible = false;
+            publicarButton.Clicked += async (_, _) =>
+            {
+                var titulo = tituloEntry.Text?.Trim();
+                var conteudo = conteudoEditor.Text?.Trim();
+                if (string.IsNullOrWhiteSpace(titulo) || string.IsNullOrWhiteSpace(conteudo))
+                {
+                    await DisplayAlert("Campos obrigatórios", "Informe o título e o conteúdo do aviso.", "OK");
+                    return;
+                }
+
+                var escopo = string.IsNullOrWhiteSpace(escopoEntry.Text) ? "Geral" : escopoEntry.Text.Trim();
+                AddAviso(titulo, $"{DateTime.Now:dd/MM/yyyy} • Autor: admin • Escopo: {escopo}", conteudo);
+                tituloEntry.Text = string.Empty;
+                conteudoEditor.Text = string.Empty;
+                escopoEntry.Text = "Geral";
+                modalOverlay.IsVisible = false;
+            };
+
+            // Monta a página
+            Content = new Grid
+            {
+                Children =
+                {
+                    new ScrollView
+                    {
+                        Content = new VerticalStackLayout
+                        {
+                            Padding = 20,
+                            Spacing = 12,
+                            Children =
+                            {
+                                headerGrid,
+                                subtitle,
+                                new BoxView { HeightRequest = 1, BackgroundColor = Color.FromArgb("#E0E0E0") },
+                                avisosList
+                            }
+                        }
+                    },
+                    modalOverlay
                 }
             };
         }
