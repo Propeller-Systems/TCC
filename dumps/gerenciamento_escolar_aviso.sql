@@ -32,7 +32,7 @@ CREATE TABLE `aviso` (
   PRIMARY KEY (`idaviso`),
   KEY `fk_aviso_usuario` (`idusuario`),
   CONSTRAINT `fk_aviso_usuario` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `aviso` (
 
 LOCK TABLES `aviso` WRITE;
 /*!40000 ALTER TABLE `aviso` DISABLE KEYS */;
-INSERT INTO `aviso` VALUES (24,'123','2026-09-04 19:10:57','teste',1,'geral');
+INSERT INTO `aviso` VALUES (31,'oi','2026-11-23 04:20:17','oi',1,'funcionario');
 /*!40000 ALTER TABLE `aviso` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-16 11:36:30
+-- Dump completed on 2026-11-23  9:19:34

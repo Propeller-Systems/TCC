@@ -33,7 +33,7 @@ CREATE TABLE `usuario` (
   `estado` tinyint NOT NULL,
   PRIMARY KEY (`idusuario`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'admin','admin@gmail.com','2026-04-28 16:19:00','leon_foto.jpg','admin','admin',1);
+INSERT INTO `usuario` VALUES (1,'admin','admin@gmail.com','2026-04-28 16:19:00','leon_foto.jpg','admin','admin',1),(8,'Pietro','pietro@gmail.com','2026-11-23 03:05:48','foto-1795403147862.jpg','funcionario','h3IpM3',1),(9,'Pietro2','pietro2@gmail.com','2026-11-23 03:53:42','foto-1795406021735.jpg','funcionario','h3IpM3',0);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-16 11:36:30
+-- Dump completed on 2026-11-23  9:19:35
