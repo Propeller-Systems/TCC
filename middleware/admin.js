@@ -13,9 +13,9 @@ function admin(req, res, next) {
         return res.redirect("/");
     }
 
-    if (req.session.usuario.usuariocol !== "admin") {
-        return res.status(403).send("Acesso negado: somente administradores.");
-    }
+    // if (req.session.usuario.usuariocol !== "admin") {
+    //     return res.status(403).send("Acesso negado: somente administradores.");
+    // }
     return next();
 }
 
