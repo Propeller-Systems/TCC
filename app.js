@@ -28,7 +28,7 @@ app.use(session({
 
 app.use("/", login);
 
-app.use("/api/avisos", auth, admin, avisosRouter);
+app.use("/api/avisos", auth, avisosRouter);
 app.use("/api/usuarios", auth, admin, usuarioRouter);
 app.use("/api/doc", auth, admin, documentoRouter);
 
@@ -56,6 +56,31 @@ app.get("/usuarioAtivo", auth, admin, async(req, res) =>{
         return res.status(500).json("Erro ao buscar usuarios ativos")
     }
 })
+
+app.get("/novasContratacoes", auth, admin, async (req, res) => {
+    try {
+        const limite = new Date();
+        limite.setDate(limite.getDate() - 21);
+
+        const novas = await prisma.usuario.count({
+            where: {
+                usuariocol: "funcionario",
+                dataCriacao: {
+                    gte: limite
+                }
+            }
+        });
+
+        return res.status(200).json({ novas });
+
+    } catch (error) {
+        console.error("Erro ao buscar novas contratações:", error);
+
+        return res.status(500).json({
+            error: "Erro ao buscar novas contratações"
+        });
+    }
+});
 
 app.use((req, res, next) => {
     const PaginaHTML = path.extname(req.path).toLowerCase() === ".html";

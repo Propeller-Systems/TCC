@@ -4,22 +4,22 @@ const avisosList = document.getElementById("avisosList");
 
 // --- 1. FUNÇÃO PARA BUSCAR AVISOS (READ) ---
 async function carregarAvisos() {
-  try {
-    const response = await fetch(`/api/avisos`); // Chama a rota GET do Express
-    const avisos = await response.json();
-    renderizarAvisos(avisos);
-  } catch (err) {
-    console.error("Erro ao carregar avisos:", err);
-  }
+    try {
+        const response = await fetch(`/api/avisos`); // Chama a rota GET do Express
+        const avisos = await response.json();
+        renderizarAvisos(avisos);
+    } catch (err) {
+        console.error("Erro ao carregar avisos:", err);
+    }
 }
 
 // --- 2. FUNÇÃO PARA EXIBIR NA TELA ---
 function renderizarAvisos(avisos) {
-  avisoAtuais = avisos; // Atualiza a lista de avisos atuais
-  avisosList.innerHTML = ""; // Limpa a lista antes de mostrar
-  avisos.forEach((aviso) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
+    avisoAtuais = avisos; // Atualiza a lista de avisos atuais
+    avisosList.innerHTML = ""; // Limpa a lista antes de mostrar
+    avisos.forEach((aviso) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
             <div class="container-aviso">
               <button type="button" class="btnOptions bg-transparent">
                 <img src="icons/options.png">
@@ -29,36 +29,36 @@ function renderizarAvisos(avisos) {
                 <a class="dropdown-item" onclick="excluirAviso(${aviso.idaviso})" style="user-select: none;">Excluir</a>
               </div>
                   <h3>${aviso.titulo}</h3>
-                  <h6>${aviso.date? new Date(aviso.date).toLocaleDateString() : 'sem data'} • Autor: ${aviso.usuario?.nome || "Anônimo"}</h6>
+                  <h6>${aviso.date ? new Date(aviso.date).toLocaleDateString() : 'sem data'} • Autor: ${aviso.usuario?.nome || "Anônimo"}</h6>
                   <p>${aviso.conteudo}</p>
             </div>
         `;
-    avisosList.appendChild(li);
-  });
+        avisosList.appendChild(li);
+    });
 }
 
 // --- 3. LOGICA DO MODAL E CRIAÇÃO (CREATE) ---
 function abrirModal(aviso = null) {
-  if (document.getElementById("avisoModal")) return;
+    if (document.getElementById("avisoModal")) return;
 
-  let modal = document.createElement("dialog");
+    let modal = document.createElement("dialog");
 
-  modal.id = "avisoModal";
-  modal.className = "container-cms";
+    modal.id = "avisoModal";
+    modal.className = "container-cms";
 
-  Object.assign(modal.style, {
-    display: "flex",
-    opacity: "1",
-    flexDirection: "column",
-    position: "fixed",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    zIndex: "1000",
-    height: "auto",
-  });
+    Object.assign(modal.style, {
+        display: "flex",
+        opacity: "1",
+        flexDirection: "column",
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        zIndex: "1000",
+        height: "auto",
+    });
 
-  modal.innerHTML = `
+    modal.innerHTML = `
         <h3>${aviso ? "Editar Aviso" : "Criar Novo Aviso"}</h3>
 
         <form id="formAviso" class="flex flex-col gap-4">
@@ -107,11 +107,22 @@ function abrirModal(aviso = null) {
     document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
     document.getElementById("formAviso").addEventListener("submit", async (e) => {
         e.preventDefault();
+        const escopo = document.getElementById("escopo").value;
+
+        const destinatarios = escopo === "funcionario"
+            ? [...document.querySelectorAll(
+                'input[name="funcionariosSelecionados"]:checked'
+            )].map(input => Number(input.value))
+            : [];
+
         const novoAviso = {
             titulo: document.getElementById("titulo").value,
             conteudo: document.getElementById("conteudo").value,
-            escopo: document.getElementById("escopo").value,
+            escopo,
+            destinatarios
         };
+
+        console.log("Aviso enviado:", novoAviso);
         let response;
         if (aviso) {
             // Atualizar aviso existente
@@ -132,20 +143,20 @@ function abrirModal(aviso = null) {
                 body: JSON.stringify(novoAviso),
             });
         }
-        
+
         if (response.ok) {
-      fecharModal();
-      carregarAvisos();
-    } else {
-        let err;
-        try {
-            err = await response.json();
-        } catch (e) {
-            err = { error: 'Erro desconhecido ao comunicar com o servidor' };
+            fecharModal();
+            carregarAvisos();
+        } else {
+            let err;
+            try {
+                err = await response.json();
+            } catch (e) {
+                err = { error: 'Erro desconhecido ao comunicar com o servidor' };
+            }
+            alert(err.error || err.erro || JSON.stringify(err));
         }
-        alert(err.error || err.erro || JSON.stringify(err));
-    }
-});
+    });
 }
 
 function abrirTabela() {
@@ -164,6 +175,7 @@ function abrirTabela() {
             }
 
             const dados = await response.json();
+            const funcionarios = dados.filter(usuario => usuario.usuariocol === "funcionario");
 
             let htmlTabela = `
                 <div class="tabela-modal-container">
@@ -179,7 +191,7 @@ function abrirTabela() {
                         <tbody>
             `;
 
-            dados.forEach(item => {
+            funcionarios.forEach(item => {
                 const { idusuario, nome, foto } = item;
 
                 htmlTabela += `
@@ -243,15 +255,15 @@ function atualizarAviso(id) {
     abrirModal(aviso);
 }
 async function excluirAviso(id) {
-  if (confirm("Deseja mesmo excluir?")) {
-    await fetch(`/api/avisos/${id}`, {
-      method: "DELETE",
-    });
-    carregarAvisos();
-  }
+    if (confirm("Deseja mesmo excluir?")) {
+        await fetch(`/api/avisos/${id}`, {
+            method: "DELETE",
+        });
+        carregarAvisos();
+    }
 }
 if (avisosList) {
-  carregarAvisos();
+    carregarAvisos();
 }
 
 
@@ -551,12 +563,12 @@ function abrirModalDoc(documento = null) {
     }
 }
 
-async function salvarDocumento(idDocumento = null){
+async function salvarDocumento(idDocumento = null) {
     const titulo = document.getElementById("titulo").value.trim();
     const texto = document.getElementById("texto").value.trim();
     const arquivo = document.getElementById("arquivo")?.files[0];
 
-    if(!titulo || !texto || (!arquivo && !idDocumento)){
+    if (!titulo || !texto || (!arquivo && !idDocumento)) {
         alert(idDocumento ? "Preencha título e descrição antes de salvar." : "Preencha todos os campos e selecione um arquivo");
         return;
     }
@@ -570,7 +582,7 @@ async function salvarDocumento(idDocumento = null){
         formData.append("arquivo", arquivo);
     }
 
-    try{
+    try {
         const response = await fetch(idDocumento ? `/api/doc/${idDocumento}` : "/api/doc", {
             method: idDocumento ? "PUT" : "POST",
             body: formData
@@ -578,14 +590,14 @@ async function salvarDocumento(idDocumento = null){
 
         const resultado = await response.json().catch(() => ({}));
 
-        if(!response.ok) throw new Error(resultado.error || "Erro ao salvar documento");
+        if (!response.ok) throw new Error(resultado.error || "Erro ao salvar documento");
 
         alert(idDocumento ? "Documento atualizado com sucesso" : "Documento criado com sucesso");
 
         fecharDocModal();
 
         carregarDocumentos();
-    }catch(error){
+    } catch (error) {
         console.error("Erro ao salvar documento", error);
         alert("Não foi possivel salvar o documento");
     }

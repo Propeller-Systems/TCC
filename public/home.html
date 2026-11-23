@@ -32,7 +32,7 @@
                 <div class="dash">
                     <img src="icons/contratf.png" class="dash-icon" alt="">
                     <span class="label">Novas Contratações</span>
-                    <span class="fs-1">0</span>
+                    <span class="fs-1" id="novasContratacoes">0</span>
                     <span class="text-success">Nas últimas semanas*</span>
                 </div>
             </div>
@@ -57,20 +57,34 @@
         }
 
         async function carregarAtivos() {
-            try{
+            try {
                 const response = await fetch("/usuarioAtivo");
                 const text = await response.text();
                 console.log("ATIVOS:", text);
                 const data = JSON.parse(text);
 
                 document.querySelector("#usuarioAtivo").textContent = data.ativos
-            }catch(err){
-                console.error("Erro: ",err)
+            } catch (err) {
+                console.error("Erro: ", err)
+            }
+        }
+        async function carregarNovasContratacoes() {
+            try {
+                const response = await fetch("/novasContratacoes");
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error);
+                }
+
+                document.querySelector("#novasContratacoes").textContent = data.novas;
+            } catch (error) {
+                console.error("Erro ao carregar novas contratações:", error);
             }
         }
 
         carregarTotalUsuarios();
         carregarAtivos();
+        carregarNovasContratacoes();
     </script>
 </body>
 

@@ -73,7 +73,8 @@ router.post("/", admin, upload.single('foto'), async (req, res) => {
                 nome,
                 email,
                 usuariocol,
-                foto: req.file.filename
+                foto: req.file.filename,
+                estado: 1
             }
         });
         res.status(201).json(novoUsuario);

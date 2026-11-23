@@ -25,12 +25,19 @@ router.post("/", async (req, res) => {
     //   senha,
     //   usuario.senha
     // )
-    if(usuario.senha !== senha){
+    if (usuario.senha !== senha) {
       console.log("senha incorreta");
       return res.redirect("/");
     }
 
-
+    await prisma.usuario.update({
+      where: {
+        idusuario: usuario.idusuario
+      },
+      data: {
+        estado: 1
+      }
+    });
 
     req.session.usuario = {
       idusuario: usuario.idusuario,
@@ -51,16 +58,35 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post("/logout", (req, res) => {
-  req.session.destroy((error) => {
-    if (error) {
-      console.error("Erro ao encerrar sessão:", error);
-      return res.status(500).send("Não foi possível encerrar a sessão.");
+router.post("/logout", async (req, res) => {
+  try {
+    const idusuario = req.session.usuario?.idusuario;
+
+    if (idusuario) {
+      await prisma.usuario.update({
+        where: {
+          idusuario: idusuario
+        },
+        data: {
+          estado: 0
+        }
+      });
     }
 
-    res.clearCookie("connect.sid", { path: "/" });
-    return res.redirect("/");
-  });
+    req.session.destroy((error) => {
+      if (error) {
+        console.error("Erro ao encerrar sessão:", error);
+        return res.status(500).send("Não foi possível encerrar a sessão.");
+      }
+
+      res.clearCookie("connect.sid", { path: "/" });
+      return res.redirect("/");
+    });
+
+  } catch (error) {
+    console.error("Erro ao atualizar estado do usuário:", error);
+    return res.status(500).send("Erro ao realizar logout.");
+  }
 });
 
 module.exports = router; // exporta o roteador para ser usado em outros arquivos (como app.js)
