@@ -430,3 +430,122 @@ ul{
         grid-template-columns: 1fr;
     }
 }
+
+/* Notificações da Home */
+.notifications-panel {
+    width: calc(100% - 2rem);
+    max-width: 900px;
+    margin: 0 auto 2rem auto;
+    padding: 1rem;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+.notifications-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.notifications-header p {
+    margin: 0;
+    padding: 0.25rem 0 0 0;
+}
+
+.notifications-list {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 0.75rem;
+}
+
+.notification-card {
+    position: relative;
+    min-height: 78px;
+    padding: 0.7rem 7.5rem 0.7rem 0.8rem;
+    border: 1px solid #e1e1e1;
+    border-left: 4px solid var(--secondary-color);
+    border-radius: 10px;
+    background: #fafafa;
+}
+
+.notification-card h4 {
+    margin: 0.1rem 0 0.25rem 0;
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+.notification-card p {
+    margin: 0;
+    padding: 0;
+    color: var(--text-color-sec);
+}
+
+.notification-kind {
+    color: #777;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.notification-tag {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.notification-tag-personal {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.notification-tag-recipient {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.notification-tag-general {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.notification-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    color: #777;
+    font-size: 0.82rem;
+}
+
+.notification-link {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.notifications-empty {
+    margin: 0;
+    padding: 1rem;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .notifications-panel {
+        width: calc(100% - 1rem);
+        padding: 1rem;
+    }
+
+    .notification-card {
+        padding: 2.5rem 1rem 1rem 1rem;
+    }
+
+    .notification-tag {
+        top: 0.65rem;
+        right: 0.65rem;
+    }
+}

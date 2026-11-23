@@ -37,6 +37,18 @@
                 </div>
             </div>
         </div>
+
+        <section class="notifications-panel" aria-labelledby="notifications-title">
+            <div class="notifications-header">
+                <div>
+                    <h3 id="notifications-title">Notificações</h3>
+                    <p>Últimos avisos e documentos enviados.</p>
+                </div>
+            </div>
+            <div id="notificationsList" class="notifications-list" aria-live="polite">
+                <p class="notifications-empty">Carregando notificações...</p>
+            </div>
+        </section>
     </main>
     <script src="js/script.js" defer></script>
 
@@ -82,9 +94,69 @@
             }
         }
 
+        async function carregarNotificacoes() {
+            const lista = document.querySelector("#notificationsList");
+
+            try {
+                const response = await fetch("/api/notificacoes");
+                const notificacoes = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(notificacoes.error || "Não foi possível carregar as notificações.");
+                }
+
+                if (!Array.isArray(notificacoes) || notificacoes.length === 0) {
+                    lista.innerHTML = '<p class="notifications-empty">Nenhuma notificação encontrada.</p>';
+                    return;
+                }
+
+                lista.innerHTML = notificacoes.map((notificacao) => {
+                    const titulo = escapeHtml(notificacao.titulo);
+                    const texto = escapeHtml(notificacao.texto || "");
+                    const tag = escapeHtml(notificacao.tag || "para todos");
+                    const tagTipo = notificacao.tagTipo || "general";
+                    const tagClasse = tagTipo === "recipient"
+                        ? "notification-tag-recipient"
+                        : tagTipo === "personal"
+                            ? "notification-tag-personal"
+                            : "notification-tag-general";
+                    const tipo = notificacao.tipo === "documento" ? "Documento" : "Aviso";
+                    const data = notificacao.data
+                        ? new Date(notificacao.data).toLocaleDateString("pt-BR")
+                        : "Documento enviado";
+                    const linkDocumento = notificacao.tipo === "documento"
+                        ? `<a class="notification-link" href="/uploads/doc/${encodeURIComponent(notificacao.caminho)}" target="_blank" rel="noopener">Abrir documento</a>`
+                        : "";
+
+                    return `
+                        <article class="notification-card">
+                            <span class="notification-tag ${tagClasse}">${tag}</span>
+                            <div class="notification-kind">${tipo}</div>
+                            <h4>${titulo}</h4>
+                            ${texto ? `<p>${texto}</p>` : ""}
+                            <div class="notification-meta">
+                                <span>${data}</span>
+                                ${linkDocumento}
+                            </div>
+                        </article>
+                    `;
+                }).join("");
+            } catch (error) {
+                console.error("Erro ao carregar notificações:", error);
+                lista.innerHTML = '<p class="notifications-empty">Não foi possível carregar as notificações.</p>';
+            }
+        }
+
+        function escapeHtml(valor) {
+            const elemento = document.createElement("div");
+            elemento.textContent = String(valor ?? "");
+            return elemento.innerHTML;
+        }
+
         carregarTotalUsuarios();
         carregarAtivos();
         carregarNovasContratacoes();
+        carregarNotificacoes();
     </script>
 </body>
 

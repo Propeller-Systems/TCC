@@ -1,4 +1,3 @@
-
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -79,6 +78,104 @@ app.get("/novasContratacoes", auth, admin, async (req, res) => {
         return res.status(500).json({
             error: "Erro ao buscar novas contratações"
         });
+    }
+});
+
+app.get("/api/notificacoes", auth, async (req, res) => {
+    try {
+        const usuario = req.session.usuario;
+        const idusuario = Number(usuario.idusuario);
+
+        let whereAvisos = {};
+
+        if (usuario.usuariocol !== "admin") {
+            whereAvisos = {
+                OR: [
+                    { escopo: "geral" },
+                    {
+                        escopo: "funcionario",
+                        aviso_destinatario: { none: {} }
+                    },
+                    {
+                        escopo: "funcionario",
+                        aviso_destinatario: {
+                            some: { idusuario }
+                        }
+                    }
+                ]
+            };
+        }
+
+        const [avisos, documentos] = await Promise.all([
+            prisma.aviso.findMany({
+                where: whereAvisos,
+                include: {
+                    aviso_destinatario: {
+                        include: {
+                            usuario: {
+                                select: { idusuario: true, nome: true }
+                            }
+                        }
+                    }
+                },
+                orderBy: { idaviso: "desc" },
+                take: 10
+            }),
+            prisma.documento.findMany({
+                orderBy: { iddocumento: "desc" },
+                take: 10
+            })
+        ]);
+
+        const avisosFormatados = avisos.map((aviso) => {
+            const destinatarios = aviso.aviso_destinatario || [];
+            const dirigidoAoUsuario =
+                aviso.escopo === "geral"
+                    ? false
+                    : destinatarios.some((destinatario) => destinatario.idusuario === idusuario);
+
+            let tag = "para todos";
+            let tagTipo = "general";
+
+            if (usuario.usuariocol === "admin") {
+                if (aviso.escopo === "funcionario" && destinatarios.length > 0) {
+                    tag = destinatarios
+                        .map((destinatario) => destinatario.usuario?.nome)
+                        .filter(Boolean)
+                        .join(", ");
+                    tagTipo = "recipient";
+                }
+            } else if (dirigidoAoUsuario) {
+                tag = "para você";
+                tagTipo = "personal";
+            }
+
+            return {
+                tipo: "aviso",
+                id: aviso.idaviso,
+                titulo: aviso.titulo,
+                texto: aviso.conteudo,
+                data: aviso.date,
+                tag,
+                tagTipo
+            };
+        });
+
+        const documentosFormatados = documentos.map((documento) => ({
+            tipo: "documento",
+            id: documento.iddocumento,
+            titulo: documento.titulo,
+            texto: documento.texto,
+            data: null,
+            caminho: documento.caminho,
+            tag: "para todos",
+            tagTipo: "general"
+        }));
+
+        res.json([...avisosFormatados, ...documentosFormatados]);
+    } catch (error) {
+        console.error("Erro ao buscar notificações:", error);
+        res.status(500).json({ error: "Erro ao buscar notificações." });
     }
 });
 
