@@ -2,6 +2,29 @@ let usuarios = [];
 let usuariosEditando = null;
 let toggleBtn;
 let sidebar;
+let usuarioLogado = null;
+
+async function carregarSessao() {
+  try {
+    const response = await fetch("/api/sessao");
+
+    if (!response.ok) {
+      throw new Error("Erro ao consultar sessão.");
+    }
+    usuarioLogado = await response.json();
+    window.usuarioLogado = usuarioLogado;
+    return usuarioLogado;
+  } catch (error) {
+    console.error("Erro ao carregar sessão:", error);
+
+    usuarioLogado = null;
+    window.usuarioLogado = null;
+    return null;
+  }
+}
+
+// Promessa compartilhada entre os arquivos JavaScript
+window.sessaoPronta = carregarSessao();
 
 const daltonismFilters = {
   none: null,
@@ -150,19 +173,46 @@ function toggleSubmenu(button) {
 }
 
 const sidebarPlaceholder = document.getElementById("sidebar-placeholder");
-if (sidebarPlaceholder) {
-fetch("sidebar.html")
-  .then((response) => response.text())
-  .then((data) => {
-    document.getElementById("sidebar-placeholder").innerHTML = data;
 
+async function carregarSidebar() {
+  if (!sidebarPlaceholder) return;
+
+  try {
+    // Aguarda a identificação do usuário
+    await window.sessaoPronta;
+
+    const response = await fetch("sidebar.html");
+    if (!response.ok) {
+      throw new Error("Erro ao carregar sidebar.");
+    }
+    const data = await response.text();
+    sidebarPlaceholder.innerHTML = data;
     toggleBtn = document.getElementById("toggle-btn");
     sidebar = document.getElementById("sidebar");
 
-    // Highlight a página atual
+    // Restringe os links conforme o cargo
+    if (usuarioLogado?.usuariocol === "funcionario") {
+
+      const linksRestritos = [
+        "usuarios.html"
+      ];
+      sidebar.querySelectorAll("a").forEach(link => {
+        const href = link.getAttribute("href");
+
+        if (linksRestritos.includes(href)) {
+          link.closest("li")?.remove();
+        }
+      });
+    }
+
     highlightCurrentPage();
-  });
+
+  } catch (error) {
+    console.error("Erro ao carregar sidebar:", error);
+  }
 }
+
+carregarSidebar();
 function highlightCurrentPage() {
   // Pega o nome do arquivo atual da URL
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
@@ -188,16 +238,21 @@ console.log(window.location.pathname.split("/"));
 // --- 2. FUNÇÃO PARA EXIBIR NA TELA USUARIOS ---
 
 async function fetchUsuarios() {
-  const response = await fetch("/api/usuarios");
-  usuarios = await response.json();
+  try {
+    const response = await fetch("/api/usuarios");
+    if (!response.ok) {
+      throw new Error("Erro ao buscar usuários.");
+    }
+    usuarios = await response.json();
+    const tbody = document.querySelector("#tabela-usuarios");
+    if (!tbody) return;
+    tbody.innerHTML = "";
 
-  const tbody = document.querySelector("#tabela-usuarios");
+    // Mantenha aqui o restante do seu código atual
 
-  tbody.innerHTML = ""; // Limpa a tabela antes de preencher
-
-  usuarios.forEach((usuario) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
+    usuarios.forEach((usuario) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
       <td>${usuario.idusuario}</td>
       <td><img src="/uploads/img/${usuario.foto}" alt="Foto" class="fotoIcon"></td>
       <td>${usuario.nome}</td>
@@ -209,19 +264,22 @@ async function fetchUsuarios() {
         <button type="button" class="btn btn-danger" onclick="excluirUsuario(${usuario.idusuario})">Excluir</button>
       </td>
     `;
-    tbody.appendChild(row);
-  });
+      tbody.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar usuários:", error);
+  }
 }
 async function editarUsuario(id) {
-    const usuario = usuarios.find(u => u.idusuario === id);
-    if (!usuario) {
-        alert("Usuário não encontrado.");
-        return;
-    }
-    usuarioEditando = id;
-    document.getElementById("nome-user").value = usuario.nome;
-    document.getElementById("nome-email").value = usuario.email;
-    document.getElementById("escopo-user").value = usuario.usuariocol;
+  const usuario = usuarios.find(u => u.idusuario === id);
+  if (!usuario) {
+    alert("Usuário não encontrado.");
+    return;
+  }
+  usuarioEditando = id;
+  document.getElementById("nome-user").value = usuario.nome;
+  document.getElementById("nome-email").value = usuario.email;
+  document.getElementById("escopo-user").value = usuario.usuariocol;
 }
 
 async function excluirUsuario(id) {
@@ -232,4 +290,6 @@ async function excluirUsuario(id) {
     fetchUsuarios();
   }
 }
-fetchUsuarios();
+if (document.getElementById("tabela-usuarios")) {
+  fetchUsuarios();
+}

@@ -4,18 +4,25 @@ function admin(req, res, next) {
             req.originalUrl.startsWith("/api") ||
             req.xhr ||
             (req.headers.accept || "").includes("application/json");
-
         if (wantsJson) {
             return res.status(401).json({
-                error: "Não autenticado"
+                error: "Não autenticado."
             });
         }
         return res.redirect("/");
     }
-
-    // if (req.session.usuario.usuariocol !== "admin") {
-    //     return res.status(403).send("Acesso negado: somente administradores.");
-    // }
+    if (req.session.usuario.usuariocol !== "admin") {
+        const wantsJson =
+            req.originalUrl.startsWith("/api") ||
+            req.xhr ||
+            (req.headers.accept || "").includes("application/json");
+        if (wantsJson) {
+            return res.status(403).json({
+                error: "Acesso negado. Somente administradores."
+            });
+        }
+        return res.status(403).send("Acesso negado.");
+    }
     return next();
 }
 

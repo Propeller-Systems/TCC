@@ -11,6 +11,7 @@ const admin = require("./middleware/admin");
 const avisosRouter = require("./routes/aviso");
 const usuarioRouter = require("./routes/usuario");
 const documentoRouter = require("./routes/doc");
+const atestadoRouter = require("./routes/atestado");
 const { error } = require("console");
 
 const app = express();
@@ -29,7 +30,13 @@ app.use("/", login);
 
 app.use("/api/avisos", auth, avisosRouter);
 app.use("/api/usuarios", auth, admin, usuarioRouter);
-app.use("/api/doc", auth, admin, documentoRouter);
+app.use("/api/doc", auth, documentoRouter);
+app.use("/api/atestados", auth, atestadoRouter);
+app.get("/api/sessao", auth, (req, res) => {
+    res.json({
+        usuariocol: req.session.usuario.usuariocol
+    });
+});
 
 // Dashboard - HOME - Parte onde mostra os dados dos usuarios 
 app.get("/totalUsuarios", auth, admin, async (req, res) => {
@@ -44,13 +51,13 @@ app.get("/totalUsuarios", auth, admin, async (req, res) => {
     }
 });
 
-app.get("/usuarioAtivo", auth, admin, async(req, res) =>{
-    try{
+app.get("/usuarioAtivo", auth, admin, async (req, res) => {
+    try {
         const ativos = await prisma.usuario.count({
-            where:{estado: 1}
+            where: { estado: 1 }
         });
-        return res.status(200).json({ativos});
-    }catch(error){
+        return res.status(200).json({ ativos });
+    } catch (error) {
         console.error('Erro ao contar usuarios ativos: ', error);
         return res.status(500).json("Erro ao buscar usuarios ativos")
     }
@@ -180,13 +187,29 @@ app.get("/api/notificacoes", auth, async (req, res) => {
 });
 
 app.use((req, res, next) => {
-    const PaginaHTML = path.extname(req.path).toLowerCase() === ".html";
-    const PaginaLogin = req.path === "/index.html";
+    const paginaHTML = path.extname(req.path).toLowerCase() === ".html";
+    const paginaLogin = req.path === "/index.html";
 
-    if (!PaginaHTML || PaginaLogin) {
+    if (!paginaHTML || paginaLogin) {
         return next();
     }
-    return admin(req, res, next);
+
+    if (!req.session || !req.session.usuario) {
+        return auth(req, res, next);
+    }
+    const usuario = req.session.usuario;
+    const paginasAdmin = [
+        "/home.html",
+        "/usuarios.html"
+    ];
+
+    if (
+        usuario.usuariocol === "funcionario" &&
+        paginasAdmin.includes(req.path)
+    ) {
+        return res.status(403).send("Acesso negado.");
+    }
+    return next();
 });
 
 app.use(express.static(path.join(__dirname, "public")));

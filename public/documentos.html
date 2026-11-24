@@ -1,55 +1,46 @@
 <!doctype html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestão</title>
-    <link href="style/style.css" rel="stylesheet" />
-    <link href="style/documentos.css" rel="stylesheet" />
-  </head>
 
-  <body class="gestao">
-    <div id="sidebar-placeholder"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestão</title>
+  <link href="style/style.css" rel="stylesheet" />
+  <link href="style/documentos.css" rel="stylesheet" />
+</head>
 
-    <main>
-      <div class="p-4">
-        <div>
-          <h2 class="mb-4">Organizar Documentos</h2>
-          Aqui você pode visualizar os documentos que você enviou ou que foram
-          enviados a você
-        </div>
-        <hr />
-        <div></div>
-        <div class="container-doc">
-          <label class="switch">
-            <input type="checkbox" id="slider" />
-            <span class="slider">
-              <span class="doc">Documentos Enviados</span>
-              <span class="atest">Atestados Recebidos</span>
-            </span>
-          </label>
-          <form
-            class="container-src input-group"
-            action="/pesquisa"
-            method="get"
-          >
-            <input
-              class="search form-control"
-              type="search"
-              name="search"
-              placeholder="Faça sua busca"
-            />
-            <button type="submit" class="btn btn-success">Buscar</button>
-          </form>
-          <button
-            class="addDocument active bg-success text-white"
-            id="btnDoc"
-            onclick="abrirModalDoc()"
-          >
-            + Enviar Documento
-          </button>
-          <section id="documentos-container">
-            <!-- DOCUMENTOS ENVIADOS 
+<body class="gestao">
+  <div id="sidebar-placeholder"></div>
+
+  <main>
+    <div class="p-4">
+      <div>
+        <h2 class="mb-4">Organizar Documentos</h2>
+        Aqui você pode visualizar os documentos que você enviou ou que foram
+        enviados a você
+      </div>
+      <hr />
+      <div></div>
+      <div class="container-doc">
+        <label class="switch">
+          <input type="checkbox" id="slider" />
+          <span class="slider">
+            <span class="doc">Documentos Enviados</span>
+            <span class="atest">Atestados Recebidos</span>
+          </span>
+        </label>
+        <form class="container-src input-group" action="/pesquisa" method="get">
+          <input class="search form-control" type="search" name="search" placeholder="Faça sua busca" />
+          <button type="submit" class="btn btn-success">Buscar</button>
+        </form>
+        <button class="addDocument active bg-success text-white" id="btnDoc" onclick="abrirModalDoc()">
+          + Enviar Documento
+        </button>
+        <button type="button" class="btn btn-success" id="btnAtestado" onclick="abrirModalFoto()">
+          + Enviar atestado
+        </button>
+        <section id="documentos-container">
+          <!-- DOCUMENTOS ENVIADOS 
             <div class="documento enviado active">
               <div class="doc-icon">
                 <img src="icons/pdf-icon.png" />
@@ -134,12 +125,13 @@
                 <img src="icons/options.png" />
               </button>
             </div> -->
-          </section>
-        </div>
+        </section>
       </div>
-    </main>
-    <script src="js/documentos.js" defer></script>
-    <script src="js/script.js" defer></script>
-    <script src="js/modal.js" defer></script>
-  </body>
+    </div>
+  </main>
+  <script src="js/script.js" defer></script>
+  <script src="js/documentos.js" defer></script>
+  <script src="js/modal.js" defer></script>
+</body>
+
 </html>

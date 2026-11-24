@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get("/",admin, async (req, res) => {
+router.get("/", async (req, res) => {
         try {
             const documentos =
                 await prisma.documento.findMany({

@@ -14,7 +14,7 @@ function auth(req, res, next) {
         });
     }
 
-    return res.redirect("/login");
+    return res.redirect("/");
 }
 
 module.exports = auth;

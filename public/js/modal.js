@@ -5,6 +5,7 @@ const avisosList = document.getElementById("avisosList");
 // --- 1. FUNÇÃO PARA BUSCAR AVISOS (READ) ---
 async function carregarAvisos() {
     try {
+        await window.sessaoPronta;
         const response = await fetch(`/api/avisos`); // Chama a rota GET do Express
         const avisos = await response.json();
         renderizarAvisos(avisos);
@@ -14,31 +15,49 @@ async function carregarAvisos() {
 }
 
 // --- 2. FUNÇÃO PARA EXIBIR NA TELA ---
+
 function renderizarAvisos(avisos) {
-    avisoAtuais = avisos; // Atualiza a lista de avisos atuais
-    avisosList.innerHTML = ""; // Limpa a lista antes de mostrar
+    avisoAtuais = avisos;
+    avisosList.innerHTML = "";
+    const Admin = window.usuarioLogado?.usuariocol === "admin";
     avisos.forEach((aviso) => {
         const li = document.createElement("li");
+
         li.innerHTML = `
             <div class="container-aviso">
-              <button type="button" class="btnOptions bg-transparent">
-                <img src="icons/options.png">
-              </button>
-              <div class="dropdown-box">
-                <a class="dropdown-item" onclick="atualizarAviso(${aviso.idaviso})" style="user-select: none;">Editar</a>
-                <a class="dropdown-item" onclick="excluirAviso(${aviso.idaviso})" style="user-select: none;">Excluir</a>
-              </div>
-                  <h3>${aviso.titulo}</h3>
-                  <h6>${aviso.date ? new Date(aviso.date).toLocaleDateString() : 'sem data'} • Autor: ${aviso.usuario?.nome || "Anônimo"}</h6>
-                  <p>${aviso.conteudo}</p>
+                ${Admin ? `
+                    <button type="button" class="btnOptions bg-transparent">
+                        <img src="icons/options.png" alt="Opções">
+                    </button>
+                    <div class="dropdown-box">
+                        <a class="dropdown-item"
+                           onclick="atualizarAviso(${aviso.idaviso})">
+                            Editar
+                        </a>
+                        <a class="dropdown-item"
+                           onclick="excluirAviso(${aviso.idaviso})">
+                            Excluir
+                        </a>
+                    </div>
+                ` : ""}
+
+                <h3>${aviso.titulo}</h3>
+                <h6>
+                    ${aviso.date ? new Date(aviso.date).toLocaleDateString() : 'sem data'}
+                    • Autor: ${aviso.usuario?.nome || "Anônimo"}
+                </h6>
+                <p>${aviso.conteudo}</p>
             </div>
         `;
+
         avisosList.appendChild(li);
     });
 }
 
+
 // --- 3. LOGICA DO MODAL E CRIAÇÃO (CREATE) ---
 function abrirModal(aviso = null) {
+    if (window.usuarioLogado?.usuariocol !== "admin") return;
     if (document.getElementById("avisoModal")) return;
 
     let modal = document.createElement("dialog");
@@ -247,6 +266,7 @@ function fecharModal() {
 }
 
 function atualizarAviso(id) {
+    if (window.usuarioLogado?.usuariocol !== "admin") return;
     const aviso = avisoAtuais.find(aviso => aviso.idaviso === id);
     if (!aviso) {
         alert("Aviso não encontrado.");
@@ -255,6 +275,7 @@ function atualizarAviso(id) {
     abrirModal(aviso);
 }
 async function excluirAviso(id) {
+    if (window.usuarioLogado?.usuariocol !== "admin") return;
     if (confirm("Deseja mesmo excluir?")) {
         await fetch(`/api/avisos/${id}`, {
             method: "DELETE",
@@ -267,12 +288,19 @@ if (avisosList) {
 }
 
 
+
 let fotoBlob = null;
 
 function abrirModalFoto() {
+    if (window.usuarioLogado?.usuariocol !== "funcionario") {
+        return;
+    }
+
     if (document.getElementById("fotoModal")) return;
 
-    let modalF = document.createElement("dialog");
+    fotoBlob = null;
+
+    const modalF = document.createElement("dialog");
     modalF.id = "fotoModal";
     modalF.className = "container-cms";
 
@@ -284,46 +312,72 @@ function abrirModalFoto() {
         left: "50%",
         transform: "translate(-50%, -50%)",
         zIndex: "1000",
-        height: "100%"
+        width: "90%",
+        maxWidth: "600px",
+        height: "auto"
     });
 
     modalF.innerHTML = `
-        <h2 class="text-center">Capture uma foto</h2>
         <button
             type="button"
             onclick="fecharFotoModal()"
-            class="btn-close btn-danger position-absolute">
+            class="btn-close btn-danger">
         </button>
-        <div class="fotoSection">
-            <div class="camera">
-                <video autoplay playsinline id="webcam"></video>
-            </div>
-            
-            <div class="cameraOptions">
-                <button
-                    type="button"
-                    onclick="capturarFoto()"
-                    class="btn btn-secondary">
-                    Capturar Foto
-                </button>
 
-                <button
-                    type="button"
-                    onclick="confirmarFoto()"
-                    class="btn btn-success">
-                    Confirmar Foto
-                </button>
-            </div>
+        <h2 class="text-center">Enviar atestado</h2>
+
+        <div class="mb-3">
+            <label for="arquivoAtestado" class="form-label">
+                Escolher imagem do dispositivo ou tirar uma foto:
+            </label>
+
+            <input
+                type="file"
+                id="arquivoAtestado"
+                class="form-control"
+                accept="image/*"
+                capture="environment">
         </div>
 
-        <h4 class="text-center">Veja uma prévia</h4>
+        <div class="fotoSection">
+            <h4>Câmera</h4>
 
-        <div class="image mt-2">
-            <img
-                src=""
-                alt="Foto Capturada"
-                id="foto"
-                style="max-width:100%;">
+            <video
+                id="webcam"
+                autoplay
+                playsinline
+                style="width: 100%; max-height: 300px;">
+            </video>
+
+            <button
+                type="button"
+                onclick="capturarFoto()"
+                class="btn btn-secondary">
+                Capturar foto
+            </button>
+        </div>
+
+        <h4 class="text-center mt-3">Pré-visualização</h4>
+
+        <img
+            id="foto"
+            alt="Pré-visualização do atestado"
+            style="max-width: 100%; max-height: 300px; object-fit: contain;">
+
+        <div class="mt-3">
+            <button
+                type="button"
+                onclick="fecharFotoModal()"
+                class="btn btn-danger">
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                onclick="confirmarFoto()"
+                class="btn btn-success">
+                Enviar atestado
+            </button>
         </div>
     `;
 
@@ -338,29 +392,60 @@ function abrirModalFoto() {
         mainContent.style.filter = "blur(1px)";
     }
 
-    document.getElementById("sidebar-placeholder").style.filter = "blur(1px)";
+    const sidebar = document.getElementById("sidebar-placeholder");
 
-    const video = document.querySelector("#webcam");
+    if (sidebar) {
+        sidebar.style.filter = "blur(1px)";
+    }
 
-    navigator.mediaDevices
-        .getUserMedia({
-            audio: false,
-            video: {
-                facingMode: "user"
-            }
-        })
-        .then((stream) => {
-            video.srcObject = stream;
-        })
-        .catch(() => {
-            alert("Não foi possível iniciar a webcam.");
-        });
+    // Seleção de imagem existente
+    document.getElementById("arquivoAtestado").addEventListener("change", (event) => {
+        const arquivo = event.target.files[0];
+
+        if (!arquivo) return;
+
+        if (!arquivo.type.startsWith("image/")) {
+            alert("Selecione uma imagem válida.");
+            event.target.value = "";
+            return;
+        }
+
+        fotoBlob = arquivo;
+
+        document.getElementById("foto").src =
+            URL.createObjectURL(arquivo);
+    });
+
+    // Inicialização da câmera
+    if (!navigator.mediaDevices?.getUserMedia) {
+        return;
+    }
+
+    navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+            facingMode: "environment"
+        }
+    })
+    .then((stream) => {
+        const video = document.getElementById("webcam");
+
+        if (!video) {
+            stream.getTracks().forEach(track => track.stop());
+            return;
+        }
+
+        video.srcObject = stream;
+    })
+    .catch((error) => {
+        console.warn("Câmera indisponível:", error);
+    });
 }
 
 function capturarFoto() {
-    const video = document.querySelector("#webcam");
+    const video = document.getElementById("webcam");
 
-    if (!video.videoWidth) {
+    if (!video || !video.videoWidth) {
         alert("A câmera ainda não está pronta.");
         return;
     }
@@ -380,27 +465,69 @@ function capturarFoto() {
         canvas.height
     );
 
-    document.querySelector("#foto").src =
-        canvas.toDataURL("image/jpeg");
+    canvas.toBlob((blob) => {
+        if (!blob) {
+            alert("Não foi possível capturar a imagem.");
+            return;
+        }
 
-    canvas.toBlob(
-        (blob) => {
-            fotoBlob = blob;
-        },
-        "image/jpeg",
-        0.9
-    );
+        fotoBlob = blob;
+
+        document.getElementById("foto").src =
+            URL.createObjectURL(blob);
+
+        // Evita manter uma imagem anterior selecionada
+        const input = document.getElementById("arquivoAtestado");
+
+        if (input) {
+            input.value = "";
+        }
+
+    }, "image/jpeg", 0.9);
+}
+
+async function confirmarFoto() {
+    if (window.usuarioLogado?.usuariocol !== "funcionario") {
+        return;
+    }
+
+    if (!fotoBlob) {
+        alert("Selecione uma imagem ou capture uma foto primeiro.");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("arquivo", fotoBlob, "atestado.jpg");
+
+    try {
+        const response = await fetch("/api/atestados", {
+            method: "POST",
+            body: formData
+        });
+
+        const resultado = await response.json();
+
+        if (!response.ok) {
+            throw new Error(resultado.error || "Erro ao enviar atestado.");
+        }
+
+        alert("Atestado enviado com sucesso!");
+
+        fecharFotoModal();
+
+    } catch (error) {
+        console.error("Erro ao enviar atestado:", error);
+        alert(error.message);
+    }
 }
 
 function limparFotoModal() {
     const modal = document.getElementById("fotoModal");
-    const video = document.querySelector("#webcam");
+    const video = document.getElementById("webcam");
 
     if (video && video.srcObject) {
-        video.srcObject
-            .getTracks()
-            .forEach(track => track.stop());
-
+        video.srcObject.getTracks().forEach(track => track.stop());
         video.srcObject = null;
     }
 
@@ -419,28 +546,26 @@ function limparFotoModal() {
     }
 
     if (modal) {
+        const imagem = modal.querySelector("#foto");
+
+        if (imagem?.src.startsWith("blob:")) {
+            URL.revokeObjectURL(imagem.src);
+        }
+
         modal.close();
         modal.remove();
     }
-}
 
-function confirmarFoto() {
-    if (!fotoBlob) {
-        alert("Capture uma foto primeiro.");
-        return;
-    }
-
-    limparFotoModal();
-
-    alert("Foto selecionada.");
+    fotoBlob = null;
 }
 
 function fecharFotoModal() {
     limparFotoModal();
-    fotoBlob = null;
 }
 
+
 function abrirModalDoc(documento = null) {
+    if (window.usuarioLogado?.usuariocol !== "admin") return;
     if (document.getElementById("docModal")) return;
 
     const modoEdicao = Boolean(documento);
@@ -564,6 +689,7 @@ function abrirModalDoc(documento = null) {
 }
 
 async function salvarDocumento(idDocumento = null) {
+    if (window.usuarioLogado?.usuariocol !== "admin") return;
     const titulo = document.getElementById("titulo").value.trim();
     const texto = document.getElementById("texto").value.trim();
     const arquivo = document.getElementById("arquivo")?.files[0];

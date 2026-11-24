@@ -331,3 +331,12 @@
 .switch input + .slider .atest {
     color: #666;
 }
+
+
+/* ajeita dps murilo */
+#btnDoc,
+#btnAtestado {
+  display: block;
+  margin: 15px auto;
+  text-align: center;
+}

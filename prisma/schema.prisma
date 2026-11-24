@@ -29,6 +29,7 @@ model usuario {
   usuariocol         usuario_usuariocol
   senha              String               @default("h3IpM3") @db.VarChar(45)
   estado             Int                  @db.TinyInt
+  atestado           atestado[]
   aviso              aviso[]
   aviso_destinatario aviso_destinatario[]
 }
@@ -48,6 +49,16 @@ model aviso_destinatario {
 
   @@id([idaviso, idusuario])
   @@index([idusuario], map: "idx_aviso_destinatario_usuario")
+}
+
+model atestado {
+  idatestado Int      @id @default(autoincrement())
+  caminho    String   @db.VarChar(255)
+  dtEnvio    DateTime @default(now()) @db.DateTime(0)
+  idusuario  Int
+  usuario    usuario  @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_atestado_usuario")
+
+  @@index([idusuario], map: "fk_atestado_usuario_idx")
 }
 
 enum aviso_escopo {
