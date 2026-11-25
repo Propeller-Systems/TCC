@@ -288,62 +288,74 @@ if (avisosList) {
 }
 
 
-
 let fotoBlob = null;
 
-function abrirModalFoto() {
-    if (window.usuarioLogado?.usuariocol !== "funcionario") {
+let finalidadeFotoAtual = null;
+let cameraFotoStream = null;
+
+// Abre o mesmo modal para atestado ou foto de usuário.
+async function abrirModalFoto(finalidade = "atestado") {
+    await window.sessaoPronta;
+
+    const usuario = window.usuarioLogado?.usuariocol;
+
+    if (finalidade === "atestado" && usuario !== "funcionario") {
+        alert("Apenas funcionários podem enviar atestados.");
+        return;
+    }
+
+    if (finalidade === "usuario" && usuario !== "admin") {
+        alert("Apenas administradores podem cadastrar usuários.");
         return;
     }
 
     if (document.getElementById("fotoModal")) return;
 
+    finalidadeFotoAtual = finalidade;
     fotoBlob = null;
 
-    const modalF = document.createElement("dialog");
-    modalF.id = "fotoModal";
-    modalF.className = "container-cms";
+    const isAtestado = finalidade === "atestado";
 
-    Object.assign(modalF.style, {
-        display: "flex",
-        flexDirection: "column",
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        zIndex: "1000",
+    const modal = document.createElement("dialog");
+
+    modal.id = "fotoModal";
+    modal.className = "container-cms";
+
+    Object.assign(modal.style, {
         width: "90%",
         maxWidth: "600px",
         height: "auto"
     });
 
-    modalF.innerHTML = `
-        <button
-            type="button"
-            onclick="fecharFotoModal()"
-            class="btn-close btn-danger">
-        </button>
+    modal.innerHTML = `
+        <h2 class="text-center">
+            ${isAtestado ? "Enviar atestado" : "Foto do funcionário"}
+        </h2>
 
-        <h2 class="text-center">Enviar atestado</h2>
+        ${
+            isAtestado
+                ? `
+                    <div class="mb-3">
+                        <label for="arquivoAtestado" class="form-label">
+                            Escolher imagem do dispositivo ou tirar uma foto:
+                        </label>
 
-        <div class="mb-3">
-            <label for="arquivoAtestado" class="form-label">
-                Escolher imagem do dispositivo ou tirar uma foto:
-            </label>
-
-            <input
-                type="file"
-                id="arquivoAtestado"
-                class="form-control"
-                accept="image/*"
-                capture="environment">
-        </div>
+                        <input
+                            type="file"
+                            id="arquivoAtestado"
+                            class="form-control"
+                            accept="image/*"
+                            capture="environment">
+                    </div>
+                `
+                : ""
+        }
 
         <div class="fotoSection">
             <h4>Câmera</h4>
 
             <video
-                id="webcam"
+                id="webcamFoto"
                 autoplay
                 playsinline
                 style="width: 100%; max-height: 300px;">
@@ -360,14 +372,14 @@ function abrirModalFoto() {
         <h4 class="text-center mt-3">Pré-visualização</h4>
 
         <img
-            id="foto"
-            alt="Pré-visualização do atestado"
+            id="fotoPreview"
+            alt="Pré-visualização da imagem"
             style="max-width: 100%; max-height: 300px; object-fit: contain;">
 
         <div class="mt-3">
             <button
                 type="button"
-                onclick="fecharFotoModal()"
+                onclick="fecharFotoModal(true)"
                 class="btn btn-danger">
                 Cancelar
             </button>
@@ -376,13 +388,13 @@ function abrirModalFoto() {
                 type="button"
                 onclick="confirmarFoto()"
                 class="btn btn-success">
-                Enviar atestado
+                ${isAtestado ? "Enviar atestado" : "Confirmar foto"}
             </button>
         </div>
     `;
 
-    document.body.appendChild(modalF);
-    modalF.showModal();
+    document.body.appendChild(modal);
+    modal.showModal();
 
     const mainContent =
         document.getElementById("main-content") ||
@@ -398,52 +410,73 @@ function abrirModalFoto() {
         sidebar.style.filter = "blur(1px)";
     }
 
-    // Seleção de imagem existente
-    document.getElementById("arquivoAtestado").addEventListener("change", (event) => {
-        const arquivo = event.target.files[0];
+    // Seleção de imagem do dispositivo (somente atestados).
+    const input = document.getElementById("arquivoAtestado");
 
-        if (!arquivo) return;
+    if (input) {
+        input.addEventListener("change", (event) => {
+            const arquivo = event.target.files[0];
 
-        if (!arquivo.type.startsWith("image/")) {
-            alert("Selecione uma imagem válida.");
-            event.target.value = "";
-            return;
-        }
+            if (!arquivo) return;
 
-        fotoBlob = arquivo;
+            if (!arquivo.type.startsWith("image/")) {
+                alert("Selecione uma imagem válida.");
+                event.target.value = "";
+                return;
+            }
 
-        document.getElementById("foto").src =
-            URL.createObjectURL(arquivo);
-    });
-
-    // Inicialização da câmera
-    if (!navigator.mediaDevices?.getUserMedia) {
-        return;
+            fotoBlob = arquivo;
+            atualizarPreviewFoto(arquivo);
+        });
     }
 
-    navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: {
-            facingMode: "environment"
+    // Inicialização da câmera.
+    try {
+        if (!navigator.mediaDevices?.getUserMedia) {
+            throw new Error("Câmera não disponível neste navegador.");
         }
-    })
-    .then((stream) => {
-        const video = document.getElementById("webcam");
 
-        if (!video) {
-            stream.getTracks().forEach(track => track.stop());
+        cameraFotoStream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+                facingMode: isAtestado ? "environment" : "user"
+            }
+        });
+
+        const video = document.getElementById("webcamFoto");
+
+        if (!video || !document.getElementById("fotoModal")) {
+            cameraFotoStream.getTracks().forEach(track => track.stop());
+            cameraFotoStream = null;
             return;
         }
 
-        video.srcObject = stream;
-    })
-    .catch((error) => {
-        console.warn("Câmera indisponível:", error);
-    });
+        video.srcObject = cameraFotoStream;
+
+    } catch (error) {
+        console.error("Erro ao acessar câmera:", error);
+        alert("Não foi possível acessar a câmera. Você ainda pode cancelar o modal.");
+    }
 }
 
+
+// Atualiza a imagem de pré-visualização.
+function atualizarPreviewFoto(imagem) {
+    const preview = document.getElementById("fotoPreview");
+
+    if (!preview) return;
+
+    if (preview.src.startsWith("blob:")) {
+        URL.revokeObjectURL(preview.src);
+    }
+
+    preview.src = URL.createObjectURL(imagem);
+}
+
+
+// Captura uma imagem usando a câmera.
 function capturarFoto() {
-    const video = document.getElementById("webcam");
+    const video = document.getElementById("webcamFoto");
 
     if (!video || !video.videoWidth) {
         alert("A câmera ainda não está pronta.");
@@ -473,10 +506,9 @@ function capturarFoto() {
 
         fotoBlob = blob;
 
-        document.getElementById("foto").src =
-            URL.createObjectURL(blob);
+        atualizarPreviewFoto(blob);
 
-        // Evita manter uma imagem anterior selecionada
+        // Se for atestado, remove a imagem anteriormente selecionada.
         const input = document.getElementById("arquivoAtestado");
 
         if (input) {
@@ -486,51 +518,80 @@ function capturarFoto() {
     }, "image/jpeg", 0.9);
 }
 
-async function confirmarFoto() {
-    if (window.usuarioLogado?.usuariocol !== "funcionario") {
-        return;
-    }
 
+// Confirma a imagem de acordo com a finalidade do modal.
+async function confirmarFoto() {
     if (!fotoBlob) {
         alert("Selecione uma imagem ou capture uma foto primeiro.");
         return;
     }
 
-    const formData = new FormData();
+    // Foto de usuário: mantém o Blob para o formulário de cadastro.
+    if (finalidadeFotoAtual === "usuario") {
+        fecharFotoModal(false);
+        alert("Foto selecionada com sucesso!");
+        return;
+    }
 
-    formData.append("arquivo", fotoBlob, "atestado.jpg");
-
-    try {
-        const response = await fetch("/api/atestados", {
-            method: "POST",
-            body: formData
-        });
-
-        const resultado = await response.json();
-
-        if (!response.ok) {
-            throw new Error(resultado.error || "Erro ao enviar atestado.");
+    // Atestado: envia a imagem para o backend.
+    if (finalidadeFotoAtual === "atestado") {
+        if (window.usuarioLogado?.usuariocol !== "funcionario") {
+            return;
         }
 
-        alert("Atestado enviado com sucesso!");
+        const formData = new FormData();
 
-        fecharFotoModal();
+        formData.append("arquivo", fotoBlob, "atestado.jpg");
 
-    } catch (error) {
-        console.error("Erro ao enviar atestado:", error);
-        alert(error.message);
+        try {
+            const response = await fetch("/api/atestados", {
+                method: "POST",
+                body: formData
+            });
+
+            const resultado = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(resultado.error || "Erro ao enviar atestado.");
+            }
+
+            alert("Atestado enviado com sucesso!");
+
+            fecharFotoModal(true);
+
+        } catch (error) {
+            console.error("Erro ao enviar atestado:", error);
+            alert(error.message);
+        }
     }
 }
 
-function limparFotoModal() {
-    const modal = document.getElementById("fotoModal");
-    const video = document.getElementById("webcam");
 
-    if (video && video.srcObject) {
-        video.srcObject.getTracks().forEach(track => track.stop());
-        video.srcObject = null;
+// Fecha o modal, desliga a câmera e libera a pré-visualização.
+// descartar = true limpa a imagem selecionada.
+function fecharFotoModal(descartar = false) {
+    const modal = document.getElementById("fotoModal");
+
+    // Desliga a câmera.
+    if (cameraFotoStream) {
+        cameraFotoStream.getTracks().forEach(track => track.stop());
+        cameraFotoStream = null;
     }
 
+    // Libera a URL temporária da pré-visualização.
+    const preview = document.getElementById("fotoPreview");
+
+    if (preview?.src.startsWith("blob:")) {
+        URL.revokeObjectURL(preview.src);
+    }
+
+    // Remove o modal.
+    if (modal) {
+        modal.close();
+        modal.remove();
+    }
+
+    // Remove o efeito de desfoque.
     const mainContent =
         document.getElementById("main-content") ||
         document.querySelector("main");
@@ -545,23 +606,14 @@ function limparFotoModal() {
         sidebar.style.filter = "none";
     }
 
-    if (modal) {
-        const imagem = modal.querySelector("#foto");
-
-        if (imagem?.src.startsWith("blob:")) {
-            URL.revokeObjectURL(imagem.src);
-        }
-
-        modal.close();
-        modal.remove();
+    // Só descarta a imagem quando solicitado.
+    if (descartar) {
+        fotoBlob = null;
     }
 
-    fotoBlob = null;
+    finalidadeFotoAtual = null;
 }
 
-function fecharFotoModal() {
-    limparFotoModal();
-}
 
 
 function abrirModalDoc(documento = null) {

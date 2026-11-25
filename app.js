@@ -29,7 +29,7 @@ app.use(session({
 app.use("/", login);
 
 app.use("/api/avisos", auth, avisosRouter);
-app.use("/api/usuarios", auth, admin, usuarioRouter);
+app.use("/api/usuarios", auth, usuarioRouter);
 app.use("/api/doc", auth, documentoRouter);
 app.use("/api/atestados", auth, atestadoRouter);
 app.get("/api/sessao", auth, (req, res) => {
@@ -199,7 +199,6 @@ app.use((req, res, next) => {
     }
     const usuario = req.session.usuario;
     const paginasAdmin = [
-        "/home.html",
         "/usuarios.html"
     ];
 

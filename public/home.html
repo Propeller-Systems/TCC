@@ -1,43 +1,39 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão</title>
     <link href="style/style.css" rel="stylesheet">
 </head>
-
 <body class="gestao">
-
     <div id="sidebar-placeholder"></div>
-
     <main>
         <div class="p-4">
             <div>
                 <h2 class="ms-4">Visão Geral</h2>
                 <p class="ms-2">Bem-vindo de volta! Aqui está o resumo de sua equipe hoje.</p>
             </div>
+
             <div class="dashboard">
-                <div class="dash">
+                <div class="dash" id="cardTotalFuncionarios">
                     <img src="icons/totalf.png" class="dash-icon" alt="">
                     <span class="label">Total de Funcionários</span>
                     <span class="fs-1" id="totalUsuarios">0</span>
                 </div>
-                <div class="dash">
+                <div class="dash" id="cardFuncionariosAtivos">
                     <img src="icons/activef.png" class="dash-icon" alt="">
                     <span class="label">Funcionários Ativos</span>
                     <span class="fs-1" id="usuarioAtivo">0</span>
                 </div>
-                <div class="dash">
+                <div class="dash" id="cardNovasContratacoes">
                     <img src="icons/contratf.png" class="dash-icon" alt="">
                     <span class="label">Novas Contratações</span>
                     <span class="fs-1" id="novasContratacoes">0</span>
-                    <span class="text-success">Nas últimas semanas*</span>
+                    <span class="text-success">Nas últimas semanas</span>
                 </div>
             </div>
         </div>
-
         <section class="notifications-panel" aria-labelledby="notifications-title">
             <div class="notifications-header">
                 <div>
@@ -50,66 +46,62 @@
             </div>
         </section>
     </main>
-    <script src="js/script.js" defer></script>
 
+    <script src="js/script.js" defer></script>
     <script>
-        // total de usuarios
+        // Total de usuários
         async function carregarTotalUsuarios() {
             try {
                 const res = await fetch("/totalUsuarios");
-                const text = await res.text();
-                console.log("RESPOSTA:", text);
-                const data = JSON.parse(text);
 
-                document.querySelector("#totalUsuarios").textContent = data.total;
-
-            } catch (err) {
-                console.error("ERRO:", err);
+                if (!res.ok) {
+                    throw new Error(`Erro HTTP: ${res.status}`);
+                }
+                const data = await res.json();
+                document.getElementById("totalUsuarios").textContent = data.total;
+            } catch (error) {
+                console.error("Erro ao carregar total de usuários:", error);
             }
         }
 
         async function carregarAtivos() {
             try {
                 const response = await fetch("/usuarioAtivo");
-                const text = await response.text();
-                console.log("ATIVOS:", text);
-                const data = JSON.parse(text);
-
-                document.querySelector("#usuarioAtivo").textContent = data.ativos
-            } catch (err) {
-                console.error("Erro: ", err)
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                const data = await response.json();
+                document.getElementById("usuarioAtivo").textContent = data.ativos;
+            } catch (error) {
+                console.error("Erro ao carregar funcionários ativos:", error);
             }
         }
+
         async function carregarNovasContratacoes() {
             try {
                 const response = await fetch("/novasContratacoes");
-                const data = await response.json();
                 if (!response.ok) {
-                    throw new Error(data.error);
+                    throw new Error(`Erro HTTP: ${response.status}`);
                 }
-
-                document.querySelector("#novasContratacoes").textContent = data.novas;
+                const data = await response.json();
+                document.getElementById("novasContratacoes").textContent = data.novas;
             } catch (error) {
                 console.error("Erro ao carregar novas contratações:", error);
             }
         }
 
         async function carregarNotificacoes() {
-            const lista = document.querySelector("#notificationsList");
-
+            const lista = document.getElementById("notificationsList");
             try {
                 const response = await fetch("/api/notificacoes");
-                const notificacoes = await response.json();
-
                 if (!response.ok) {
-                    throw new Error(notificacoes.error || "Não foi possível carregar as notificações.");
+                    throw new Error(`Erro HTTP: ${response.status}`);
                 }
-
+                const notificacoes = await response.json();
                 if (!Array.isArray(notificacoes) || notificacoes.length === 0) {
                     lista.innerHTML = '<p class="notifications-empty">Nenhuma notificação encontrada.</p>';
                     return;
                 }
-
                 lista.innerHTML = notificacoes.map((notificacao) => {
                     const titulo = escapeHtml(notificacao.titulo);
                     const texto = escapeHtml(notificacao.texto || "");
@@ -120,43 +112,85 @@
                         : tagTipo === "personal"
                             ? "notification-tag-personal"
                             : "notification-tag-general";
-                    const tipo = notificacao.tipo === "documento" ? "Documento" : "Aviso";
+
+                    const tipo = notificacao.tipo === "documento"
+                        ? "Documento"
+                        : "Aviso";
+
                     const data = notificacao.data
                         ? new Date(notificacao.data).toLocaleDateString("pt-BR")
                         : "Documento enviado";
+
                     const linkDocumento = notificacao.tipo === "documento"
-                        ? `<a class="notification-link" href="/uploads/doc/${encodeURIComponent(notificacao.caminho)}" target="_blank" rel="noopener">Abrir documento</a>`
+                        ? `<a class="notification-link"
+                              href="/uploads/doc/${encodeURIComponent(notificacao.caminho)}"
+                              target="_blank"
+                              rel="noopener">Abrir documento</a>`
                         : "";
 
                     return `
                         <article class="notification-card">
-                            <span class="notification-tag ${tagClasse}">${tag}</span>
+
+                            <span class="notification-tag ${tagClasse}">
+                                ${tag}
+                            </span>
+
                             <div class="notification-kind">${tipo}</div>
+
                             <h4>${titulo}</h4>
+
                             ${texto ? `<p>${texto}</p>` : ""}
+
                             <div class="notification-meta">
                                 <span>${data}</span>
                                 ${linkDocumento}
                             </div>
+
                         </article>
                     `;
+
                 }).join("");
             } catch (error) {
                 console.error("Erro ao carregar notificações:", error);
-                lista.innerHTML = '<p class="notifications-empty">Não foi possível carregar as notificações.</p>';
+                lista.innerHTML = `
+                    <p class="notifications-empty">
+                        Não foi possível carregar as notificações.
+                    </p>
+                `;
             }
         }
-
         function escapeHtml(valor) {
             const elemento = document.createElement("div");
             elemento.textContent = String(valor ?? "");
             return elemento.innerHTML;
         }
 
-        carregarTotalUsuarios();
-        carregarAtivos();
-        carregarNovasContratacoes();
-        carregarNotificacoes();
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                await window.sessaoPronta;
+                const admin = window.usuarioLogado?.usuariocol === "admin";
+                const cardsAdmin = [
+                    "cardTotalFuncionarios",
+                    "cardFuncionariosAtivos",
+                    "cardNovasContratacoes"
+                ];
+                if (admin) {
+                    carregarTotalUsuarios();
+                    carregarAtivos();
+                    carregarNovasContratacoes();
+                } else {
+                    cardsAdmin.forEach(id => {
+                        const card = document.getElementById(id);
+                        if (card) {
+                            card.style.display = "none";
+                        }
+                    });
+                }
+                carregarNotificacoes();
+            } catch (error) {
+                console.error("Erro ao configurar dashboard:", error);
+            }
+        });
     </script>
 </body>
 

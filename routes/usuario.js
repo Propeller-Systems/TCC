@@ -43,6 +43,14 @@ router.get("/perfil", auth, async (req, res) => {
         const usuario = await prisma.usuario.findUnique({
             where: {
                 idusuario: idusuario
+            },
+            select: {
+                idusuario: true,
+                nome: true,
+                email: true,
+                foto: true,
+                usuariocol: true,
+                dataCriacao: true
             }
         });
 
@@ -51,14 +59,17 @@ router.get("/perfil", auth, async (req, res) => {
                 error: "Usuário não encontrado"
             });
         }
-        res.json(usuario);
+
+        return res.json(usuario);
 
     } catch (error) {
         console.error("Erro ao buscar perfil:", error);
-        res.status(500).json({error: "Erro ao buscar perfil"});
+
+        return res.status(500).json({
+            error: "Erro ao buscar perfil"
+        });
     }
 });
-
 // ─── CREATE: Criar novo usuário ────────────────────────────────────────────────
 router.post("/", admin, upload.single('foto'), async (req, res) => {
     const { nome, email, usuariocol } = req.body;

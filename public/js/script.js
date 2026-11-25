@@ -22,9 +22,9 @@ async function carregarSessao() {
     return null;
   }
 }
-
-// Promessa compartilhada entre os arquivos JavaScript
+console.log("Sessão carregada:", usuarioLogado);
 window.sessaoPronta = carregarSessao();
+console.log("Sessão pronta:", window.sessaoPronta);
 
 const daltonismFilters = {
   none: null,
